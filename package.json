@@ -1,0 +1,24 @@
+{
+  "name": "lj_dashbord_v2",
+  "version": "1.0.0",
+  "description": "Langsung Jalan Dashboard Version 2",
+  "author": "Dani Lesmiadi",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/auth": "^4.8.5",
+    "@nuxtjs/axios": "^5.9.3",
+    "@nuxtjs/dotenv": "^1.4.0",
+    "add": "^2.0.6",
+    "nuxt": "^2.0.0",
+    "yarn": "^1.21.1"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.0.0"
+  }
+}
