@@ -61,9 +61,9 @@
 
 <script>
 import debounce from "lodash/debounce";
-import { headers } from "~/components/roles/util";
+import { headers } from "~/components/permissions/util";
 import { global } from "~/mixins";
-import { dform } from "~/components/roles";
+import { dform } from "~/components/permissions";
 import catchError from "~/utils/catchError";
 import DownloadDialog from "~/components/DownloadDialog";
 export default {
@@ -71,8 +71,8 @@ export default {
   components: { DownloadDialog, dform },
   data() {
     return {
-      title: "Roles",
-      link: "/roles",
+      title: "Permission",
+      link: "/permissions",
       headers: headers,
       confirmMessage: "Yakin mau menghapus ?",
       fillable: ["id", "name", "slug", "description"],
@@ -109,7 +109,7 @@ export default {
       }
     },
     toDetail(data) {
-      this.$router.push(`/roles/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`);
     },
     addData(data) {
       this.items.unshift(data);

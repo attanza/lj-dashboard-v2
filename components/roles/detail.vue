@@ -11,13 +11,7 @@
             tooltip-text="Kembali"
             @onClick="toHome"
           />
-          <Tbtn
-            color="primary"
-            icon="save"
-            icon-mode
-            tooltip-text="Simpan"
-            @onClick="submit"
-          />
+          <Tbtn color="primary" icon="save" icon-mode tooltip-text="Simpan" @onClick="submit" />
           <Tbtn
             color="primary"
             icon="refresh"
@@ -36,7 +30,7 @@
         <v-card-text>
           <form>
             <v-layout row wrap class="mt-3 px-2">
-              <v-flex v-for="(f, index) in fillable" :key="index" sm6 xs12>
+              <v-flex v-for="(f, index) in fillable" :key="index" xs12>
                 <span v-if="f.key != 'description'">
                   <label>{{ f.caption }}</label>
                   <v-text-field

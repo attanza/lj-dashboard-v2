@@ -3,8 +3,9 @@
     <v-dialog v-model="dialog" persistent max-width="500px">
       <v-card>
         <v-card-title>
-          <span class="headline primary--text">{{ formTitle }}</span>
+          <span class="primary--text headline">{{ formTitle }}</span>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
           <v-container grid-list-md>
             <form>
@@ -37,7 +38,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" @click.native="onClose">Tutup</v-btn>
+          <v-btn @click.native="onClose">Tutup</v-btn>
           <v-btn color="primary" @click.native="submit">Simpan</v-btn>
         </v-card-actions>
       </v-card>
@@ -45,11 +46,11 @@
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins"
-import { PERMISSION_URL } from "~/utils/apis"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
-import debounce from "lodash/debounce"
+import { global } from "~/mixins";
+import { PERMISSION_URL } from "~/utils/apis";
+import catchError, { showNoty } from "~/utils/catchError";
+import debounce from "lodash/debounce";
+import { snakeCase } from "change-case";
 export default {
   $_veeValidate: {
     validator: "new"
@@ -67,59 +68,52 @@ export default {
       formTitle: "Tambah Permission",
       name: "",
       description: ""
-    }
+    };
   },
   watch: {
     show() {
-      this.dialog = this.show
-    },
-    name() {
-      this.createSlug(this.name)
+      this.dialog = this.show;
     }
   },
   methods: {
     onClose() {
-      this.clearForm()
-      this.$emit("onClose")
+      this.clearForm();
+      this.$emit("onClose");
     },
     clearForm() {
-      this.name = ""
-      this.description = ""
-      this.errors.clear()
+      this.name = "";
+      this.description = "";
+      this.errors.clear();
     },
     submit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.saveData()
-          return
+          this.saveData();
+          return;
         }
-      })
+      });
     },
     async saveData() {
       try {
-        this.activateLoader()
+        this.activateLoader();
         let formData = {
           name: this.name,
+          slug: snakeCase(this.name),
           description: this.description
-        }
-        const resp = await axios
-          .post(PERMISSION_URL, formData)
-          .then(res => res.data)
+        };
+        const resp = await this.$axios.$post(PERMISSION_URL, formData);
         if (resp.meta.status === 201) {
-          showNoty("Data disimpan", "success")
-          this.$emit("onAdd", resp.data)
-          this.clearForm()
+          showNoty("Data disimpan", "success");
+          this.$emit("onAdd", resp.data);
+          this.clearForm();
         }
-        this.deactivateLoader()
+        this.deactivateLoader();
       } catch (e) {
-        this.dialog = false
-        this.deactivateLoader()
-        catchError(e)
+        this.dialog = false;
+        this.deactivateLoader();
+        catchError(e);
       }
-    },
-    createSlug: debounce(function(name) {
-      this.slug = this.setSnakeCase(name)
-    }, 500)
+    }
   }
-}
+};
 </script>
