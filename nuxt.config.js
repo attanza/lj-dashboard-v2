@@ -1,40 +1,67 @@
 import colors from "vuetify/es5/util/colors";
-
+require("dotenv").config();
 export default {
   mode: "universal",
   /*
    ** Headers of the page
    */
   head: {
-    titleTemplate: "%s - " + process.env.npm_package_name,
-    title: process.env.npm_package_name || "",
+    titleTemplate: "Langsung Jalan Dashboard",
+    title: "Langsung Jalan Dashboard",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-        hid: "description",
-        name: "description",
+        name: "viewport",
+        content:
+          "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+      },
+      {
+        hid: "Langsung Jalan Dashboard",
+        name: "Langsung Jalan Dashboard",
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [
+      { rel: "icon", type: "image/x-icon", href: "/images/logo.png" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css?family=Montserrat"
+      },
+      {
+        rel: "stylesheet",
+        href:
+          "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"
+      }
+    ]
+  },
+  server: {
+    port: process.env.PORT,
+    host: "0.0.0.0"
   },
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: "#fff" },
+  loading: { color: "#EF6C00" },
   /*
    ** Global CSS
    */
-  css: [],
+  css: [
+    "~/node_modules/noty/src/noty.scss",
+    "~/node_modules/noty/src/themes/metroui.scss",
+    "~/static/css/custom.css"
+  ],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ["~/plugins/veevalidate.js", "~/plugins/eventBus.js"],
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ["@nuxtjs/vuetify"],
+  buildModules: ["@nuxtjs/vuetify", "@nuxtjs/moment", "@nuxtjs/dotenv"],
+  moment: {
+    /* module options */
+    locales: ["id"]
+  },
   /*
    ** Nuxt.js modules
    */
@@ -49,7 +76,13 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    baseURL: process.env.API_URL
+  },
+
+  router: {
+    middleware: ["auth"]
+  },
 
   auth: {
     // Options
@@ -57,12 +90,16 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: `${process.env.API_URL}/login`,
+            url: "/login",
             method: "post",
-            propertyName: "token"
+            propertyName: "data.token"
           },
-          // logout: { url: '/api/auth/logout', method: 'post' },
-          user: { url: "/api/auth/user", method: "get", propertyName: "user" }
+          logout: false,
+          user: {
+            url: "/me",
+            method: "get",
+            propertyName: "data"
+          }
         }
         // tokenRequired: true,
         // tokenType: 'bearer'
@@ -75,21 +112,12 @@ export default {
    */
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
+
     theme: {
       dark: false,
       themes: {
-        dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        },
-
         light: {
-          primary: colors.blue.darken2,
+          primary: colors.orange.darken3,
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,

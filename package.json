@@ -15,10 +15,15 @@
     "@nuxtjs/axios": "^5.9.3",
     "@nuxtjs/dotenv": "^1.4.0",
     "add": "^2.0.6",
+    "change-case": "^4.1.1",
+    "export-to-csv": "^0.2.1",
+    "noty": "^3.2.0-beta",
     "nuxt": "^2.0.0",
-    "yarn": "^1.21.1"
+    "yarn": "^1.21.1",
+    "vee-validate": "^2.1.0-beta.8"
   },
   "devDependencies": {
+    "@nuxtjs/moment": "^1.5.0",
     "@nuxtjs/vuetify": "^1.0.0"
   }
 }

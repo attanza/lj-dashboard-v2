@@ -1,9 +1,13 @@
 <template>
-  <div>default page</div>
+  <div>
+    <nuxt></nuxt>
+  </div>
 </template>
 
 <script>
-export default {};
+export default {
+  auth: "guest"
+};
 </script>
 
 <style lang="scss" scoped>
