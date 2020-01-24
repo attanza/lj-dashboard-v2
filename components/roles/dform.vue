@@ -5,6 +5,7 @@
         <v-card-title>
           <span class="primary--text headline">{{ formTitle }}</span>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
           <v-container grid-list-md>
             <form>
@@ -37,7 +38,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn dark color="primary" @click.native="onClose">Tutup</v-btn>
+          <v-btn @click.native="onClose">Tutup</v-btn>
           <v-btn dark color="primary" @click.native="submit">Simpan</v-btn>
         </v-card-actions>
       </v-card>
@@ -45,10 +46,10 @@
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins"
-import { ROLE_URL } from "~/utils/apis"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
+import { global } from "~/mixins";
+import { ROLE_URL } from "~/utils/apis";
+import axios from "axios";
+import catchError, { showNoty } from "~/utils/catchError";
 export default {
   $_veeValidate: {
     validator: "new"
@@ -67,51 +68,51 @@ export default {
       formTitle: "Tambah Role",
       name: "",
       description: ""
-    }
+    };
   },
   watch: {
     show() {
-      this.dialog = this.show
+      this.dialog = this.show;
     }
   },
   methods: {
     onClose() {
-      this.$emit("onClose")
+      this.$emit("onClose");
     },
     clearForm() {
-      this.name = ""
-      this.description = ""
-      this.errors.clear()
+      this.name = "";
+      this.description = "";
+      this.errors.clear();
     },
     submit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.saveData()
-          return
+          this.saveData();
+          return;
         }
-      })
+      });
     },
     async saveData() {
       try {
-        this.activateLoader()
+        this.activateLoader();
         let data = {
           name: this.name,
           slug: this.slug,
           description: this.description
-        }
-        const resp = await axios.post(ROLE_URL, data).then(res => res.data)
+        };
+        const resp = await this.$axios.$post(ROLE_URL, data);
         if (resp.meta.status === 201) {
-          showNoty("Data Saved", "success")
-          this.$emit("onAdd", resp.data)
-          this.clearForm()
+          showNoty("Data Saved", "success");
+          this.$emit("onAdd", resp.data);
+          this.clearForm();
         }
-        this.deactivateLoader()
+        this.deactivateLoader();
       } catch (e) {
-        this.dialog = false
-        this.deactivateLoader()
-        catchError(e)
+        this.dialog = false;
+        this.deactivateLoader();
+        catchError(e);
       }
     }
   }
-}
+};
 </script>

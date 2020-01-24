@@ -4,9 +4,10 @@
       <v-card light>
         <v-card-title>
           <span class="primary--text headline"
-          >Choose one of following options</span
+            >Choose one of following options</span
           >
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text style="padding: 0;" />
         <v-container
           fluid
@@ -112,7 +113,7 @@
         </v-container>
         <v-card-actions>
           <v-spacer />
-          <v-btn dark color="primary" @click="onClose">Cancel</v-btn>
+          <v-btn @click="onClose">Cancel</v-btn>
           <v-btn dark color="primary" @click="downloadData">Download</v-btn>
         </v-card-actions>
       </v-card>
@@ -121,11 +122,11 @@
 </template>
 
 <script>
-import { global } from "~/mixins"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
-import moment from "moment"
-import { DATA_EXPORT_URL } from "~/utils/apis"
+import { global } from "~/mixins";
+import axios from "axios";
+import catchError, { showNoty } from "~/utils/catchError";
+import moment from "moment";
+import { DATA_EXPORT_URL } from "~/utils/apis";
 
 export default {
   mixins: [global],
@@ -176,61 +177,61 @@ export default {
       },
       menu_range_start: false,
       menu_range_end: false
-    }
+    };
   },
   watch: {
     showDialog() {
       if (this.showDialog || !this.showDialog) {
-        this.dialog = this.showDialog
+        this.dialog = this.showDialog;
       }
     }
   },
   methods: {
     onClose() {
-      this.clearForm()
-      this.$emit("onClose")
+      this.clearForm();
+      this.$emit("onClose");
     },
     async downloadData() {
       if (this.radios === "1") {
-        this.csvExport(this.model + "s", this.dataToExport)
-        this.onClose()
+        this.csvExport(this.model + "s", this.dataToExport);
+        this.onClose();
       } else if (this.radios === "2") {
         try {
-          this.activateLoader()
-          let query = ""
+          this.activateLoader();
+          let query = "";
           for (let key in this.queryData) {
-            query += `&${key}=${this.queryData[key]}`
+            query += `&${key}=${this.queryData[key]}`;
           }
           if (this.query) {
-            query += "&" + this.query
+            query += "&" + this.query;
           }
           let resp = await axios.get(
             DATA_EXPORT_URL + "?model=" + this.model + query
-          )
+          );
 
           if (
             resp.status === 200 &&
             resp.data.data &&
             resp.data.data.length > 0
           ) {
-            console.log(resp.data.data)
-            this.csvExport(this.model + "s", resp.data.data)
+            console.log(resp.data.data);
+            this.csvExport(this.model + "s", resp.data.data);
           } else {
-            showNoty("No result found", "error")
+            showNoty("No result found", "error");
           }
-          this.onClose()
-          this.deactivateLoader()
+          this.onClose();
+          this.deactivateLoader();
         } catch (e) {
-          this.clearForm()
-          this.deactivateLoader()
-          catchError(e)
+          this.clearForm();
+          this.deactivateLoader();
+          catchError(e);
         }
       }
     },
     clearForm() {
-      this.dialog = false
-      this.radios = "1"
-      this.sortModes = ["asc", "desc"]
+      this.dialog = false;
+      this.radios = "1";
+      this.sortModes = ["asc", "desc"];
       this.queryData = {
         sort_by: "",
         sort_mode: "asc",
@@ -240,12 +241,12 @@ export default {
           .add(-1, "M")
           .format("YYYY-MM-DD"),
         range_end: moment().format("YYYY-MM-DD")
-      }
-      this.menu_range_start = false
-      this.menu_range_end = false
+      };
+      this.menu_range_start = false;
+      this.menu_range_end = false;
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

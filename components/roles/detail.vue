@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-card>
+    <v-card flat>
       <v-container grid-list-md fluid style="padding: 0px;">
-        <v-toolbar color="transparent" card>
+        <v-toolbar flat color="transparent">
           <v-spacer />
           <Tbtn
             color="primary"
@@ -65,7 +65,7 @@
     </v-card>
     <Dialog
       :showDialog="showDialog"
-      text="Yakin akan menghapus ?"
+      text="Yakin mau menghapus ?"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
     />
@@ -73,11 +73,10 @@
 </template>
 
 <script>
-import { global } from "~/mixins"
-import { ROLE_URL } from "~/utils/apis"
-import axios from "axios"
-import Dialog from "~/components/Dialog"
-import catchError, { showNoty } from "~/utils/catchError"
+import { global } from "~/mixins";
+import { ROLE_URL } from "~/utils/apis";
+import Dialog from "~/components/Dialog";
+import catchError, { showNoty } from "~/utils/catchError";
 
 export default {
   $_veeValidate: {
@@ -103,72 +102,72 @@ export default {
       ],
       formData: {},
       showDialog: false
-    }
+    };
   },
   created() {
-    this.setFields()
+    this.setFields();
   },
   methods: {
     toHome() {
       // this.$router.push("/roles")
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     setFields() {
-      this.errors.clear()
+      this.errors.clear();
       if (this.currentEdit) {
         this.fillable.forEach(
           data => (this.formData[data.key] = this.currentEdit[data.key])
-        )
+        );
       }
     },
     submit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.editData()
-          return
+          this.editData();
+          return;
         }
-      })
+      });
     },
     async editData() {
       try {
-        this.activateLoader()
+        this.activateLoader();
         if (this.currentEdit) {
-          const resp = await axios
-            .put(ROLE_URL + "/" + this.currentEdit.id, this.formData)
-            .then(res => res.data)
-          this.$store.commit("currentEdit", resp.data)
-          this.setFields()
-          showNoty("Data diperbaharui", "success")
-          this.deactivateLoader()
+          const resp = await this.$axios.$put(
+            ROLE_URL + "/" + this.currentEdit.id,
+            this.formData
+          );
+          this.$store.commit("currentEdit", resp.data);
+          this.setFields();
+          showNoty("Data diperbaharui", "success");
+          this.deactivateLoader();
         }
       } catch (e) {
-        this.deactivateLoader()
-        catchError(e)
+        this.deactivateLoader();
+        catchError(e);
       }
     },
     confirmDelete() {
-      this.showDialog = false
-      this.showDialog = true
+      this.showDialog = !this.showDialog;
     },
     async removeData() {
       try {
-        this.activateLoader()
+        this.activateLoader();
         if (this.currentEdit) {
-          const resp = await axios
-            .delete(ROLE_URL + "/" + this.currentEdit.id)
-            .then(res => res.data)
+          const resp = await this.$axios.$delete(
+            ROLE_URL + "/" + this.currentEdit.id
+          );
           if (resp.meta.status === 200) {
-            showNoty("Data dihapus", "success")
-            this.$router.push("/roles")
+            showNoty("Data dihapus", "success");
+            this.$router.push("/roles");
           }
         }
-        this.deactivateLoader()
+        this.deactivateLoader();
       } catch (e) {
-        this.deactivateLoader()
-        this.showDialog = false
-        catchError(e)
+        this.deactivateLoader();
+        this.showDialog = false;
+        catchError(e);
       }
     }
   }
-}
+};
 </script>

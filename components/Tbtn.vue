@@ -1,21 +1,23 @@
 <template>
   <div>
     <v-tooltip top>
-      <v-btn
-        slot="activator"
-        :color="color"
-        :flat="flat"
-        :block="block"
-        :outline="outline"
-        :icon="iconMode"
-        :text="text"
-        :tooltip-text="tooltipText"
-        :dark="dark"
-        @click="onClick"
-      >
-        <v-icon v-if="icon != ''">{{ icon }}</v-icon>
-        <span v-if="text">{{ text }}</span>
-      </v-btn>
+      <template v-slot:activator="{ on }">
+        <v-btn
+          v-on="on"
+          :color="color"
+          :text="flat"
+          :block="block"
+          :outlined="outline"
+          :icon="iconMode"
+          :title="title"
+          :tooltip-text="tooltipText"
+          :dark="dark"
+          @click="onClick"
+        >
+          <v-icon v-if="icon != ''">{{ icon }}</v-icon>
+          <span v-if="title">{{ title }}</span>
+        </v-btn>
+      </template>
       <span v-if="tooltipText">{{ tooltipText }}</span>
     </v-tooltip>
   </div>
@@ -38,7 +40,7 @@ export default {
       required: false,
       default: ""
     },
-    text: {
+    title: {
       type: String,
       required: false,
       default: ""
@@ -71,10 +73,10 @@ export default {
   },
   methods: {
     onClick() {
-      this.$emit("onClick")
+      this.$emit("onClick");
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

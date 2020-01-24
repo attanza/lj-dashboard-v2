@@ -118,7 +118,6 @@ export default {
   },
   mounted() {
     this.getMenus();
-    console.log("this.items", this.items);
   },
   methods: {
     getMenus() {
