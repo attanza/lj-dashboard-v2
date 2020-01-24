@@ -46,15 +46,14 @@
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins";
+import { global, catchError } from "~/mixins";
 import { ROLE_URL } from "~/utils/apis";
 import axios from "axios";
-import catchError, { showNoty } from "~/utils/catchError";
 export default {
   $_veeValidate: {
     validator: "new"
   },
-  mixins: [global],
+  mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
@@ -102,7 +101,7 @@ export default {
         };
         const resp = await this.$axios.$post(ROLE_URL, data);
         if (resp.meta.status === 201) {
-          showNoty("Data Saved", "success");
+          this.showNoty("Data Saved", "success");
           this.$emit("onAdd", resp.data);
           this.clearForm();
         }
@@ -110,7 +109,7 @@ export default {
       } catch (e) {
         this.dialog = false;
         this.deactivateLoader();
-        catchError(e);
+        this.catchError(e);
       }
     }
   }

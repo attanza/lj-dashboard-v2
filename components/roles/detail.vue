@@ -67,17 +67,16 @@
 </template>
 
 <script>
-import { global } from "~/mixins";
+import { global, catchError } from "~/mixins";
 import { ROLE_URL } from "~/utils/apis";
 import Dialog from "~/components/Dialog";
-import catchError, { showNoty } from "~/utils/catchError";
 
 export default {
   $_veeValidate: {
     validator: "new"
   },
   components: { Dialog },
-  mixins: [global],
+  mixins: [global, catchError],
   data() {
     return {
       fillable: [
@@ -132,12 +131,12 @@ export default {
           );
           this.$store.commit("currentEdit", resp.data);
           this.setFields();
-          showNoty("Data diperbaharui", "success");
+          this.showNoty("Data diperbaharui", "success");
           this.deactivateLoader();
         }
       } catch (e) {
         this.deactivateLoader();
-        catchError(e);
+        this.catchError(e);
       }
     },
     confirmDelete() {
@@ -151,7 +150,7 @@ export default {
             ROLE_URL + "/" + this.currentEdit.id
           );
           if (resp.meta.status === 200) {
-            showNoty("Data dihapus", "success");
+            this.showNoty("Data dihapus", "success");
             this.$router.push("/roles");
           }
         }
@@ -159,7 +158,7 @@ export default {
       } catch (e) {
         this.deactivateLoader();
         this.showDialog = false;
-        catchError(e);
+        this.catchError(e);
       }
     }
   }

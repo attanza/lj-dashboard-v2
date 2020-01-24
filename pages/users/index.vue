@@ -45,6 +45,14 @@
             }}
           </v-btn>
         </template>
+        <template v-slot:item.is_active="{ item }">
+          <span v-if="item.is_active">
+            <v-chip color="green" text-color="white">Active</v-chip>
+          </span>
+          <span v-else>
+            <v-chip>Not Active</v-chip>
+          </span>
+        </template>
       </v-data-table>
     </v-card-text>
     <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" />
@@ -61,20 +69,29 @@
 
 <script>
 import debounce from "lodash/debounce";
-import { headers } from "~/components/roles/util";
+import { headers } from "~/components/users/util";
 import { global, catchError } from "~/mixins";
-import { dform } from "~/components/roles";
+import { dform } from "~/components/users";
 import DownloadDialog from "~/components/DownloadDialog";
 export default {
   mixins: [global, catchError],
   components: { DownloadDialog, dform },
   data() {
     return {
-      title: "Roles",
-      link: "/roles",
+      title: "User",
+      link: "/users",
       headers: headers,
       confirmMessage: "Yakin mau menghapus ?",
-      fillable: ["id", "name", "slug", "description"],
+      fillable: [
+        "id",
+        "uid",
+        "name",
+        "email",
+        "phone",
+        "description",
+        "address",
+        "is_active"
+      ],
       typeDates: ["created_at"],
       dataToExport: []
     };
@@ -104,11 +121,11 @@ export default {
       } catch (e) {
         this.deactivateLoader();
         this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.catchError(e);
       }
     },
     toDetail(data) {
-      this.$router.push(`/roles/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`);
     },
     addData(data) {
       this.items.unshift(data);

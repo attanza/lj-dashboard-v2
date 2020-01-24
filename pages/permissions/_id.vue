@@ -14,8 +14,7 @@
 <script>
 import { PERMISSION_URL } from "~/utils/apis";
 import { detail } from "~/components/permissions";
-import { global } from "~/mixins";
-import catchError from "~/utils/catchError";
+import { global, catchError } from "~/mixins";
 
 export default {
   async fetch({ store, params, redirect, $axios }) {
@@ -23,14 +22,14 @@ export default {
       let resp = await $axios.$get(PERMISSION_URL + "/" + params.id);
       if (resp) store.commit("currentEdit", resp.data);
     } catch (e) {
-      if (process.client) catchError(e);
+      if (process.client) this.catchError(e);
       else {
         redirect("/");
       }
     }
   },
   components: { detail },
-  mixins: [global]
+  mixins: [global, catchError]
 };
 </script>
 

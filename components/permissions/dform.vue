@@ -46,9 +46,8 @@
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins";
+import { global, catchError } from "~/mixins";
 import { PERMISSION_URL } from "~/utils/apis";
-import catchError, { showNoty } from "~/utils/catchError";
 import debounce from "lodash/debounce";
 import { snakeCase } from "change-case";
 export default {
@@ -103,7 +102,7 @@ export default {
         };
         const resp = await this.$axios.$post(PERMISSION_URL, formData);
         if (resp.meta.status === 201) {
-          showNoty("Data disimpan", "success");
+          this.showNoty("Data disimpan", "success");
           this.$emit("onAdd", resp.data);
           this.clearForm();
         }
@@ -111,7 +110,7 @@ export default {
       } catch (e) {
         this.dialog = false;
         this.deactivateLoader();
-        catchError(e);
+        this.catchError(e);
       }
     }
   }

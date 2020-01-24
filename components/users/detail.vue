@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-card>
+    <v-card flat>
       <v-container grid-list-md fluid style="padding-top: 5px;">
-        <v-toolbar color="transparent" card>
+        <v-toolbar color="transparent" flat>
           <v-spacer />
           <Tbtn
             color="primary"
@@ -11,13 +11,7 @@
             tooltip-text="Kembali"
             @onClick="toHome"
           />
-          <Tbtn
-            color="primary"
-            icon="save"
-            icon-mode
-            tooltip-text="Simpan"
-            @onClick="submit"
-          />
+          <Tbtn color="primary" icon="save" icon-mode tooltip-text="Simpan" @onClick="submit" />
           <Tbtn
             color="primary"
             icon="refresh"
@@ -80,19 +74,17 @@
 </template>
 
 <script>
-import { global } from "~/mixins"
-import { USER_URL } from "~/utils/apis"
-import axios from "axios"
-import Dialog from "~/components/Dialog"
-import catchError, { showNoty } from "~/utils/catchError"
-import resetPasswordForm from "./resetPasswordForm"
+import { global, catchError } from "~/mixins";
+import { USER_URL } from "~/utils/apis";
+import Dialog from "~/components/Dialog";
+import resetPasswordForm from "./resetPasswordForm";
 
 export default {
   $_veeValidate: {
     validator: "new"
   },
   components: { Dialog, resetPasswordForm },
-  mixins: [global],
+  mixins: [global, catchError],
   data() {
     return {
       fillable: [
@@ -145,84 +137,84 @@ export default {
       switch1: false,
       roles: [],
       showReset: false
-    }
+    };
   },
   watch: {
     switch1() {
       if (this.switch1 || !this.switch1) {
-        this.formData.is_active = this.switch1
+        this.formData.is_active = this.switch1;
       }
     }
   },
   created() {
-    this.setFields()
+    this.setFields();
   },
   methods: {
     toHome() {
       // this.$router.push("/users")
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     setFields() {
-      this.errors.clear()
+      this.errors.clear();
       if (this.currentEdit) {
         this.fillable.forEach(
           data => (this.formData[data.key] = this.currentEdit[data.key])
-        )
-        this.switch1 = this.formData.is_active
+        );
+        this.switch1 = this.formData.is_active;
       }
     },
     submit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.editData()
-          return
+          this.editData();
+          return;
         }
-      })
+      });
     },
     async editData() {
       try {
-        this.activateLoader()
+        this.activateLoader();
         if (this.currentEdit) {
-          let roleIds = []
-          this.currentEdit.roles.map(role => roleIds.push(role.id))
-          this.formData.roles = roleIds
-          const resp = await axios
-            .put(USER_URL + "/" + this.currentEdit.id, this.formData)
-            .then(res => res.data)
-          this.$store.commit("currentEdit", resp.data)
-          this.setFields()
-          showNoty("Data diperbaharui", "success")
-          this.deactivateLoader()
+          let roleIds = [];
+          this.currentEdit.roles.map(role => roleIds.push(role.id));
+          this.formData.roles = roleIds;
+          const resp = await this.$axios
+            .$put(USER_URL + "/" + this.currentEdit.id, this.formData)
+            .then(res => res.data);
+          this.$store.commit("currentEdit", resp.data);
+          this.setFields();
+          this.showNoty("Data diperbaharui", "success");
+          this.deactivateLoader();
         }
       } catch (e) {
-        this.deactivateLoader()
+        this.deactivateLoader();
 
-        catchError(e)
+        this.catchError(e);
       }
     },
     confirmDelete() {
-      this.showDialog = true
+      this.showDialog = true;
     },
     async removeData() {
       try {
-        this.activateLoader()
+        this.activateLoader();
 
         if (this.currentEdit) {
-          const resp = await axios
-            .delete(USER_URL + "/" + this.currentEdit.id)
-            .then(res => res.data)
+          const resp = await this.$axios
+            .$delete(USER_URL + "/" + this.currentEdit.id)
+            .then(res => res.data);
           if (resp.meta.status === 200) {
-            showNoty("Data dihapus", "success")
-            this.$router.push("/users")
+            this.showNoty("Data dihapus", "success");
+            this.$router.push("/users");
           }
         }
-        this.deactivateLoader()
+        this.deactivateLoader();
       } catch (e) {
-        this.deactivateLoader()
+        this.deactivateLoader();
 
-        catchError(e)
+        this.catchError(e);
       }
     }
   }
-}
+};
 </script>

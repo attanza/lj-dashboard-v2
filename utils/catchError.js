@@ -1,52 +1,53 @@
-import Noty from "noty"
-import Cookie from "js-cookie"
+import Noty from "noty";
 
 export default e => {
   if (e.response) {
-    const status = e.response.status
-    let message = ""
+    const status = e.response.status;
+    let message = "";
     if (e.response.data && e.response.data.meta)
-      message = e.response.data.meta.message
+      message = e.response.data.meta.message;
     switch (status) {
       case 400:
-        showNoty(message, "error")
-        break
+        showNoty(message, "error");
+        break;
       case 422:
         {
-          const { details } = e.response.data
+          const { details } = e.response.data;
           details.forEach(d => {
-            showNoty(d.message, "error")
-          })
+            showNoty(d.message, "error");
+          });
         }
-        break
+        break;
       case 401:
         {
-          console.log('401') //eslint-disable-line
-          toLogin()
+          console.log("401"); //eslint-disable-line
+          toLogin();
         }
-        break
+        break;
 
       case 403:
-        showNoty(message, "error")
-        break
+        showNoty(message, "error");
+        break;
 
       default:
         showNoty(
           "Internal Server Error, please contact our Administrator",
           "error"
-        )
-        console.log('Unknown Status') //eslint-disable-line
-        break
+        );
+        console.log("Unknown Status"); //eslint-disable-line
+        break;
     }
   } else {
-    console.log('default error') //eslint-disable-line
-    showNoty("Internal Server Error, please contact our Administrator", "error")
+    console.log("default error"); //eslint-disable-line
+    showNoty(
+      "Internal Server Error, please contact our Administrator",
+      "error"
+    );
   }
-}
+};
 
 function toLogin() {
-  Cookie.remove("lj_token")
-  if (window && window.location) window.location.href = "/login"
+  // if (window && window.location) window.location.href = "/login";
 }
 
 export function showNoty(text, type) {
@@ -57,5 +58,5 @@ export function showNoty(text, type) {
     timeout: 5000,
     progressBar: true,
     type
-  }).show()
+  }).show();
 }

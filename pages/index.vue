@@ -49,11 +49,10 @@
 </template>
 <script>
 import { DASHBOARD_DATA_URL } from "~/utils/apis";
-import catchError from "~/utils/catchError";
-import { global } from "~/mixins";
+import { global, catchError } from "~/mixins";
 
 export default {
-  mixins: [global],
+  mixins: [global, catchError],
   mounted() {
     this.seedData();
   },
@@ -66,7 +65,7 @@ export default {
         this.deactivateLoader();
       } catch (e) {
         this.deactivateLoader();
-        catchError(e);
+        this.catchError(e);
       }
     }
   }

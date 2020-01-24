@@ -5,6 +5,7 @@
         <v-card-title>
           <span class="headline primary--text">{{ formTitle }}</span>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
           <v-container grid-list-md>
             <form>
@@ -38,11 +39,7 @@
                     />
                   </div>
                   <div v-if="f.key == 'is_active'">
-                    <v-switch
-                      v-model="formData['is_active']"
-                      label="Status aktif"
-                      color="primary"
-                    />
+                    <v-switch v-model="formData['is_active']" label="Status aktif" color="primary" />
                   </div>
                 </v-flex>
               </v-layout>
@@ -51,7 +48,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" @click.native="onClose">Tutup</v-btn>
+          <v-btn @click.native="onClose">Tutup</v-btn>
           <v-btn color="primary" @click.native="submit">Simpan</v-btn>
         </v-card-actions>
       </v-card>
@@ -59,15 +56,13 @@
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins"
-import { USER_URL, COMBO_DATA_URL } from "~/utils/apis"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
+import { global, catchError } from "~/mixins";
+import { USER_URL, COMBO_DATA_URL } from "~/utils/apis";
 export default {
   $_veeValidate: {
     validator: "new"
   },
-  mixins: [global],
+  mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
@@ -130,61 +125,62 @@ export default {
       notIncluded: ["roles", "is_active"],
       formData: {},
       formTitle: "Tambah User"
-    }
+    };
   },
   watch: {
     show() {
-      this.dialog = this.show
+      this.dialog = this.show;
     }
   },
   created() {
-    this.setAuth()
-    this.getRoles()
-    this.setFields()
+    this.setAuth();
+    this.getRoles();
+    this.setFields();
   },
   methods: {
     onClose() {
-      this.$emit("onClose")
+      this.$emit("onClose");
     },
     async getRoles() {
       try {
-        let roles = await axios.get(COMBO_DATA_URL + "Role")
-        if (roles) this.$store.commit("comboData", roles.data)
+        let roles = await this.$axios.$get(COMBO_DATA_URL + "Role");
+        if (roles) this.$store.commit("comboData", roles);
       } catch (e) {
-        catchError(e)
+        this.catchError(e);
       }
     },
     setFields() {
-      this.errors.clear()
-      this.fillable.forEach(data => (this.formData[data.key] = data.value))
+      this.errors.clear();
+      this.fillable.forEach(data => (this.formData[data.key] = data.value));
     },
     submit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.saveData()
-          return
+          this.saveData();
+          return;
         }
-      })
+      });
     },
     async saveData() {
       try {
-        this.activateLoader()
-        const resp = await axios
-          .post(USER_URL, this.formData)
-          .then(res => res.data)
+        this.activateLoader();
+        const resp = await this.$axios
+          .$post(USER_URL, this.formData)
+          .then(res => res.data);
 
         if (resp.meta.status === 201) {
-          showNoty("Data disimpan", "success")
-          this.$emit("onAdd", resp.data)
-          this.setFields()
+          this.showNoty("Data disimpan", "success");
+          this.$emit("onAdd", resp.data);
+          this.setFields();
         }
-        this.deactivateLoader()
+        this.deactivateLoader();
       } catch (e) {
-        this.dialog = false
-        this.deactivateLoader()
-        catchError(e)
+        console.log("e", e);
+        this.dialog = false;
+        this.deactivateLoader();
+        this.catchError(e);
       }
     }
   }
-}
+};
 </script>

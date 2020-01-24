@@ -62,12 +62,11 @@
 <script>
 import debounce from "lodash/debounce";
 import { headers } from "~/components/permissions/util";
-import { global } from "~/mixins";
+import { global, catchError } from "~/mixins";
 import { dform } from "~/components/permissions";
-import catchError from "~/utils/catchError";
 import DownloadDialog from "~/components/DownloadDialog";
 export default {
-  mixins: [global],
+  mixins: [global, catchError],
   components: { DownloadDialog, dform },
   data() {
     return {
@@ -105,7 +104,7 @@ export default {
       } catch (e) {
         this.deactivateLoader();
         this.showForm = false;
-        catchError(e, null, this.$router);
+        this.catchError(e);
       }
     },
     toDetail(data) {

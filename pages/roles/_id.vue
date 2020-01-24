@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 v-if="currentEdit" class="primary--text mb-2">
-      Role {{ currentEdit.name }}
-    </h2>
+    <h2 v-if="currentEdit" class="primary--text mb-2">Role {{ currentEdit.name }}</h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
@@ -20,8 +18,7 @@
 <script>
 import { ROLE_URL, COMBO_DATA_URL } from "~/utils/apis";
 import { detail, permission } from "~/components/roles";
-import { global } from "~/mixins";
-import catchError from "~/utils/catchError";
+import { global, catchError } from "~/mixins";
 
 const API_URL = process.env.API_URL;
 
@@ -40,14 +37,14 @@ export default {
       if (rolePermissions)
         store.commit("permissions", rolePermissions.data.data);
     } catch (e) {
-      if (process.client) catchError(e);
+      if (process.client) this.catchError(e);
       else {
         redirect("/");
       }
     }
   },
   components: { detail, permission },
-  mixins: [global]
+  mixins: [global, catchError]
 };
 </script>
 
