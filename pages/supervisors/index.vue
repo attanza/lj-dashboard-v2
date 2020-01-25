@@ -1,9 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">{{ title }}</v-card-title>
+    <v-card-title>{{ title }}</v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
-        v-if="checkPermission('create-role')"
         :bottom="true"
         :tooltip-text="'Tambahkan ' + title"
         icon-mode
@@ -46,9 +45,17 @@
             }}
           </v-btn>
         </template>
+        <template v-slot:item.is_active="{ item }">
+          <span v-if="item.is_active">
+            <v-chip color="green" text-color="white">Active</v-chip>
+          </span>
+          <span v-else>
+            <v-chip>Not Active</v-chip>
+          </span>
+        </template>
       </v-data-table>
     </v-card-text>
-    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" :link="link" />
+    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
@@ -62,19 +69,29 @@
 
 <script>
 import debounce from "lodash/debounce";
-import { headers, downloadData } from "~/components/roles/util";
+import { headers } from "~/components/supervisors/util";
 import { global, catchError } from "~/mixins";
-import { dform } from "~/components/roles";
+import { dform } from "~/components/supervisors";
 import DownloadDialog from "~/components/DownloadDialog";
 export default {
   mixins: [global, catchError],
   components: { DownloadDialog, dform },
   data() {
     return {
-      title: "Roles",
-      link: "/roles",
+      title: "Supervisor",
+      link: "/supervisors",
       headers: headers,
-      fillable: downloadData,
+      confirmMessage: "Yakin mau menghapus ?",
+      fillable: [
+        "id",
+        "uid",
+        "name",
+        "email",
+        "phone",
+        "description",
+        "address",
+        "is_active"
+      ],
       typeDates: ["created_at"],
       dataToExport: []
     };
@@ -104,7 +121,7 @@ export default {
       } catch (e) {
         this.deactivateLoader();
         this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.catchError(e);
       }
     },
     toDetail(data) {

@@ -3,19 +3,13 @@
     <v-dialog v-model="dialog" max-width="500px" persistent>
       <v-card light>
         <v-card-title>
-          <span class="primary--text headline"
-            >Choose one of following options</span
-          >
+          <span class="primary--text headline">{{$messages.downloadDialog.TITLE}}</span>
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text style="padding: 0;" />
-        <v-container
-          fluid
-          style="padding-top: 0; padding-bottom: 0;"
-          grid-list-md
-        >
+        <v-container fluid style="padding-top: 0; padding-bottom: 0;" grid-list-md>
           <v-radio-group v-model="radios">
-            <v-radio label="As seen on screen" value="1" color="primary" />
+            <v-radio :label="$messages.downloadDialog.SEEN_ON_SCREEN" value="1" color="primary" />
             <!-- <v-radio label="Custom" value="2" color="primary"/> -->
           </v-radio-group>
           <v-layout v-if="radios == '2'" row wrap>
@@ -41,11 +35,7 @@
             </v-flex>
             <v-flex sm6 xs12>
               <label>Limit</label>
-              <v-text-field
-                v-model="queryData.limit"
-                name="limit"
-                type="String"
-              />
+              <v-text-field v-model="queryData.limit" name="limit" type="String" />
             </v-flex>
             <v-flex sm6 xs12>
               <label>Date Range By</label>

@@ -53,7 +53,11 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/veevalidate.js", "~/plugins/eventBus.js"],
+  plugins: [
+    "~/plugins/veevalidate.js",
+    "~/plugins/eventBus.js",
+    "~/plugins/messages.js"
+  ],
   /*
    ** Nuxt.js dev-modules
    */

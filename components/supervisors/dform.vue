@@ -5,6 +5,7 @@
         <v-card-title>
           <span class="headline primary--text">{{ formTitle }}</span>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
           <v-container grid-list-md>
             <form>
@@ -24,11 +25,7 @@
                     />
                   </div>
                   <div v-if="f.key == 'is_active'">
-                    <v-switch
-                      v-model="formData['is_active']"
-                      label="Aktif"
-                      color="primary"
-                    />
+                    <v-switch v-model="formData['is_active']" label="Aktif" color="primary" />
                   </div>
                 </v-flex>
               </v-layout>
@@ -37,7 +34,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" @click.native="onClose">Tutup</v-btn>
+          <v-btn @click.native="onClose">Tutup</v-btn>
           <v-btn color="primary" @click.native="submit">Simpan</v-btn>
         </v-card-actions>
       </v-card>
@@ -45,15 +42,13 @@
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins"
-import { SUPERVISOR_URL } from "~/utils/apis"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
+import { global, catchError } from "~/mixins";
+import { SUPERVISOR_URL } from "~/utils/apis";
 export default {
   $_veeValidate: {
     validator: "new"
   },
-  mixins: [global],
+  mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
@@ -109,54 +104,52 @@ export default {
       ],
       formData: {},
       formTitle: "Tambah Supervisor"
-    }
+    };
   },
   watch: {
     show() {
-      this.dialog = this.show
+      this.dialog = this.show;
     }
   },
   created() {
-    this.setFields()
+    this.setFields();
   },
   methods: {
     onClose() {
-      this.$emit("onClose")
+      this.$emit("onClose");
     },
     setFields() {
-      this.errors.clear()
+      this.errors.clear();
       if (this.currentEdit) {
-        this.fillable.forEach(data => (this.formData[data.key] = data.value))
+        this.fillable.forEach(data => (this.formData[data.key] = data.value));
       }
     },
     submit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.saveData()
-          return
+          this.saveData();
+          return;
         }
-      })
+      });
     },
     async saveData() {
       try {
-        this.activateLoader()
-        this.formData.role_id = 3
-        const resp = await axios
-          .post(SUPERVISOR_URL, this.formData)
-          .then(res => res.data)
+        this.activateLoader();
+        this.formData.role_id = 3;
+        const resp = await this.$axios.$post(SUPERVISOR_URL, this.formData);
 
         if (resp.meta.status === 201) {
-          showNoty("Data Saved", "success")
-          this.$emit("onAdd", resp.data)
-          this.setFields()
+          this.showNoty("Data Saved", "success");
+          this.$emit("onAdd", resp.data);
+          this.setFields();
         }
-        this.deactivateLoader()
+        this.deactivateLoader();
       } catch (e) {
-        this.dialog = false
-        this.deactivateLoader()
-        catchError(e)
+        this.dialog = false;
+        this.deactivateLoader();
+        this.catchError(e);
       }
     }
   }
-}
+};
 </script>

@@ -7,66 +7,40 @@
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <v-container grid-list-md>
-            <form>
-              <v-layout row wrap>
-                <v-flex xs12>
-                  <label>Role</label>
-                  <v-text-field
-                    v-validate="'required|max:50'"
-                    v-model="name"
-                    :error-messages="errors.collect('name')"
-                    name="name"
-                    data-vv-name="name"
-                    data-vv-as="Role"
-                  />
-                </v-flex>
-                <v-flex xs12>
-                  <label>Deskripsi</label>
-                  <v-textarea
-                    v-validate="'max:250'"
-                    v-model="description"
-                    :error-messages="errors.collect('description')"
-                    name="description"
-                    data-vv-name="description"
-                    data-vv-as="Deskripsi"
-                  />
-                </v-flex>
-              </v-layout>
-            </form>
-          </v-container>
+          <sharedForm
+            :items="formItem"
+            @onClose="onClose"
+            @onSubmit="saveData"
+            :show-button="checkPermission('create-role')"
+            :show-cancel="true"
+          ></sharedForm>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click.native="onClose">Tutup</v-btn>
-          <v-btn dark color="primary" @click.native="submit">Simpan</v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-layout>
 </template>
 <script>
 import { global, catchError } from "~/mixins";
-import { ROLE_URL } from "~/utils/apis";
-import axios from "axios";
+import sharedForm from "../sharedForm";
+import { formItem } from "./util";
 export default {
-  $_veeValidate: {
-    validator: "new"
-  },
+  components: { sharedForm },
   mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
+      required: true
+    },
+    link: {
+      type: String,
       required: true
     }
   },
   data() {
     return {
       dialog: false,
-      formData: {},
-      formTitle: "Tambah Role",
-      name: "",
-      description: ""
+      formItem: formItem,
+      formTitle: "Tambah Role"
     };
   },
   watch: {
@@ -78,33 +52,12 @@ export default {
     onClose() {
       this.$emit("onClose");
     },
-    clearForm() {
-      this.name = "";
-      this.description = "";
-      this.errors.clear();
-    },
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.saveData();
-          return;
-        }
-      });
-    },
-    async saveData() {
+    async saveData(data) {
       try {
         this.activateLoader();
-        let data = {
-          name: this.name,
-          slug: this.slug,
-          description: this.description
-        };
-        const resp = await this.$axios.$post(ROLE_URL, data);
-        if (resp.meta.status === 201) {
-          this.showNoty("Data Saved", "success");
-          this.$emit("onAdd", resp.data);
-          this.clearForm();
-        }
+        const resp = await this.$axios.$post(this.link, data);
+        this.showNoty(this.$messages.form.SAVED, "success");
+        this.$emit("onAdd", resp.data);
         this.deactivateLoader();
       } catch (e) {
         this.dialog = false;

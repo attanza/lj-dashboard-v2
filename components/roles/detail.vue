@@ -11,15 +11,9 @@
             tooltip-text="Kembali"
             @onClick="toHome"
           />
-          <Tbtn color="primary" icon="save" icon-mode tooltip-text="Simpan" @onClick="submit" />
+
           <Tbtn
-            color="primary"
-            icon="refresh"
-            icon-mode
-            tooltip-text="Refresh"
-            @onClick="setFields"
-          />
-          <Tbtn
+            v-if="checkPermission('delete-role')"
             color="primary"
             icon="delete"
             icon-mode
@@ -28,38 +22,18 @@
           />
         </v-toolbar>
         <v-card-text>
-          <form>
-            <v-layout row wrap class="mt-3 px-2">
-              <v-flex v-for="(f, index) in fillable" :key="index" xs12>
-                <span v-if="f.key != 'description'">
-                  <label>{{ f.caption }}</label>
-                  <v-text-field
-                    v-validate="f.rules"
-                    v-model="formData[f.key]"
-                    :error-messages="errors.collect(f.key)"
-                    :name="f.key"
-                    :data-vv-name="f.key"
-                  />
-                </span>
-                <span v-if="f.key == 'description'">
-                  <label>{{ f.caption }}</label>
-                  <v-textarea
-                    v-validate="f.rules"
-                    v-model="formData[f.key]"
-                    :error-messages="errors.collect(f.key)"
-                    :name="f.key"
-                    :data-vv-name="f.key"
-                  />
-                </span>
-              </v-flex>
-            </v-layout>
-          </form>
+          <sharedForm
+            :items="formItem"
+            :show-button="checkPermission('update-role')"
+            :init-value="currentEdit"
+            @onSubmit="editData"
+          ></sharedForm>
         </v-card-text>
       </v-container>
     </v-card>
     <Dialog
       :showDialog="showDialog"
-      text="Yakin mau menghapus ?"
+      :text="$messages.general.CONFIRM_DELETE"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
     />
@@ -68,70 +42,36 @@
 
 <script>
 import { global, catchError } from "~/mixins";
-import { ROLE_URL } from "~/utils/apis";
 import Dialog from "~/components/Dialog";
+import sharedForm from "../sharedForm";
+import { formItem } from "./util";
 
 export default {
-  $_veeValidate: {
-    validator: "new"
-  },
-  components: { Dialog },
+  components: { Dialog, sharedForm },
   mixins: [global, catchError],
   data() {
     return {
-      fillable: [
-        {
-          key: "name",
-          caption: "Role",
-          value: "",
-          rules: "required|max:50"
-        },
-        {
-          key: "description",
-          caption: "Deskripsi",
-          value: "",
-          rules: "max:250"
-        }
-      ],
-      formData: {},
+      link: "/roles",
+      formItem: formItem,
       showDialog: false
     };
   },
-  created() {
-    this.setFields();
-  },
+
   methods: {
     toHome() {
-      // this.$router.push("/roles")
       this.$router.go(-1);
     },
-    setFields() {
-      this.errors.clear();
-      if (this.currentEdit) {
-        this.fillable.forEach(
-          data => (this.formData[data.key] = this.currentEdit[data.key])
-        );
-      }
-    },
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.editData();
-          return;
-        }
-      });
-    },
-    async editData() {
+
+    async editData(data) {
       try {
         this.activateLoader();
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
-            ROLE_URL + "/" + this.currentEdit.id,
-            this.formData
+            this.link + "/" + this.currentEdit.id,
+            data
           );
           this.$store.commit("currentEdit", resp.data);
-          this.setFields();
-          this.showNoty("Data diperbaharui", "success");
+          this.showNoty(this.$messages.form.UPDATED, "success");
           this.deactivateLoader();
         }
       } catch (e) {
@@ -147,10 +87,10 @@ export default {
         this.activateLoader();
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            ROLE_URL + "/" + this.currentEdit.id
+            this.link + "/" + this.currentEdit.id
           );
           if (resp.meta.status === 200) {
-            this.showNoty("Data dihapus", "success");
+            this.showNoty(this.$messages.form.DELETED, "success");
             this.$router.push("/roles");
           }
         }
