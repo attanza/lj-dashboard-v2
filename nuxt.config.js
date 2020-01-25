@@ -36,7 +36,7 @@ export default {
   },
   server: {
     port: process.env.PORT,
-    host: "0.0.0.0"
+    host: "localhost"
   },
   /*
    ** Customize the progress-bar color

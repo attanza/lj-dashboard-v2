@@ -164,9 +164,7 @@ export default {
     async saveData() {
       try {
         this.activateLoader();
-        const resp = await this.$axios
-          .$post(USER_URL, this.formData)
-          .then(res => res.data);
+        const resp = await this.$axios.$post(USER_URL, this.formData);
 
         if (resp.meta.status === 201) {
           this.showNoty("Data disimpan", "success");
@@ -175,7 +173,6 @@ export default {
         }
         this.deactivateLoader();
       } catch (e) {
-        console.log("e", e);
         this.dialog = false;
         this.deactivateLoader();
         this.catchError(e);

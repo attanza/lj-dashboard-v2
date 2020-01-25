@@ -2,6 +2,7 @@ import Noty from "noty";
 export default {
   methods: {
     catchError(e) {
+      console.log("e", e);
       if (e.response) {
         const status = e.response.status;
         let message = "";

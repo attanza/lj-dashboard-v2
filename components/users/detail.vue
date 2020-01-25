@@ -29,27 +29,23 @@
         </v-toolbar>
         <form>
           <v-layout row wrap>
-            <v-flex
-              v-for="(f, index) in fillable"
-              v-if="!inArray(['is_active', 'password', 'roles'], f.key)"
-              :key="index"
-              sm6
-              xs12
-            >
-              <label>{{ f.caption }}</label>
-              <v-text-field
-                v-validate="f.rules"
-                v-model="formData[f.key]"
-                :error-messages="errors.collect(f.key)"
-                :name="f.key"
-                :data-vv-name="f.key"
-                :data-vv-as="f.caption"
-              />
+            <v-flex v-for="(f, index) in fillable" :key="index" xs12>
+              <span v-if="!inArray(['is_active', 'password', 'roles'], f.key)">
+                <label>{{ f.caption }}</label>
+                <v-text-field
+                  v-validate="f.rules"
+                  v-model="formData[f.key]"
+                  :error-messages="errors.collect(f.key)"
+                  :name="f.key"
+                  :data-vv-name="f.key"
+                  :data-vv-as="f.caption"
+                />
+              </span>
             </v-flex>
-            <v-flex sm6 xs12>
+            <v-flex xs12>
               <v-switch v-model="switch1" label="Aktif" color="primary" />
             </v-flex>
-            <v-flex sm6 xs12>
+            <v-flex xs12>
               <Tbtn
                 :bottom="true"
                 tooltip-text="Reset password"
@@ -200,9 +196,9 @@ export default {
         this.activateLoader();
 
         if (this.currentEdit) {
-          const resp = await this.$axios
-            .$delete(USER_URL + "/" + this.currentEdit.id)
-            .then(res => res.data);
+          const resp = await this.$axios.$delete(
+            USER_URL + "/" + this.currentEdit.id
+          );
           if (resp.meta.status === 200) {
             this.showNoty("Data dihapus", "success");
             this.$router.push("/users");
@@ -211,7 +207,6 @@ export default {
         this.deactivateLoader();
       } catch (e) {
         this.deactivateLoader();
-
         this.catchError(e);
       }
     }
