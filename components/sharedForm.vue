@@ -4,7 +4,7 @@
       <v-row v-for="f in items" :key="f.value">
         <v-col v-if="f.inForm" :sm6="sm6">
           <v-text-field
-            v-if="f.el == 'text'"
+            v-if="f.el === 'text'"
             v-model="formData[f.value]"
             v-validate="f.rules"
             :type="f.type"
@@ -16,7 +16,7 @@
           />
 
           <v-switch
-            v-if="f.el == 'switch'"
+            v-if="f.el === 'switch'"
             v-model="formData[f.value]"
             v-validate="f.rules"
             :error-messages="errors.collect(f.value)"
@@ -28,7 +28,7 @@
           />
 
           <v-autocomplete
-            v-if="f.el == 'combobox'"
+            v-if="f.el === 'combobox'"
             v-model="formData[f.value]"
             :items="f.items"
             v-validate="f.rules"
@@ -43,7 +43,7 @@
           ></v-autocomplete>
 
           <v-textarea
-            v-if="f.el == 'textarea'"
+            v-if="f.el === 'textarea'"
             v-model="formData[f.value]"
             v-validate="f.rules"
             :error-messages="errors.collect(f.value)"
@@ -54,7 +54,7 @@
           />
 
           <vue-editor
-            v-if="f.el == 'editor'"
+            v-if="f.el === 'editor'"
             v-model="formData[f.value]"
             v-validate="f.rules"
             :error-messages="errors.collect(f.value)"
@@ -63,6 +63,37 @@
             :data-vv-as="f.text"
             :label="f.text"
           ></vue-editor>
+
+          <!-- <serverCombobox
+            v-if="f.el === 'serverCombobox'"
+            :headers="f.headers"
+            v-model="formData[f.value]"
+            v-validate="f.rules"
+            :error-messages="errors.collect(f.value)"
+            :name="f.value"
+            :data-vv-name="f.value"
+            :data-vv-as="f.text"
+            :label="f.label"
+            :url="f.url"
+            @onSelected="data => onSelected(data, f)"
+          ></serverCombobox> -->
+          <v-autocomplete
+            v-if="f.el === 'serverCombobox'"
+            v-model="formData[f.value]"
+            :items="f.items"
+            :loading="isLoading"
+            :search-input.sync="search"
+            v-validate="f.rules"
+            :error-messages="errors.collect(f.value)"
+            :name="f.value"
+            :data-vv-name="f.value"
+            :data-vv-as="f.text"
+            hide-no-data
+            hide-selected
+            item-text="name"
+            item-value="id"
+            placeholder="Pilih"
+          ></v-autocomplete>
         </v-col>
       </v-row>
     </v-container>
@@ -78,12 +109,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import serverCombobox from "./serverCombobox";
 import messages from "../utils/messages";
 export default {
   $_veeValidate: {
     validator: "new"
   },
+
+  components: { serverCombobox },
 
   props: {
     items: {
@@ -114,7 +147,9 @@ export default {
   data() {
     return {
       formData: {},
-      messages: messages
+      messages: messages,
+      search: "",
+      isLoading: false
     };
   },
 
@@ -147,6 +182,10 @@ export default {
     },
     assignInitValue() {
       this.formData = Object.assign({}, this.initValue);
+    },
+    onSelected(data, f) {
+      f.label = data.name;
+      this.formData[f.value] = data.id;
     }
   }
 };

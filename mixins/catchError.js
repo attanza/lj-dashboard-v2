@@ -1,13 +1,15 @@
 import Noty from "noty";
 export default {
+  mounted() {
+    // this.clearStore();
+  },
   methods: {
     catchError(e) {
       console.log("e", e);
       if (e.response) {
         const status = e.response.status;
         let message = "";
-        if (e.response.data && e.response.data.meta)
-          message = e.response.data.meta.message;
+        if (e.response && e.response.meta) message = e.response.meta.message;
         switch (status) {
           case 400:
             this.showNoty(message, "error");
@@ -56,6 +58,16 @@ export default {
         progressBar: true,
         type
       }).show();
+    },
+    clearStore() {
+      this.$store.commit("currentEdit", null);
+      this.$store.commit("currentEdit2", null);
+      this.$store.commit("comboData", null);
+      this.$store.commit("comboData2", null);
+      this.$store.commit("universityId", null);
+      this.$store.commit("studyId", null);
+      this.$store.commit("targetId", null);
+      this.$store.commit("schedulleId", null);
     }
   }
 };

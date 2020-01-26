@@ -9,9 +9,9 @@ export const formItem = [
   {
     text: "Nama",
     value: "name",
+    rules: "required|max:50",
     el: "text",
     type: "text",
-    rules: "required|max:50",
     inForm: true
   },
 
