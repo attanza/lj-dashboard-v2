@@ -1,9 +1,8 @@
 <template>
-  <v-card>
-    <v-card-title class="primary--text">{{ title }}</v-card-title>
+  <div>
     <v-toolbar flat color="transparent">
       <Tbtn
-        v-if="checkPermission('create-user')"
+        v-if="checkPermission('create-study-name')"
         :bottom="true"
         :tooltip-text="'Tambahkan ' + title"
         icon-mode
@@ -44,14 +43,6 @@
             {{ item.name }}
           </v-btn>
         </template>
-        <template v-slot:item.is_active="{ item }">
-          <span v-if="item.is_active">
-            <v-chip color="green" text-color="white">Active</v-chip>
-          </span>
-          <span v-else>
-            <v-chip>Not Active</v-chip>
-          </span>
-        </template>
       </v-data-table>
     </v-card-text>
     <dform
@@ -65,25 +56,25 @@
       :data-to-export="dataToExport"
       :fillable="fillable"
       :type-dates="typeDates"
-      model="User"
+      model="StudyName"
       @onClose="showDownloadDialog = false"
     />
-  </v-card>
+  </div>
 </template>
 
 <script>
 import debounce from "lodash/debounce";
-import { headers, downloadData } from "~/components/users/util";
+import { headers, downloadData } from "~/components/study-names/util";
 import { global, catchError } from "~/mixins";
-import { dform } from "~/components/users";
+import { dform } from "~/components/study-names";
 import DownloadDialog from "~/components/DownloadDialog";
 export default {
   mixins: [global, catchError],
   components: { DownloadDialog, dform },
   data() {
     return {
-      title: "User",
-      link: "/users",
+      title: "Nama Studi",
+      link: "/study-names",
       headers: headers,
       fillable: downloadData,
       typeDates: ["created_at"],

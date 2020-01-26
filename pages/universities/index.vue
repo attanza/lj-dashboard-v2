@@ -73,17 +73,17 @@
 
 <script>
 import debounce from "lodash/debounce";
-import { headers, downloadData } from "~/components/users/util";
+import { headers, downloadData } from "~/components/university/util";
 import { global, catchError } from "~/mixins";
-import { dform } from "~/components/users";
+import { dform } from "~/components/university";
 import DownloadDialog from "~/components/DownloadDialog";
 export default {
   mixins: [global, catchError],
   components: { DownloadDialog, dform },
   data() {
     return {
-      title: "User",
-      link: "/users",
+      title: "Universitas",
+      link: "/universities",
       headers: headers,
       fillable: downloadData,
       typeDates: ["created_at"],

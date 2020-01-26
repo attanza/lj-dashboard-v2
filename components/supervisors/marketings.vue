@@ -58,7 +58,13 @@
           />
         </v-toolbar>
         <v-layout row wrap>
-          <v-flex v-for="marketing in marketings" :key="marketing.id" md4 sm6 xs12>
+          <v-flex
+            v-for="marketing in marketings"
+            :key="marketing.id"
+            md4
+            sm6
+            xs12
+          >
             <v-card color="primary" dark>
               <v-img
                 :src="
@@ -140,7 +146,6 @@ export default {
         if (this.currentEdit) {
           const endPoint = `${MARKETING_URL}?${queries}supervisor_id=${this.currentEdit.id}`;
           const resp = await this.$axios.$get(endPoint);
-          console.log("resp", resp);
           this.marketings = resp.data;
           this.totalItems = resp.meta.total;
           this.loading = false;

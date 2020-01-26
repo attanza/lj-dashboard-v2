@@ -1,8 +1,9 @@
 <template>
   <v-card>
-    <v-card-title>{{ title }}</v-card-title>
+    <v-card-title class="primary--text">{{ title }}</v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
+        v-if="checkPermission('create-role')"
         :bottom="true"
         :tooltip-text="'Tambahkan ' + title"
         icon-mode
@@ -47,7 +48,7 @@
         </template>
       </v-data-table>
     </v-card-text>
-    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" />
+    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" :link="link" />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
@@ -61,7 +62,7 @@
 
 <script>
 import debounce from "lodash/debounce";
-import { headers } from "~/components/permissions/util";
+import { headers, downloadData } from "~/components/permissions/util";
 import { global, catchError } from "~/mixins";
 import { dform } from "~/components/permissions";
 import DownloadDialog from "~/components/DownloadDialog";
@@ -73,8 +74,7 @@ export default {
       title: "Permission",
       link: "/permissions",
       headers: headers,
-      confirmMessage: "Yakin mau menghapus ?",
-      fillable: ["id", "name", "slug", "description"],
+      fillable: downloadData,
       typeDates: ["created_at"],
       dataToExport: []
     };
@@ -104,7 +104,7 @@ export default {
       } catch (e) {
         this.deactivateLoader();
         this.showForm = false;
-        this.catchError(e);
+        this.catchError(e, null, this.$router);
       }
     },
     toDetail(data) {

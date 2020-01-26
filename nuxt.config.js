@@ -56,7 +56,8 @@ export default {
   plugins: [
     "~/plugins/veevalidate.js",
     "~/plugins/eventBus.js",
-    "~/plugins/messages.js"
+    "~/plugins/messages.js",
+    "~/plugins/gmaps.js"
   ],
   /*
    ** Nuxt.js dev-modules

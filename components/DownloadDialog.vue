@@ -103,7 +103,7 @@
         </v-container>
         <v-card-actions>
           <v-spacer />
-          <v-btn @click="onClose">Cancel</v-btn>
+          <v-btn @click="onClose">Batal</v-btn>
           <v-btn dark color="primary" @click="downloadData">Download</v-btn>
         </v-card-actions>
       </v-card>

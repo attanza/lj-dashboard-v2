@@ -91,7 +91,7 @@ export default {
           );
           if (resp.meta.status === 200) {
             this.showNoty(this.$messages.form.DELETED, "success");
-            this.$router.push("/roles");
+            this.$router.push(this.link);
           }
         }
         this.deactivateLoader();

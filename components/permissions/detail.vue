@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-card flat>
-      <v-container grid-list-md fluid style="padding-top: 0px;">
-        <v-toolbar color="transparent" flat>
+      <v-container grid-list-md fluid style="padding: 0px;">
+        <v-toolbar flat color="transparent">
           <v-spacer />
           <Tbtn
             color="primary"
@@ -11,15 +11,9 @@
             tooltip-text="Kembali"
             @onClick="toHome"
           />
-          <Tbtn color="primary" icon="save" icon-mode tooltip-text="Simpan" @onClick="submit" />
+
           <Tbtn
-            color="primary"
-            icon="refresh"
-            icon-mode
-            tooltip-text="Refresh"
-            @onClick="setFields"
-          />
-          <Tbtn
+            v-if="checkPermission('delete-permission')"
             color="primary"
             icon="delete"
             icon-mode
@@ -27,25 +21,19 @@
             @onClick="confirmDelete"
           />
         </v-toolbar>
-        <form>
-          <v-layout row wrap class="mt-3 px-2">
-            <v-flex v-for="(f, index) in fillable" :key="index" xs12>
-              <label>{{ f.caption }}</label>
-              <v-text-field
-                v-validate="f.rules"
-                v-model="formData[f.key]"
-                :error-messages="errors.collect(f.key)"
-                :name="f.key"
-                :data-vv-name="f.key"
-              />
-            </v-flex>
-          </v-layout>
-        </form>
+        <v-card-text>
+          <sharedForm
+            :items="formItem"
+            :show-button="checkPermission('update-permission')"
+            :init-value="currentEdit"
+            @onSubmit="editData"
+          ></sharedForm>
+        </v-card-text>
       </v-container>
     </v-card>
     <Dialog
       :showDialog="showDialog"
-      text="Yakin mau menghapus ?"
+      :text="$messages.general.CONFIRM_DELETE"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
     />
@@ -54,95 +42,62 @@
 
 <script>
 import { global, catchError } from "~/mixins";
-import { PERMISSION_URL } from "~/utils/apis";
 import Dialog from "~/components/Dialog";
+import sharedForm from "../sharedForm";
+import { formItem } from "./util";
 
 export default {
-  $_veeValidate: {
-    validator: "new"
-  },
-  components: { Dialog },
+  components: { Dialog, sharedForm },
   mixins: [global, catchError],
   data() {
     return {
-      fillable: [
-        {
-          key: "name",
-          caption: "Permission",
-          value: "",
-          rules: "required|max:50"
-        },
-        // { key: "slug", value: "", rules: "required|max:100" },
-        {
-          key: "description",
-          caption: "Deskripsi",
-          value: "",
-          rules: "max:250"
-        }
-      ],
-      formData: {},
+      link: "/permissions",
+      formItem: formItem,
       showDialog: false
     };
   },
-  created() {
-    this.setFields();
-  },
+
   methods: {
     toHome() {
-      // this.$router.push("/permissions")
       this.$router.go(-1);
     },
-    setFields() {
-      this.errors.clear();
-      if (this.currentEdit) {
-        this.fillable.forEach(
-          data => (this.formData[data.key] = this.currentEdit[data.key])
-        );
-      }
-    },
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.editData();
-          return;
-        }
-      });
-    },
-    async editData() {
+
+    async editData(data) {
       try {
         this.activateLoader();
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
-            PERMISSION_URL + "/" + this.currentEdit.id,
-            this.formData
+            this.link + "/" + this.currentEdit.id,
+            data
           );
           this.$store.commit("currentEdit", resp.data);
-          this.setFields();
-          this.showNoty("Data diperbaharui", "success");
+          this.showNoty(this.$messages.form.UPDATED, "success");
           this.deactivateLoader();
         }
       } catch (e) {
         this.deactivateLoader();
-
         this.catchError(e);
       }
     },
     confirmDelete() {
-      this.showDialog = false;
-      this.showDialog = true;
+      this.showDialog = !this.showDialog;
     },
     async removeData() {
       try {
+        this.activateLoader();
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            PERMISSION_URL + "/" + this.currentEdit.id
+            this.link + "/" + this.currentEdit.id
           );
           if (resp.meta.status === 200) {
-            this.showNoty("Data dihapus", "success");
-            this.$router.push("/permissions");
+            this.showNoty(this.$messages.form.DELETED, "success");
+            this.$router.push(this.link);
           }
         }
+        this.deactivateLoader();
       } catch (e) {
+        this.deactivateLoader();
+        this.showDialog = false;
         this.catchError(e);
       }
     }

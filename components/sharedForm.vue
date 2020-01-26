@@ -2,7 +2,7 @@
   <form>
     <v-container fluid>
       <v-row v-for="f in items" :key="f.value">
-        <v-col v-if="f.inForm">
+        <v-col v-if="f.inForm" :sm6="sm6">
           <v-text-field
             v-if="f.el == 'text'"
             v-model="formData[f.value]"
@@ -27,7 +27,7 @@
             color="primary"
           />
 
-          <v-combobox
+          <v-autocomplete
             v-if="f.el == 'combobox'"
             v-model="formData[f.value]"
             :items="f.items"
@@ -37,8 +37,10 @@
             :data-vv-name="f.value"
             :data-vv-as="f.text"
             :label="f.text"
+            item-text="name"
+            item-value="id"
             color="primary"
-          ></v-combobox>
+          ></v-autocomplete>
 
           <v-textarea
             v-if="f.el == 'textarea'"
@@ -66,12 +68,10 @@
     </v-container>
     <v-divider class="mb-3"></v-divider>
     <v-card-actions>
-      <v-btn v-if="showCancel" @click="close">{{messages.form.CANCEL}}</v-btn>
+      <v-btn v-if="showCancel" @click="close">{{ messages.form.CANCEL }}</v-btn>
       <v-spacer></v-spacer>
       <v-btn v-if="showButton" color="primary" @click="submit">
-        {{
-        messages.form.SAVE
-        }}
+        {{ messages.form.SAVE }}
       </v-btn>
     </v-card-actions>
   </form>

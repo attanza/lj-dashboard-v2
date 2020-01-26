@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>{{ title }}</v-card-title>
+    <v-card-title class="primary--text">{{ title }}</v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
         :bottom="true"
@@ -40,9 +40,7 @@
       >
         <template v-slot:item.name="{ item }">
           <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
-            {{
-            item.name
-            }}
+            {{ item.name }}
           </v-btn>
         </template>
         <template v-slot:item.is_active="{ item }">

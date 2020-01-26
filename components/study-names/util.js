@@ -1,27 +1,18 @@
-export const headers = [
-  { text: "Permission", align: "left", value: "name" },
+export let headers = [
+  { text: "Name", align: "left", value: "name" },
   { text: "Deskripsi", align: "left", value: "description" }
 ];
 
-export const downloadData = ["id", "name", "slug", "description"];
+export const downloadData = ["id", "name", "description"];
 
 export const formItem = [
   {
-    text: "Permission",
+    text: "Nama",
     value: "name",
     el: "text",
     type: "text",
     rules: "required|max:50",
     inForm: true
-  },
-
-  {
-    text: "Slug",
-    value: "slug",
-    el: "text",
-    type: "text",
-    rules: "required|max:50",
-    inForm: false
   },
 
   {

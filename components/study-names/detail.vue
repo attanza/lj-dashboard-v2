@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-card>
-      <v-container grid-list-md fluid style="padding-top: 5px;">
-        <v-toolbar color="transparent" card>
+    <v-card flat>
+      <v-container grid-list-md fluid style="padding: 0px;">
+        <v-toolbar flat color="transparent">
           <v-spacer />
           <Tbtn
             color="primary"
@@ -11,21 +11,9 @@
             tooltip-text="Kembali"
             @onClick="toHome"
           />
+
           <Tbtn
-            color="primary"
-            icon="save"
-            icon-mode
-            tooltip-text="Simpan"
-            @onClick="submit"
-          />
-          <Tbtn
-            color="primary"
-            icon="refresh"
-            icon-mode
-            tooltip-text="Refresh"
-            @onClick="setFields"
-          />
-          <Tbtn
+            v-if="checkPermission('delete-study-name')"
             color="primary"
             icon="delete"
             icon-mode
@@ -33,27 +21,19 @@
             @onClick="confirmDelete"
           />
         </v-toolbar>
-        <form>
-          <form>
-            <v-layout row wrap class="mt-3 px-2">
-              <v-flex v-for="(f, index) in fillable" :key="index" xs12>
-                <label>{{ f.caption }}</label>
-                <v-text-field
-                  v-validate="f.rules"
-                  v-model="formData[f.key]"
-                  :error-messages="errors.collect(f.key)"
-                  :name="f.key"
-                  :data-vv-name="f.key"
-                  :data-vv-as="f.caption"
-                />
-              </v-flex>
-            </v-layout>
-        </form></form
-      ></v-container>
+        <v-card-text>
+          <sharedForm
+            :items="formItem"
+            :show-button="checkPermission('update-study-name')"
+            :init-value="currentEdit"
+            @onSubmit="editData"
+          ></sharedForm>
+        </v-card-text>
+      </v-container>
     </v-card>
     <Dialog
       :showDialog="showDialog"
-      text="Yakin mau menghapus ?"
+      :text="$messages.general.CONFIRM_DELETE"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
     />
@@ -61,107 +41,66 @@
 </template>
 
 <script>
-import { global } from "~/mixins"
-import { STUDY_NAME_URL } from "~/utils/apis"
-import axios from "axios"
-import Dialog from "~/components/Dialog"
-import catchError, { showNoty } from "~/utils/catchError"
+import { global, catchError } from "~/mixins";
+import Dialog from "~/components/Dialog";
+import sharedForm from "../sharedForm";
+import { formItem } from "./util";
 
 export default {
-  $_veeValidate: {
-    validator: "new"
-  },
-  components: { Dialog },
-  mixins: [global],
+  components: { Dialog, sharedForm },
+  mixins: [global, catchError],
   data() {
     return {
-      fillable: [
-        {
-          key: "name",
-          caption: "Nama",
-          value: "",
-          rules: "required|max:50"
-        },
-        {
-          key: "description",
-          caption: "Deskripsi",
-          value: "",
-          rules: "max:250"
-        }
-      ],
-
-      formData: {},
+      link: "/study-names",
+      formItem: formItem,
       showDialog: false
-    }
+    };
   },
-  created() {
-    this.setFields()
-  },
+
   methods: {
     toHome() {
-      // this.$router.push("/study-names")
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
-    setFields() {
-      this.errors.clear()
-      if (this.currentEdit) {
-        this.fillable.forEach(
-          data => (this.formData[data.key] = this.currentEdit[data.key])
-        )
-        this.switch1 = this.formData.is_active
-      }
-    },
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.editData()
-          return
-        }
-      })
-    },
-    async editData() {
-      try {
-        this.activateLoader()
 
+    async editData(data) {
+      try {
+        this.activateLoader();
         if (this.currentEdit) {
-          this.formData.role_id = 3
-          const resp = await axios
-            .put(STUDY_NAME_URL + "/" + this.currentEdit.id, this.formData)
-            .then(res => res.data)
-          this.$store.commit("currentEdit", resp.data)
-          this.setFields()
-          showNoty("Data diperbaharui", "success")
-          this.deactivateLoader()
+          const resp = await this.$axios.$put(
+            this.link + "/" + this.currentEdit.id,
+            data
+          );
+          this.$store.commit("currentEdit", resp.data);
+          this.showNoty(this.$messages.form.UPDATED, "success");
+          this.deactivateLoader();
         }
       } catch (e) {
-        this.deactivateLoader()
-        this.deactivateLoader()
-        catchError(e)
+        this.deactivateLoader();
+        this.catchError(e);
       }
     },
     confirmDelete() {
-      this.showDialog = true
+      this.showDialog = !this.showDialog;
     },
     async removeData() {
       try {
-        this.activateLoader()
-
+        this.activateLoader();
         if (this.currentEdit) {
-          const resp = await axios
-            .delete(STUDY_NAME_URL + "/" + this.currentEdit.id)
-            .then(res => res.data)
+          const resp = await this.$axios.$delete(
+            this.link + "/" + this.currentEdit.id
+          );
           if (resp.meta.status === 200) {
-            showNoty("Data dihapus", "success")
-            this.deactivateLoader()
-            this.toHome()
+            this.showNoty(this.$messages.form.DELETED, "success");
+            this.$router.push(this.link);
           }
         }
+        this.deactivateLoader();
       } catch (e) {
-        this.showDialog = false
-        this.deactivateLoader()
-        catchError(e)
+        this.deactivateLoader();
+        this.showDialog = false;
+        this.catchError(e);
       }
     }
   }
-}
+};
 </script>
