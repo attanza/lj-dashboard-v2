@@ -9,8 +9,8 @@ export const state = () => ({
   comboData3: null,
   permissions: null,
   dashboardData: null,
-  universityId: null,
-  studyId: null,
+  // universityId: null,
+  // studyId: null,
   targetId: null,
   schedulleId: null
 });

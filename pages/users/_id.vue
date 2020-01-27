@@ -4,14 +4,11 @@
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
-      <v-tab href="#roles">Role</v-tab>
       <v-tab href="#activities">Aktifitas</v-tab>
       <v-tab-item :id="'detail'">
         <detail />
       </v-tab-item>
-      <v-tab-item :id="'roles'">
-        <roles />
-      </v-tab-item>
+
       <v-tab-item :id="'activities'">
         <activities />
       </v-tab-item>
@@ -21,7 +18,7 @@
 
 <script>
 import { USER_URL, COMBO_DATA_URL } from "~/utils/apis";
-import { detail, dform, roles, activities } from "~/components/users";
+import { detail, dform, activities } from "~/components/users";
 import { catchError } from "~/mixins";
 
 export default {
@@ -40,7 +37,7 @@ export default {
     }
   },
   mixins: [catchError],
-  components: { detail, dform, roles, activities },
+  components: { detail, dform, activities },
   data() {
     return {
       title: "User"

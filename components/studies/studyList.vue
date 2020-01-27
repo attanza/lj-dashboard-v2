@@ -81,6 +81,7 @@ export default {
       dataToExport: []
     };
   },
+  props: ["universityId"],
   mounted() {
     this.populateTable();
   },
@@ -98,7 +99,10 @@ export default {
     async populateTable() {
       try {
         this.activateLoader();
-        const queries = this.getQueries();
+        let queries = this.getQueries();
+        if (this.universityId) {
+          queries += `university_id=${this.universityId}`;
+        }
         const resp = await this.$axios.$get(`${this.link + queries}`);
         this.total = resp.meta.total;
         this.items = resp.data;
@@ -139,7 +143,6 @@ export default {
 
         this.dataToExport.push(d);
       });
-      console.log("this.dataToExport", this.dataToExport);
       if (this.dataToExport.length) {
         this.showDownloadDialog = true;
       }

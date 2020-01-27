@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="dialog" persistent max-width="500px">
+    <v-dialog v-model="dialog" persistent fullscreen>
       <v-card>
         <v-card-title>
           <span class="primary--text headline">{{ formTitle }}</span>

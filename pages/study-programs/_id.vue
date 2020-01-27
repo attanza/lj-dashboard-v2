@@ -11,7 +11,7 @@
         <detail />
       </v-tab-item>
       <v-tab-item :id="'years'">
-        <list />
+        <years :study-id="$route.params.id" />
       </v-tab-item>
       <v-tab-item :id="'maps'">
         <maps />
@@ -26,14 +26,13 @@
 <script>
 import { STUDIES_URL, COMBO_DATA_URL } from "~/utils/apis";
 import { detail, dform, maps } from "~/components/studies";
-import { list } from "~/components/studies/years";
+import { list as years } from "~/components/studies/years";
 import { list as targets } from "~/components/targets";
 
 import { catchError } from "~/mixins";
 export default {
   async fetch({ store, params, redirect, $axios }) {
     try {
-      store.commit("studyId", params.id || null);
       // Current Edit
       let currentEdit = await $axios.$get(STUDIES_URL + "/" + params.id);
       if (currentEdit) store.commit("currentEdit", currentEdit.data);
@@ -49,16 +48,8 @@ export default {
       }
     }
   },
-  components: { detail, maps, list, targets },
-  mixins: [catchError],
-  data() {
-    return {
-      studyId: ""
-    };
-  },
-  created() {
-    this.$store.commit("studyId", this.$route.params.id || null);
-  }
+  components: { detail, maps, years, targets },
+  mixins: [catchError]
 };
 </script>
 

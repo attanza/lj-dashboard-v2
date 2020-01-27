@@ -1,108 +1,45 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="dialog" persistent max-width="500px">
+    <v-dialog v-model="dialog" persistent fullscreen>
       <v-card>
         <v-card-title>
-          <span class="headline primary--text">{{ formTitle }}</span>
+          <span class="primary--text headline">{{ formTitle }}</span>
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <v-container grid-list-md>
-            <form>
-              <v-layout row wrap>
-                <v-flex v-for="(f, index) in fillable" :key="index" xs12>
-                  <div v-if="f.key !== 'is_active'">
-                    <label>{{ f.caption }}</label>
-                    <v-text-field
-                      v-validate="f.rules"
-                      v-model="formData[f.key]"
-                      :error-messages="errors.collect(f.key)"
-                      :name="f.key"
-                      :data-vv-name="f.key"
-                      :data-vv-as="f.caption"
-                      :type="f.key == 'password' ? 'password' : 'text'"
-                      color="purple darken-2"
-                    />
-                  </div>
-                  <div v-if="f.key == 'is_active'">
-                    <v-switch v-model="formData['is_active']" label="Aktif" color="primary" />
-                  </div>
-                </v-flex>
-              </v-layout>
-            </form>
-          </v-container>
+          <sharedForm
+            :items="formItem"
+            @onClose="onClose"
+            @onSubmit="saveData"
+            :show-button="checkPermission('create-supervisor')"
+            :show-cancel="true"
+          ></sharedForm>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click.native="onClose">Tutup</v-btn>
-          <v-btn color="primary" @click.native="submit">Simpan</v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-layout>
 </template>
 <script>
 import { global, catchError } from "~/mixins";
-import { SUPERVISOR_URL } from "~/utils/apis";
+import sharedForm from "../sharedForm";
+import { formItem } from "./util";
 export default {
-  $_veeValidate: {
-    validator: "new"
-  },
+  components: { sharedForm },
   mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
+      required: true
+    },
+    link: {
+      type: String,
       required: true
     }
   },
   data() {
     return {
       dialog: false,
-      fillable: [
-        {
-          key: "name",
-          caption: "Nama",
-          value: "",
-          rules: "required|max:50"
-        },
-        {
-          key: "email",
-          caption: "Email",
-          value: "",
-          rules: "required|email"
-        },
-        {
-          key: "phone",
-          caption: "Telepon",
-          value: "",
-          rules: "required|max:30"
-        },
-        {
-          key: "password",
-          caption: "Password",
-          value: "",
-          rules: "required|min:6"
-        },
-        {
-          key: "is_active",
-          caption: "Status aktif",
-          value: true,
-          rules: "required|boolean"
-        },
-        {
-          key: "address",
-          caption: "Alamat",
-          value: "",
-          rules: "max:250"
-        },
-        {
-          key: "description",
-          caption: "Deskripsi",
-          value: "",
-          rules: "max:250"
-        }
-      ],
-      formData: {},
+      formItem: formItem,
       formTitle: "Tambah Supervisor"
     };
   },
@@ -111,38 +48,18 @@ export default {
       this.dialog = this.show;
     }
   },
-  created() {
-    this.setFields();
-  },
+
   methods: {
     onClose() {
       this.$emit("onClose");
     },
-    setFields() {
-      this.errors.clear();
-      if (this.currentEdit) {
-        this.fillable.forEach(data => (this.formData[data.key] = data.value));
-      }
-    },
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.saveData();
-          return;
-        }
-      });
-    },
-    async saveData() {
+    async saveData(data) {
+      data.roles = [data.roles];
       try {
         this.activateLoader();
-        this.formData.role_id = 3;
-        const resp = await this.$axios.$post(SUPERVISOR_URL, this.formData);
-
-        if (resp.meta.status === 201) {
-          this.showNoty("Data Saved", "success");
-          this.$emit("onAdd", resp.data);
-          this.setFields();
-        }
+        const resp = await this.$axios.$post(this.link, data);
+        this.showNoty(this.$messages.form.SAVED, "success");
+        this.$emit("onAdd", resp.data);
         this.deactivateLoader();
       } catch (e) {
         this.dialog = false;

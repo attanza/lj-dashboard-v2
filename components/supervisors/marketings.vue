@@ -157,74 +157,66 @@ export default {
       }
     },
 
-    addMarketing() {
-      this.activateLoader();
-
-      this.loading = true;
-      if (this.marketingsToAdd.length > 0 && this.currentEdit) {
-        let exisitingMarketings = [];
-        if (this.marketings.length) {
-          this.marketings.map(m => exisitingMarketings.push(m.id));
+    async addMarketing() {
+      try {
+        this.activateLoader();
+        this.loading = true;
+        if (this.marketingsToAdd.length > 0 && this.currentEdit) {
+          let exisitingMarketings = [];
+          if (this.marketings.length) {
+            this.marketings.map(m => exisitingMarketings.push(m.id));
+          }
+          let data = {
+            supervisor_id: this.currentEdit.id,
+            marketings: union(exisitingMarketings, this.marketingsToAdd)
+          };
+          const resp = await this.$axios.$post(ADD_MARKETING_URL, data);
+          this.showNoty("Marketing ditambahkan.", "success");
+          this.clear();
+          this.repopulateData();
         }
-        let data = {
-          supervisor_id: this.currentEdit.id,
-          marketings: union(exisitingMarketings, this.marketingsToAdd)
-        };
-        this.$axios
-          .$post(ADD_MARKETING_URL, data)
-          .then(resp => {
-            if (resp.status === 200) {
-              this.showNoty("Marketing ditambahkan.", "success");
-              this.clear();
-              this.repopulateData();
-            } else this.clear();
-          })
-          .catch(e => {
-            this.clear();
-            this.deactivateLoader();
-            this.catchError(e);
-          });
+        this.deactivateLoader();
+      } catch (e) {
+        this.clear();
+        this.deactivateLoader();
+        this.catchError(e);
       }
-      this.deactivateLoader();
     },
     prepareForDelete(id) {
       this.marketingsToDelete.push(id);
       this.showDialog = true;
     },
     async detachMarketing() {
-      this.activateLoader();
-      this.loading = true;
-      if (this.marketingsToDelete.length > 0 && this.currentEdit) {
-        let data = {
-          supervisor_id: this.currentEdit.id,
-          marketings: this.marketingsToDelete
-        };
-        this.$axios
-          .$put(DETACH_MARKETING_URL, data)
-          .then(resp => {
-            if (resp.status === 200) {
-              this.showNoty("Marketing dilepas.", "success");
-              this.clear();
-              this.repopulateData();
-            } else this.clear();
-          })
-          .catch(e => {
-            this.clear();
-            this.deactivateLoader();
-
-            this.catchError(e);
-          });
+      try {
+        this.activateLoader();
+        this.loading = true;
+        if (this.marketingsToDelete.length > 0 && this.currentEdit) {
+          let data = {
+            supervisor_id: this.currentEdit.id,
+            marketings: this.marketingsToDelete
+          };
+          const resp = await this.$axios.$put(DETACH_MARKETING_URL, data);
+          this.showNoty("Marketing dilepas.", "success");
+          this.clear();
+          this.repopulateData();
+          this.deactivateLoader();
+        }
+      } catch (e) {
+        this.clear();
         this.deactivateLoader();
+
+        this.catchError(e);
       }
     },
 
-    repopulateData() {
-      this.getMarketings();
-      this.$axios.$get(COMBO_DATA_URL + "Marketing").then(resp => {
-        if (resp.status === 200) {
-          this.$store.commit("comboData", resp.data);
-        }
-      });
+    async repopulateData() {
+      try {
+        this.getMarketings();
+        const resp = await this.$axios.$get(COMBO_DATA_URL + "Marketing");
+        this.$store.commit("comboData", resp);
+      } catch (e) {
+        this.catchError(e);
+      }
     },
 
     clear() {

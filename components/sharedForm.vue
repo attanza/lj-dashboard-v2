@@ -64,19 +64,6 @@
             :label="f.text"
           ></vue-editor>
 
-          <!-- <serverCombobox
-            v-if="f.el === 'serverCombobox'"
-            :headers="f.headers"
-            v-model="formData[f.value]"
-            v-validate="f.rules"
-            :error-messages="errors.collect(f.value)"
-            :name="f.value"
-            :data-vv-name="f.value"
-            :data-vv-as="f.text"
-            :label="f.label"
-            :url="f.url"
-            @onSelected="data => onSelected(data, f)"
-          ></serverCombobox> -->
           <v-autocomplete
             v-if="f.el === 'serverCombobox'"
             v-model="formData[f.value]"
@@ -182,6 +169,7 @@ export default {
     },
     assignInitValue() {
       this.formData = Object.assign({}, this.initValue);
+      console.log("this.formData", this.formData);
     },
     onSelected(data, f) {
       f.label = data.name;

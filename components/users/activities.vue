@@ -29,22 +29,23 @@
         :footer-props="footerProps"
         :server-items-length="total"
       >
-        <template v-slot:item.name="{ item }">
-          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
-            {{
-            item.name
-            }}
-          </v-btn>
+        <template v-slot:item.createdAt="{ item }">
+          {{ $moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
         </template>
       </v-data-table>
     </v-card-text>
-
+    <dform
+      :show="showForm"
+      @onClose="showForm = false"
+      @onAdd="addData"
+      :link="link"
+    />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
       :fillable="fillable"
       :type-dates="typeDates"
-      model="Role"
+      model="Activity"
       @onClose="showDownloadDialog = false"
     />
   </v-card>
@@ -52,25 +53,20 @@
 
 <script>
 import debounce from "lodash/debounce";
+import { activityHeaders, activityDownloadData } from "./util";
 import { global, catchError } from "~/mixins";
+import { dform } from "~/components/roles";
 import DownloadDialog from "~/components/DownloadDialog";
 export default {
   mixins: [global, catchError],
-  components: { DownloadDialog },
+  components: { DownloadDialog, dform },
   data() {
     return {
       title: "Aktifitas",
       link: "/activities",
-      headers: [
-        { text: "IP Address", align: "left", value: "ip" },
-        { text: "Browser", align: "left", value: "browser" },
-        { text: "Activity", align: "left", value: "activity" },
-        { text: "Created", align: "left", value: "created_at" }
-        // { text: "Actions", value: "name", sortable: false }
-      ],
-      confirmMessage: "Yakin mau menghapus ?",
-      fillable: ["id", "name", "slug", "description"],
-      typeDates: ["created_at"],
+      headers: activityHeaders,
+      fillable: activityDownloadData,
+      typeDates: ["createdAt"],
       dataToExport: []
     };
   },
@@ -93,7 +89,7 @@ export default {
         this.activateLoader();
         const queries = this.getQueries();
         const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
+        this.total = resp.meta.totalDocs;
         this.items = resp.data;
         this.deactivateLoader();
       } catch (e) {
@@ -103,7 +99,7 @@ export default {
       }
     },
     toDetail(data) {
-      this.$router.push(`/roles/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`);
     },
     addData(data) {
       this.items.unshift(data);
@@ -111,14 +107,13 @@ export default {
     },
     downloadData() {
       this.dataToExport = [];
-      let localItems = this.items;
-      localItems.map(i => {
-        let user = "";
+      // this.dataToExport = this.items;
+      this.items.map(i => {
         let data = Object.assign({}, i);
-        delete data.user;
-        delete data.user_id;
-        if (i.user) user = i.user.name;
-        data.user = user;
+        data.userId = data.user.id;
+        data.userEmail = data.user.email;
+        delete data["user"];
+        delete data["__v"];
         this.dataToExport.push(data);
       });
       if (this.dataToExport.length) {

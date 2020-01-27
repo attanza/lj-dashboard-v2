@@ -1,4 +1,4 @@
-export const headers = [
+export let headers = [
   { text: "Nama", align: "left", value: "name" },
   { text: "Email", align: "left", value: "email" },
   { text: "Telepon", align: "left", value: "phone" },
@@ -7,22 +7,23 @@ export const headers = [
 
 export const downloadData = [
   "id",
+  "uid",
   "name",
   "email",
   "phone",
-  "is_active",
+  "description",
   "address",
-  "description"
+  "is_active"
 ];
 
 export const formItem = [
   {
-    text: "Nama",
     value: "name",
+    text: "Nama",
+    rules: "required|max:50",
     el: "text",
     type: "text",
-    inForm: true,
-    rules: "required|max:50"
+    inForm: true
   },
   {
     value: "email",
@@ -45,22 +46,14 @@ export const formItem = [
     text: "Password",
     rules: "required|min:6",
     el: "text",
-    type: "password",
-    inForm: true
-  },
-  {
-    value: "roles",
-    text: "Role",
-    rules: "required|integer",
-    items: [],
-    el: "combobox",
+    type: "text",
     inForm: true
   },
   {
     value: "is_active",
     text: "Status aktif",
-    rules: "",
-    el: "switch",
+    rules: "required|boolean",
+    el: "text",
     type: "text",
     inForm: true
   },
@@ -69,24 +62,15 @@ export const formItem = [
     text: "Alamat",
     rules: "max:250",
     el: "text",
-    type: "textarea",
+    type: "text",
     inForm: true
   },
   {
     value: "description",
     text: "Deskripsi",
     rules: "max:250",
-    el: "textarea",
+    el: "text",
     type: "text",
     inForm: true
   }
 ];
-
-export const activityHeaders = [
-  { text: "User", align: "left", value: "user.email" },
-  { text: "Browser", align: "left", value: "browser" },
-  { text: "Activitas", align: "left", value: "activity" },
-  { text: "Tanggal", align: "left", value: "createdAt" }
-];
-
-export const activityDownloadData = [];

@@ -3,7 +3,7 @@
     <v-card-title class="primary--text">{{ title }}</v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
-        v-if="checkPermission('create-supervisor')"
+        v-if="checkPermission('create-marketing')"
         :bottom="true"
         :tooltip-text="'Tambahkan ' + title"
         icon-mode
@@ -65,7 +65,7 @@
       :data-to-export="dataToExport"
       :fillable="fillable"
       :type-dates="typeDates"
-      model="Supervisor"
+      model="Marketing"
       @onClose="showDownloadDialog = false"
     />
   </v-card>
@@ -73,17 +73,17 @@
 
 <script>
 import debounce from "lodash/debounce";
-import { headers, downloadData } from "~/components/supervisors/util";
+import { headers, downloadData } from "~/components/marketings/util";
 import { global, catchError } from "~/mixins";
-import { dform } from "~/components/supervisors";
+import { dform } from "~/components/marketings";
 import DownloadDialog from "~/components/DownloadDialog";
 export default {
   mixins: [global, catchError],
   components: { DownloadDialog, dform },
   data() {
     return {
-      title: "Supervisor",
-      link: "/supervisors",
+      title: "Marketing",
+      link: "/marketings",
       headers: headers,
       fillable: downloadData,
       typeDates: ["created_at"],
@@ -92,6 +92,17 @@ export default {
   },
   mounted() {
     this.populateTable();
+  },
+  computed: {
+    supervisorId() {
+      if (this.user && this.user.roles) {
+        const role = this.user.roles[0].slug;
+        if (role === "supervisor") {
+          return this.user.id;
+        }
+      }
+      return "";
+    }
   },
   watch: {
     options: {
@@ -107,7 +118,10 @@ export default {
     async populateTable() {
       try {
         this.activateLoader();
-        const queries = this.getQueries();
+        let queries = this.getQueries();
+        if (this.supervisorId !== "") {
+          queries += `supervisor_id=${this.supervisorId}`;
+        }
         const resp = await this.$axios.$get(`${this.link + queries}`);
         this.total = resp.meta.total;
         this.items = resp.data;

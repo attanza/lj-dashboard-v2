@@ -1,205 +1,142 @@
 <template>
-  <div>
-    <v-card>
-      <v-card class="pt-3">
-        <v-toolbar card color="transparent">
-          <Tbtn
-            color="primary"
-            icon="chevron_left"
-            icon-mode
-            tooltip-text="Kembali"
-            @onClick="toHome"
-          />
-          <Tbtn
-            :bottom="true"
-            :tooltip-text="'Tambah ' + title"
-            icon-mode
-            color="primary"
-            icon="add"
-            @onClick="showForm = true"
-          />
-          <v-spacer />
-          <v-text-field
-            v-model="search"
-            append-icon="search"
-            label="Cari"
-            single-line
-            hide-details
-          />
-        </v-toolbar>
-        <v-data-table
-          :headers="headers"
-          :items="items"
-          :loading="loading"
-          :pagination.sync="pagination"
-          :total-items="totalItems"
-          :rows-per-page-items="rowsPerPage"
-          class="elevation-1"
-        >
-          <template slot="items" slot-scope="props">
-            <td>{{ props.item.year }}</td>
-            <td>{{ props.item.class_per_year }}</td>
-            <td>{{ props.item.students_per_class }}</td>
-            <td>
-              <v-btn icon class="mx-0" @click="toDetail(props.item)">
-                <v-icon color="primary">remove_red_eye</v-icon>
-              </v-btn>
-              <v-btn icon class="mx-0" @click="showConfirm(props.item)">
-                <v-icon color="primary">delete</v-icon>
-              </v-btn>
-            </td>
-          </template>
-        </v-data-table>
-      </v-card>
-      <dform
-        :form="showForm"
-        :is-edit="isEdit"
-        :year-edit="yearEdit"
-        @onClose="showForm = false"
-        @onAdd="addData"
-        @onEdit="editData"
+  <v-card flat>
+    <v-toolbar flat color="transparent">
+      <Tbtn
+        v-if="checkPermission('create-study-year')"
+        :bottom="true"
+        :tooltip-text="'Tambahkan ' + title"
+        icon-mode
+        icon="add"
+        color="primary"
+        @onClick="showForm = !showForm"
       />
-      <Dialog
-        :showDialog="showDialog"
-        text="Yakin mau menghapus ?"
-        @onClose="showDialog = false"
-        @onConfirmed="removeData"
+      <Tbtn
+        :bottom="true"
+        :tooltip-text="'Download data ' + title"
+        icon-mode
+        icon="cloud_download"
+        color="primary"
+        @onClick="downloadData"
       />
-    </v-card>
-  </div>
+
+      <v-spacer />
+      <v-text-field
+        v-model="options.search"
+        append-icon="search"
+        label="Cari"
+        single-line
+        hide-details
+      />
+    </v-toolbar>
+    <v-card-text class="mt-4">
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :search="options.search"
+        :loading="loading"
+        :options.sync="options"
+        :footer-props="footerProps"
+        :server-items-length="total"
+      >
+        <template v-slot:item.name="{ item }">
+          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
+            {{ item.name }}
+          </v-btn>
+        </template>
+        <template v-slot:item.is_active="{ item }">
+          <span v-if="item.is_active">
+            <v-chip color="green" text-color="white">Active</v-chip>
+          </span>
+          <span v-else>
+            <v-chip>Not Active</v-chip>
+          </span>
+        </template>
+      </v-data-table>
+    </v-card-text>
+    <dform
+      :show="showForm"
+      @onClose="showForm = false"
+      @onAdd="addData"
+      :link="link"
+    />
+    <DownloadDialog
+      :show-dialog="showDownloadDialog"
+      :data-to-export="dataToExport"
+      :fillable="fillable"
+      :type-dates="typeDates"
+      model="User"
+      @onClose="showDownloadDialog = false"
+    />
+  </v-card>
 </template>
+
 <script>
-import _ from "lodash"
-import { STUDY_YEARS_URL } from "~/utils/apis"
-import { global } from "~/mixins"
-import Dialog from "~/components/Dialog"
-import axios from "axios"
-import dform from "./dform"
-import catchError, { showNoty } from "~/utils/catchError"
-
+import debounce from "lodash/debounce";
+import { headers, downloadData } from "./util";
+import { global, catchError } from "~/mixins";
+import dform from "./dform";
+import DownloadDialog from "~/components/DownloadDialog";
 export default {
-  middleware: "auth",
-  components: { dform, Dialog },
-  mixins: [global],
-  data: () => ({
-    title: "Angkatan",
-    headers: [
-      { text: "Angkatan", align: "left", value: "year" },
-      {
-        text: "Kelas per Angkatan",
-        align: "left",
-        value: "class_per_year"
-      },
-      { text: "Siswa per Kelas", value: "students_per_class" },
-      { text: "Aksi", value: "name", sortable: false }
-    ],
-    items: [],
-    confirmMessage: "Yakin mau menghapus ?",
-    showDialog: false,
-    isEdit: false,
-    yearEdit: {}
-  }),
-
+  mixins: [global, catchError],
+  components: { DownloadDialog, dform },
+  data() {
+    return {
+      title: "Angkatan",
+      link: "/study-years",
+      headers: headers,
+      fillable: downloadData,
+      typeDates: ["created_at"],
+      dataToExport: []
+    };
+  },
+  mounted() {
+    this.populateTable();
+  },
+  props: ["studyId"],
   watch: {
-    pagination: {
-      handler() {
-        this.pupulateTable()
-      },
+    options: {
+      handler: debounce(function() {
+        if (!this.loading) {
+          this.populateTable();
+        }
+      }, 500),
       deep: true
-    },
-    search() {
-      if (this.search != "") {
-        this.searchQuery()
-      }
     }
   },
-
-  mounted() {
-    this.pupulateTable()
-  },
-
   methods: {
-    toHome() {
-      this.$router.push("/study-programs")
-    },
-    searchQuery: _.debounce(function() {
-      this.pupulateTable()
-    }, 500),
-    async pupulateTable() {
+    async populateTable() {
       try {
-        this.activateLoader()
-        this.loading = true
-        const { page, rowsPerPage, descending, sortBy } = this.pagination
-        const endPoint = `${STUDY_YEARS_URL}?page=${page}&limit=${rowsPerPage}&search=${this.search}&study_program_id=${this.currentEdit.id}`
-        const res = await axios.get(endPoint).then(res => res.data)
-        this.items = res.data
-        this.totalItems = res.meta.total
-        if (this.pagination.sortBy) {
-          this.items = this.items.sort((a, b) => {
-            const sortA = a[sortBy]
-            const sortB = b[sortBy]
-
-            if (descending) {
-              if (sortA < sortB) return 1
-              if (sortA > sortB) return -1
-              return 0
-            } else {
-              if (sortA < sortB) return -1
-              if (sortA > sortB) return 1
-              return 0
-            }
-          })
+        this.activateLoader();
+        let queries = this.getQueries();
+        if (this.studyId) {
+          queries += `study_program_id=${this.studyId}`;
         }
-        this.loading = false
-        this.deactivateLoader()
+        const resp = await this.$axios.$get(`${this.link + queries}`);
+        this.total = resp.meta.total;
+        this.items = resp.data;
+        this.deactivateLoader();
       } catch (e) {
-        this.deactivateLoader()
+        this.deactivateLoader();
+        this.showForm = false;
+        this.catchError(e, null, this.$router);
       }
     },
     toDetail(data) {
-      this.yearEdit = data
-      this.isEdit = true
-      this.showForm = true
+      this.$router.push(`${this.link}/${data.id}`);
     },
     addData(data) {
-      this.items.unshift(data)
-      this.showForm = false
-      this.isEdit = false
+      this.items.unshift(data);
+      this.showForm = false;
     },
-    editData(data) {
-      let index = _.findIndex(this.items, item => item.id == data.id)
-      this.items.splice(index, 1, data)
-      this.yearEdit = null
-      this.isEdit = false
-      this.showForm = false
-    },
-    showConfirm(data) {
-      this.showDialog = true
-      this.dataToDelete = data
-    },
-    removeData() {
-      try {
-        this.activateLoader()
-        axios
-          .delete(STUDY_YEARS_URL + "/" + this.dataToDelete.id)
-          .then(resp => {
-            if (resp.status === 200) {
-              let index = _.findIndex(
-                this.items,
-                item => item.id == this.dataToDelete.id
-              )
-              this.items.splice(index, 1)
-              showNoty("Data dihapus", "success")
-              this.showDialog = false
-              this.dataToDelete = null
-            }
-          })
-        this.deactivateLoader()
-      } catch (e) {
-        this.deactivateLoader()
-        catchError(e)
+    downloadData() {
+      this.dataToExport = [];
+      this.dataToExport = this.items;
+      if (this.dataToExport.length) {
+        this.showDownloadDialog = true;
       }
     }
   }
-}
+};
 </script>
+
+<style lang="scss" scoped></style>

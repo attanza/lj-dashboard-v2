@@ -62,7 +62,12 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ["@nuxtjs/vuetify", "@nuxtjs/moment", "@nuxtjs/dotenv"],
+  buildModules: [
+    "@nuxtjs/vuetify",
+    "@nuxtjs/moment",
+    "@nuxtjs/dotenv",
+    "@nuxtjs/moment"
+  ],
   moment: {
     /* module options */
     locales: ["id"]

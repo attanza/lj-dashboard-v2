@@ -127,8 +127,8 @@ export default {
       "permissions",
       "user",
       "dashboardData",
-      "universityId",
-      "studyId",
+      // "universityId",
+      // "studyId",
       "targetId",
       "schedulleId"
     ]),

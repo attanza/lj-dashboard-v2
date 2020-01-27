@@ -12,7 +12,7 @@
         <detail />
       </v-tab-item>
       <v-tab-item :id="'study'">
-        <studyList />
+        <studyList :university-id="$route.params.id" />
       </v-tab-item>
       <v-tab-item :id="'reports'">
         <reportList />

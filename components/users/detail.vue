@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-card flat>
-      <v-container grid-list-md fluid style="padding-top: 5px;">
-        <v-toolbar color="transparent" flat>
+      <v-container grid-list-md fluid style="padding: 0px;">
+        <v-toolbar flat color="transparent">
           <v-spacer />
           <Tbtn
             color="primary"
@@ -11,15 +11,9 @@
             tooltip-text="Kembali"
             @onClick="toHome"
           />
-          <Tbtn color="primary" icon="save" icon-mode tooltip-text="Simpan" @onClick="submit" />
+
           <Tbtn
-            color="primary"
-            icon="refresh"
-            icon-mode
-            tooltip-text="Refresh"
-            @onClick="setFields"
-          />
-          <Tbtn
+            v-if="checkPermission('delete-user')"
             color="primary"
             icon="delete"
             icon-mode
@@ -27,42 +21,19 @@
             @onClick="confirmDelete"
           />
         </v-toolbar>
-        <form>
-          <v-layout row wrap>
-            <v-flex v-for="(f, index) in fillable" :key="index" xs12>
-              <span v-if="!inArray(['is_active', 'password', 'roles'], f.key)">
-                <label>{{ f.caption }}</label>
-                <v-text-field
-                  v-validate="f.rules"
-                  v-model="formData[f.key]"
-                  :error-messages="errors.collect(f.key)"
-                  :name="f.key"
-                  :data-vv-name="f.key"
-                  :data-vv-as="f.caption"
-                />
-              </span>
-            </v-flex>
-            <v-flex xs12>
-              <v-switch v-model="switch1" label="Aktif" color="primary" />
-            </v-flex>
-            <v-flex xs12>
-              <Tbtn
-                :bottom="true"
-                tooltip-text="Reset password"
-                text="Reset Password"
-                color="primary"
-                icon="vpn_key"
-                @onClick="showReset = true"
-              />
-            </v-flex>
-          </v-layout>
-        </form>
+        <v-card-text>
+          <sharedForm
+            :items="formItem"
+            :show-button="checkPermission('update-user')"
+            :init-value="initValue"
+            @onSubmit="editData"
+          ></sharedForm>
+        </v-card-text>
       </v-container>
     </v-card>
-    <reset-password-form :show="showReset" @onClose="showReset = false" />
     <Dialog
       :showDialog="showDialog"
-      text="Yakin mau menghapus ?"
+      :text="$messages.general.CONFIRM_DELETE"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
     />
@@ -71,142 +42,93 @@
 
 <script>
 import { global, catchError } from "~/mixins";
-import { USER_URL } from "~/utils/apis";
 import Dialog from "~/components/Dialog";
-import resetPasswordForm from "./resetPasswordForm";
+import sharedForm from "../sharedForm";
+import { formItem } from "./util";
 
 export default {
-  $_veeValidate: {
-    validator: "new"
-  },
-  components: { Dialog, resetPasswordForm },
+  components: { Dialog, sharedForm },
   mixins: [global, catchError],
   data() {
     return {
-      fillable: [
-        {
-          key: "name",
-          caption: "Nama",
-          value: "",
-          rules: "required|max:50"
-        },
-        {
-          key: "email",
-          caption: "Email",
-          value: "",
-          rules: "required|email"
-        },
-        {
-          key: "phone",
-          caption: "Telepon",
-          value: "",
-          rules: "required|max:30"
-        },
-        {
-          key: "password",
-          caption: "Password",
-          value: "",
-          rules: "required|min:6"
-        },
-        {
-          key: "is_active",
-          caption: "Status aktif",
-          value: true,
-          rules: "required|boolean"
-        },
-        {
-          key: "address",
-          caption: "Alamat",
-          value: "",
-          rules: "max:250"
-        },
-        {
-          key: "description",
-          caption: "Deskripsi",
-          value: "",
-          rules: "max:250"
-        }
-      ],
-
-      formData: {},
+      link: "/users",
+      formItem: [],
       showDialog: false,
-      switch1: false,
-      roles: [],
-      showReset: false
+      initValue: null
     };
   },
-  watch: {
-    switch1() {
-      if (this.switch1 || !this.switch1) {
-        this.formData.is_active = this.switch1;
-      }
-    }
+
+  mounted() {
+    this.populateFormItem();
+    this.getRoles();
   },
-  created() {
-    this.setFields();
-  },
+
   methods: {
+    populateFormItem() {
+      // User Init Value
+      let initValue = Object.assign({}, this.currentEdit);
+      initValue.roles = initValue.roles[0].id;
+      this.initValue = initValue;
+
+      // form item
+      const formItemForEdit = [...formItem];
+      const idx = formItemForEdit.findIndex(f => f.value === "password");
+      if (idx !== -1) {
+        formItemForEdit.splice(idx, 1);
+      }
+      this.formItem = formItemForEdit;
+    },
+    async getRoles() {
+      try {
+        const index = this.formItem.findIndex(f => f.value === "roles");
+        if (index !== -1) {
+          const resp = await this.$axios.get("/combo-data?model=Role");
+          this.formItem[index].items = resp.data;
+        }
+      } catch (e) {
+        this.catchError(e);
+      }
+    },
     toHome() {
-      // this.$router.push("/users")
       this.$router.go(-1);
     },
-    setFields() {
-      this.errors.clear();
-      if (this.currentEdit) {
-        this.fillable.forEach(
-          data => (this.formData[data.key] = this.currentEdit[data.key])
-        );
-        this.switch1 = this.formData.is_active;
-      }
-    },
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.editData();
-          return;
-        }
-      });
-    },
-    async editData() {
+
+    async editData(data) {
       try {
         this.activateLoader();
         if (this.currentEdit) {
-          let roleIds = [];
-          this.currentEdit.roles.map(role => roleIds.push(role.id));
-          this.formData.roles = roleIds;
-          const resp = await this.$axios
-            .$put(USER_URL + "/" + this.currentEdit.id, this.formData)
-            .then(res => res.data);
+          const resp = await this.$axios.$put(
+            this.link + "/" + this.currentEdit.id,
+            data
+          );
           this.$store.commit("currentEdit", resp.data);
-          this.setFields();
-          this.showNoty("Data diperbaharui", "success");
+          this.showNoty(this.$messages.form.UPDATED, "success");
           this.deactivateLoader();
         }
       } catch (e) {
         this.deactivateLoader();
-
         this.catchError(e);
       }
     },
     confirmDelete() {
-      this.showDialog = true;
+      this.showDialog = !this.showDialog;
     },
     async removeData() {
       try {
         this.activateLoader();
-
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            USER_URL + "/" + this.currentEdit.id
+            this.link + "/" + this.currentEdit.id
           );
           if (resp.meta.status === 200) {
-            this.showNoty("Data dihapus", "success");
-            this.$router.push("/users");
+            this.showNoty(this.$messages.form.DELETED, "success");
+            this.$router.push(this.link);
           }
         }
         this.deactivateLoader();
       } catch (e) {
         this.deactivateLoader();
+        this.showDialog = false;
         this.catchError(e);
       }
     }
