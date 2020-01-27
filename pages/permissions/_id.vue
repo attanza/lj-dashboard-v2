@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 v-if="currentEdit" class="headline primary--text mb-2">Permission {{ currentEdit.name }}</h2>
+    <h2 v-if="currentEdit" class="headline primary--text mb-2">
+      Permission {{ currentEdit.name }}
+    </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
@@ -14,22 +16,24 @@
 <script>
 import { PERMISSION_URL } from "~/utils/apis";
 import { detail } from "~/components/permissions";
-import { global, catchError } from "~/mixins";
+import { global } from "~/mixins";
+
+import catchError from "~/utils/catchError";
 
 export default {
-  async fetch({ store, params, redirect, $axios }) {
+  async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
       let resp = await $axios.$get(PERMISSION_URL + "/" + params.id);
       if (resp) store.commit("currentEdit", resp.data);
     } catch (e) {
-      if (process.client) this.catchError(e);
+      if (process.client) catchError(e, $router, $auth);
       else {
         redirect("/");
       }
     }
   },
   components: { detail },
-  mixins: [global, catchError]
+  mixins: [global]
 };
 </script>
 

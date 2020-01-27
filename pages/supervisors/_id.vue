@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 class="primary--text mb-2">{{ title }} Detail</h2>
+    <h2 v-if="currentEdit" class="headline primary--text mb-2">
+      {{ currentEdit.name }}
+    </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
@@ -18,9 +20,10 @@
 <script>
 import { SUPERVISOR_URL, COMBO_DATA_URL } from "~/utils/apis";
 import { detail, marketings } from "~/components/supervisors";
-import { catchError } from "~/mixins";
+import catchError from "~/utils/catchError";
+import { global } from "~/mixins";
 export default {
-  async fetch({ store, params, redirect, $axios }) {
+  async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
       let resp = await $axios.$get(SUPERVISOR_URL + "/" + params.id);
       if (resp) store.commit("currentEdit", resp.data);
@@ -28,19 +31,15 @@ export default {
       let combo = await $axios.$get(COMBO_DATA_URL + "Marketing");
       if (combo) store.commit("comboData", combo);
     } catch (e) {
-      if (process.client) this.catchError(e);
+      if (process.client) catchError(e, $router, $auth);
       else {
         redirect("/");
       }
     }
   },
-  mixins: [catchError],
-  components: { detail, marketings },
-  data() {
-    return {
-      title: "Supervisor"
-    };
-  }
+  mixins: [global],
+
+  components: { detail, marketings }
 };
 </script>
 

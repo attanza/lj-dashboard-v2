@@ -65,7 +65,7 @@
       :data-to-export="dataToExport"
       :fillable="fillable"
       :type-dates="typeDates"
-      model="User"
+      model="University"
       @onClose="showDownloadDialog = false"
     />
   </v-card>

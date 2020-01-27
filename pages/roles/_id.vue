@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 v-if="currentEdit" class="headline primary--text mb-2">Role {{ currentEdit.name }}</h2>
+    <h2 v-if="currentEdit" class="headline primary--text mb-2">
+      Role {{ currentEdit.name }}
+    </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
@@ -18,12 +20,10 @@
 <script>
 import { ROLE_URL, COMBO_DATA_URL } from "~/utils/apis";
 import { detail, permission } from "~/components/roles";
-import { global, catchError } from "~/mixins";
-
-const API_URL = process.env.API_URL;
-
+import { global } from "~/mixins";
+import catchError from "~/utils/catchError";
 export default {
-  async fetch({ store, params, redirect, $axios }) {
+  async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
       let resp = await $axios.get(ROLE_URL + "/" + params.id);
       if (resp) store.commit("currentEdit", resp.data.data);
@@ -32,19 +32,20 @@ export default {
       if (permissions) store.commit("comboData", permissions.data);
 
       let rolePermissions = await $axios.get(
-        API_URL + "/role/" + params.id + "/permissions"
+        "/role/" + params.id + "/permissions"
       );
       if (rolePermissions)
         store.commit("permissions", rolePermissions.data.data);
     } catch (e) {
-      if (process.client) this.catchError(e);
-      else {
+      if (process.client) {
+        catchError(e, $router, $auth);
+      } else {
         redirect("/");
       }
     }
   },
   components: { detail, permission },
-  mixins: [global, catchError]
+  mixins: [global]
 };
 </script>
 

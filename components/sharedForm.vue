@@ -169,7 +169,6 @@ export default {
     },
     assignInitValue() {
       this.formData = Object.assign({}, this.initValue);
-      console.log("this.formData", this.formData);
     },
     onSelected(data, f) {
       f.label = data.name;

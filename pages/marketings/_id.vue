@@ -1,7 +1,9 @@
 <template>
   <div>
-    <h2 class="primary--text mb-2">Detail Marketing</h2>
-    <v-tabs align-with-title color="primary" class="white elevation-1" dark>
+    <h2 v-if="currentEdit" class="headline primary--text mb-2">
+      {{ currentEdit.name }}
+    </h2>
+    <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
       <v-tab-item :id="'detail'">
@@ -12,25 +14,26 @@
 </template>
 
 <script>
-import { MARKETING_URL } from "~/utils/apis"
-import axios from "axios"
-import { detail, dform } from "~/components/marketings"
-import catchError from "~/utils/catchError"
+import { MARKETING_URL } from "~/utils/apis";
+import { detail } from "~/components/marketings";
+import catchError from "~/utils/catchError";
+import { global } from "~/mixins";
 
 export default {
-  async fetch({ store, params, redirect }) {
+  async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
-      let resp = await axios.get(MARKETING_URL + "/" + params.id)
-      if (resp) store.commit("currentEdit", resp.data.data)
+      let resp = await $axios.$get(MARKETING_URL + "/" + params.id);
+      if (resp) store.commit("currentEdit", resp.data);
     } catch (e) {
-      if (process.client) catchError(e)
+      if (process.client) catchError(e, $router, $auth);
       else {
-        redirect("/")
+        redirect("/");
       }
     }
   },
-  components: { detail, dform }
-}
+  components: { detail },
+  mixins: [global]
+};
 </script>
 
 <style scoped></style>

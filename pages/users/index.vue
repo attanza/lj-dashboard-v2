@@ -127,7 +127,12 @@ export default {
     },
     downloadData() {
       this.dataToExport = [];
-      this.dataToExport = this.items;
+      this.items.map(i => {
+        let data = Object.assign({}, i);
+        data.role = data.roles[0].name;
+        delete data["roles"];
+        this.dataToExport.push(data);
+      });
       if (this.dataToExport.length) {
         this.showDownloadDialog = true;
       }

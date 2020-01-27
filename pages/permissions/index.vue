@@ -41,20 +41,23 @@
       >
         <template v-slot:item.name="{ item }">
           <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
-            {{
-            item.name
-            }}
+            {{ item.name }}
           </v-btn>
         </template>
       </v-data-table>
     </v-card-text>
-    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" :link="link" />
+    <dform
+      :show="showForm"
+      @onClose="showForm = false"
+      @onAdd="addData"
+      :link="link"
+    />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
       :fillable="fillable"
       :type-dates="typeDates"
-      model="Role"
+      model="Permission"
       @onClose="showDownloadDialog = false"
     />
   </v-card>

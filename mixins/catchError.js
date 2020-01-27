@@ -1,8 +1,5 @@
 import Noty from "noty";
 export default {
-  mounted() {
-    // this.clearStore();
-  },
   methods: {
     catchError(e) {
       console.log("e", e);
@@ -58,16 +55,6 @@ export default {
         progressBar: true,
         type
       }).show();
-    },
-    clearStore() {
-      this.$store.commit("currentEdit", null);
-      this.$store.commit("currentEdit2", null);
-      this.$store.commit("comboData", null);
-      this.$store.commit("comboData2", null);
-      this.$store.commit("universityId", null);
-      this.$store.commit("studyId", null);
-      this.$store.commit("targetId", null);
-      this.$store.commit("schedulleId", null);
     }
   }
 };

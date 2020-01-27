@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 class="headline primary--text mb-2">Detail Nama Studi</h2>
+    <h2 v-if="currentEdit" class="headline primary--text mb-2">
+      {{ currentEdit.name }}
+    </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
@@ -14,21 +16,23 @@
 <script>
 import { STUDY_NAME_URL } from "~/utils/apis";
 import { detail } from "~/components/study-names";
-import { catchError } from "~/mixins";
+import catchError from "~/utils/catchError";
+import { global } from "~/mixins";
 
 export default {
-  async fetch({ store, params, redirect, $axios }) {
+  async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
       let resp = await $axios.$get(STUDY_NAME_URL + "/" + params.id);
       store.commit("currentEdit", resp.data);
     } catch (e) {
-      if (process.client) this.catchError(e);
+      if (process.client) catchError(e, $router, $auth);
       else {
         redirect("/");
       }
     }
   },
-  mixins: [catchError],
+  mixins: [global],
+
   components: { detail }
 };
 </script>

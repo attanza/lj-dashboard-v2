@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-card class="pt-3">
-      <v-container grid-list-md fluid style="padding-top: 0px;">
-        <v-toolbar color="transparent" card>
+    <v-card flat>
+      <v-container grid-list-md fluid style="padding: 0px;">
+        <v-toolbar flat color="transparent">
           <v-spacer />
           <Tbtn
             color="primary"
@@ -11,21 +11,9 @@
             tooltip-text="Kembali"
             @onClick="toHome"
           />
+
           <Tbtn
-            color="primary"
-            icon="save"
-            icon-mode
-            tooltip-text="Simpan"
-            @onClick="submit"
-          />
-          <Tbtn
-            color="primary"
-            icon="refresh"
-            icon-mode
-            tooltip-text="Refresh"
-            @onClick="setFields"
-          />
-          <Tbtn
+            v-if="checkPermission('delete-marketing')"
             color="primary"
             icon="delete"
             icon-mode
@@ -33,35 +21,19 @@
             @onClick="confirmDelete"
           />
         </v-toolbar>
-        <form>
-          <v-layout row wrap class="mt-3 px-2">
-            <v-flex
-              v-for="(f, index) in fillable"
-              v-if="!inArray(['is_active', 'password'], f.key)"
-              :key="index"
-              sm6
-              xs12
-            >
-              <label>{{ f.caption }}</label>
-              <v-text-field
-                v-validate="f.rules"
-                v-model="formData[f.key]"
-                :error-messages="errors.collect(f.key)"
-                :name="f.key"
-                :data-vv-name="f.key"
-                :data-vv-as="f.caption"
-              />
-            </v-flex>
-            <v-flex sm6 xs12>
-              <v-switch v-model="switch1" label="Aktif" color="primary" />
-            </v-flex>
-          </v-layout>
-        </form>
+        <v-card-text>
+          <sharedForm
+            :items="formItem"
+            :show-button="checkPermission('update-marketing')"
+            :init-value="currentEdit"
+            @onSubmit="editData"
+          ></sharedForm>
+        </v-card-text>
       </v-container>
     </v-card>
     <Dialog
       :showDialog="showDialog"
-      text="Yakin mau menghapus?"
+      :text="$messages.general.CONFIRM_DELETE"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
     />
@@ -69,139 +41,79 @@
 </template>
 
 <script>
-import { global } from "~/mixins"
-import { MARKETING_URL } from "~/utils/apis"
-import axios from "axios"
-import Dialog from "~/components/Dialog"
-import catchError, { showNoty } from "~/utils/catchError"
+import { global, catchError } from "~/mixins";
+import Dialog from "~/components/Dialog";
+import sharedForm from "../sharedForm";
+import { formItem } from "./util";
 
 export default {
-  $_veeValidate: {
-    validator: "new"
-  },
-  components: { Dialog },
-  mixins: [global],
+  components: { Dialog, sharedForm },
+  mixins: [global, catchError],
   data() {
     return {
-      fillable: [
-        {
-          key: "name",
-          caption: "Nama",
-          value: "",
-          rules: "required|max:50"
-        },
-        {
-          key: "email",
-          caption: "Email",
-          value: "",
-          rules: "required|email"
-        },
-        {
-          key: "phone",
-          caption: "Telepon",
-          value: "",
-          rules: "required|max:30"
-        },
-        {
-          key: "is_active",
-          caption: "Status aktif",
-          value: true,
-          rules: "required|boolean"
-        },
-        {
-          key: "address",
-          caption: "Alamat",
-          value: "",
-          rules: "max:250"
-        },
-        {
-          key: "description",
-          caption: "Deskripsi",
-          value: "",
-          rules: "max:250"
-        }
-      ],
+      link: "/marketings",
+      formItem: formItem,
+      showDialog: false
+    };
+  },
 
-      formData: {},
-      showDialog: false,
-      toggle_multiple: [0, 1, 2, 3],
-      switch1: false
-    }
+  mounted() {
+    this.populateFormItem();
   },
-  watch: {
-    switch1() {
-      if (this.switch1 || !this.switch1) {
-        this.formData.is_active = this.switch1
-      }
-    }
-  },
-  created() {
-    this.setFields()
-  },
+
   methods: {
-    toHome() {
-      // this.$router.push("/marketings")
-      this.$router.go(-1)
-    },
-    setFields() {
-      this.errors.clear()
-      if (this.currentEdit) {
-        this.fillable.forEach(
-          data => (this.formData[data.key] = this.currentEdit[data.key])
-        )
-        this.switch1 = this.formData.is_active
+    populateFormItem() {
+      // form item
+      const formItemForEdit = [...formItem];
+      const idx = formItemForEdit.findIndex(f => f.value === "password");
+      if (idx !== -1) {
+        formItemForEdit.splice(idx, 1);
       }
+      this.formItem = formItemForEdit;
     },
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.editData()
-          return
-        }
-      })
+    toHome() {
+      this.$router.go(-1);
     },
-    async editData() {
-      try {
-        this.activateLoader()
 
+    async editData(data) {
+      try {
+        this.activateLoader();
         if (this.currentEdit) {
-          const resp = await axios
-            .put(MARKETING_URL + "/" + this.currentEdit.id, this.formData)
-            .then(res => res.data)
-          this.$store.commit("currentEdit", resp.data)
-          this.setFields()
-          showNoty("Data diperbaharui", "success")
-          this.deactivateLoader()
+          const resp = await this.$axios.$put(
+            this.link + "/" + this.currentEdit.id,
+            data
+          );
+          this.$store.commit("currentEdit", resp.data);
+          this.showNoty(this.$messages.form.UPDATED, "success");
+          this.deactivateLoader();
         }
       } catch (e) {
-        this.deactivateLoader()
-        catchError(e)
+        this.deactivateLoader();
+        this.catchError(e);
       }
     },
     confirmDelete() {
-      this.showDialog = true
+      this.showDialog = !this.showDialog;
     },
     async removeData() {
       try {
-        this.activateLoader()
+        this.activateLoader();
         if (this.currentEdit) {
-          const resp = await axios
-            .delete(MARKETING_URL + "/" + this.currentEdit.id)
-            .then(res => res.data)
+          const resp = await this.$axios.$delete(
+            this.link + "/" + this.currentEdit.id
+          );
           if (resp.meta.status === 200) {
-            showNoty("Data dihapus", "success")
-            this.deactivateLoader()
-
-            this.$router.push("/marketings")
+            this.showNoty(this.$messages.form.DELETED, "success");
+            this.$router.push(this.link);
           }
         }
+        this.deactivateLoader();
       } catch (e) {
-        this.showDialog = false
-        this.deactivateLoader()
-
-        catchError(e)
+        this.deactivateLoader();
+        this.showDialog = false;
+        this.catchError(e);
       }
     }
   }
-}
+};
 </script>

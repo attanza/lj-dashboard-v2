@@ -52,9 +52,8 @@ export const formItem = [
   {
     value: "is_active",
     text: "Status aktif",
-    rules: "required|boolean",
-    el: "text",
-    type: "text",
+    rules: "required",
+    el: "switch",
     inForm: true
   },
   {

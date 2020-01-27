@@ -70,9 +70,12 @@ export default {
       dataToExport: []
     };
   },
-  mounted() {
-    this.populateTable();
+  computed: {
+    user() {
+      return this.$store.state.auth.user;
+    }
   },
+
   watch: {
     options: {
       handler: debounce(function() {
@@ -87,7 +90,8 @@ export default {
     async populateTable() {
       try {
         this.activateLoader();
-        const queries = this.getQueries();
+        let queries = this.getQueries();
+        queries += `search_by=user.id&search_query=${this.currentEdit.id}`;
         const resp = await this.$axios.$get(`${this.link + queries}`);
         this.total = resp.meta.totalDocs;
         this.items = resp.data;

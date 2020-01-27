@@ -1,6 +1,7 @@
 import Noty from "noty";
 
-export default e => {
+export default (e, $router, $auth) => {
+  console.log("e", e);
   if (e.response) {
     const status = e.response.status;
     let message = "";
@@ -21,7 +22,8 @@ export default e => {
       case 401:
         {
           console.log("401"); //eslint-disable-line
-          toLogin();
+          $auth.logout();
+          $router.push("/login");
         }
         break;
 
