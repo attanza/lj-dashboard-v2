@@ -2,11 +2,11 @@ import Noty from "noty";
 export default {
   methods: {
     catchError(e) {
-      console.log("e", e);
       if (e.response) {
         const status = e.response.status;
         let message = "";
-        if (e.response && e.response.meta) message = e.response.meta.message;
+        if (e.response && e.response.data && e.response.data.meta)
+          message = e.response.data.meta.message;
         switch (status) {
           case 400:
             this.showNoty(message, "error");

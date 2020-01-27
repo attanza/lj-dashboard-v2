@@ -40,6 +40,7 @@
             item-text="name"
             item-value="id"
             color="primary"
+            @change="comboChange(f.value, formData[f.value])"
           ></v-autocomplete>
 
           <v-textarea
@@ -63,24 +64,6 @@
             :data-vv-as="f.text"
             :label="f.text"
           ></vue-editor>
-
-          <v-autocomplete
-            v-if="f.el === 'serverCombobox'"
-            v-model="formData[f.value]"
-            :items="f.items"
-            :loading="isLoading"
-            :search-input.sync="search"
-            v-validate="f.rules"
-            :error-messages="errors.collect(f.value)"
-            :name="f.value"
-            :data-vv-name="f.value"
-            :data-vv-as="f.text"
-            hide-no-data
-            hide-selected
-            item-text="name"
-            item-value="id"
-            placeholder="Pilih"
-          ></v-autocomplete>
         </v-col>
       </v-row>
     </v-container>
@@ -96,14 +79,11 @@
 </template>
 
 <script>
-import serverCombobox from "./serverCombobox";
 import messages from "../utils/messages";
 export default {
   $_veeValidate: {
     validator: "new"
   },
-
-  components: { serverCombobox },
 
   props: {
     items: {
@@ -134,9 +114,7 @@ export default {
   data() {
     return {
       formData: {},
-      messages: messages,
-      search: "",
-      isLoading: false
+      messages: messages
     };
   },
 
@@ -170,9 +148,8 @@ export default {
     assignInitValue() {
       this.formData = Object.assign({}, this.initValue);
     },
-    onSelected(data, f) {
-      f.label = data.name;
-      this.formData[f.value] = data.id;
+    comboChange(key, value) {
+      this.$bus.$emit(key, value);
     }
   }
 };
