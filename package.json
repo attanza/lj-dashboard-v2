@@ -1,8 +1,8 @@
 {
   "name": "lj_dashbord_v2",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Langsung Jalan Dashboard Version 2",
-  "author": "Dani Lesmiadi",
+  "author": "dani.lesmiadi@gmail.com",
   "private": true,
   "scripts": {
     "dev": "nuxt",

@@ -197,13 +197,13 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           this.$emit("onSubmit", this.formData);
-          this.formData = {};
         }
         return;
       });
     },
     close() {
       this.formData = {};
+
       this.$emit("onClose");
     },
     assignInitValue() {

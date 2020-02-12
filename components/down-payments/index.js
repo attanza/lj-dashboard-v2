@@ -1,6 +1,5 @@
-import dform from "./dform"
-import detail from "./detail"
-import dpList from "./dpList"
-import dpListAll from "./dpListAll"
+import detail from "./detail";
+import dform from "./dform";
+import downPaymentList from "./dpList";
 
-export { dform, detail, dpList, dpListAll }
+export { dform, detail, downPaymentList };
