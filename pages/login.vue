@@ -37,7 +37,13 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn :loading="loading" :disabled="loading" color="primary" @click="submit">Login</v-btn>
+                <v-btn
+                  :loading="loading"
+                  :disabled="loading"
+                  color="primary"
+                  @click="submit"
+                  >Login</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-col>
@@ -48,11 +54,14 @@
 </template>
 
 <script>
+import { catchError } from "~/mixins";
+
 export default {
   layout: "nonav",
   $_veeValidate: {
     validator: "new"
   },
+  mixins: [catchError],
   props: {
     source: String
   },
@@ -84,8 +93,8 @@ export default {
         this.loading = false;
         this.$router.push("/");
       } catch (e) {
-        console.log("e", e);
         this.loading = false;
+        this.showNoty("Login Gagal", "error");
       }
     }
   }

@@ -12,7 +12,8 @@ export default {
       total: 1,
       search: "",
       options: {
-        search: ""
+        search: "",
+        sortDesc: [true]
       },
       footerProps: {
         itemsPerPageOptions: [10, 25, 50, 100]
@@ -76,11 +77,16 @@ export default {
     },
     getQueries() {
       let query = "?";
+      const sortBy =
+        this.options.sortBy && this.options.sortBy[0]
+          ? this.options.sortBy[0]
+          : "created_at";
+      const sortMode = this.options.sortDesc[0] ? "desc" : "asc";
       const queryString = {
         page: this.options.page || 1,
         limit: this.options.itemsPerPage,
-        sort_by: this.options.sortBy[0] || "created_at",
-        sort_mode: this.options.sortDesc[0] ? "desc" : "asc",
+        sort_by: sortBy,
+        sort_mode: sortMode,
         category: this.options.category || ""
       };
       const { search } = this.options;
@@ -115,6 +121,68 @@ export default {
     },
     checkPermission(permission) {
       return includes(this.userPermissions, permission);
+    },
+    /**
+     * Normalize Nested Object to prevent error of in existence
+     * @param {Object} data
+     * @param {string} children
+     */
+    normalizeObject(data, children) {
+      let lookup = Object.assign({}, data);
+      const child = children.split(".");
+      child.map(c => {
+        lookup = lookup[c];
+        if (!lookup) {
+          return false;
+        }
+      });
+      return lookup;
+    },
+
+    /**
+     * Populate ComboData to be user in combo box
+     * @param {string} comboDataLink {Api Combo Data endpoint, 'combo-data?model=Schedulle'}
+     * @param {string} strValue {Object key to be used as value in combobox, eg; name | code}
+     * @param {string} formItemKey {eg: schedulle_id, marketing_id, etc}
+     * @param {integer} currentId {current id of dato to be edited}
+     * @param {string} searchLink {Main API endpoint to get data by ID, eg: '/schedulles'}
+     * @returns {void}
+     */
+    async populateComboData(
+      comboDataLink,
+      strValue,
+      formItemKey,
+      currentId = null,
+      searchLink = null
+    ) {
+      try {
+        const resp = await this.$axios.$get(comboDataLink);
+        const comboData = resp.map(r => ({ id: r.id, name: r[strValue] }));
+        if (comboData && comboData.length > 0) {
+          if (currentId) {
+            const currentDataToEdit = comboData.filter(
+              data => data.id === currentId
+            );
+            if (currentDataToEdit.length === 0) {
+              const resp2 = await this.$axios.$get(
+                `/${searchLink}/${currentId}`
+              );
+              if (resp2 && resp2.data) {
+                comboData.push({
+                  id: resp2.data.id,
+                  name: resp2.data[strValue]
+                });
+              }
+            }
+          }
+          const idx = this.formItem.findIndex(f => f.value === formItemKey);
+          if (idx !== -1) {
+            this.formItem[idx].items = comboData;
+          }
+        }
+      } catch (e) {
+        this.catchError(e);
+      }
     }
   },
   computed: {

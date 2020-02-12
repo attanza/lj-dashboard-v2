@@ -1,7 +1,6 @@
-import dform from "./dform"
-import detail from "./detail"
-import report from "./report"
-import schedulleList from "./list"
-import schedulleListAll from "./listAll"
+import detail from "./detail";
+import dform from "./dform";
+import schedulleList from "./list";
+import report from "./report";
 
-export { dform, detail, schedulleList, report, schedulleListAll }
+export { dform, detail, schedulleList, report };

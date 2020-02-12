@@ -1,198 +1,154 @@
 <template>
   <div>
-    <v-card class="pt-3">
-      <v-toolbar card color="transparent">
-        <Tbtn
-          :bottom="true"
-          :tooltip-text="'Tambah ' + title"
-          icon-mode
-          color="primary"
-          icon="add"
-          @onClick="showForm = true"
-        />
-        <v-spacer />
-        <v-text-field
-          v-model="pagination.search"
-          append-icon="search"
-          label="Cari"
-          single-line
-          hide-details
-        />
-      </v-toolbar>
+    <v-toolbar flat color="transparent">
+      <Tbtn
+        v-if="checkPermission('create-marketing-report')"
+        :bottom="true"
+        :tooltip-text="'Tambahkan ' + title"
+        icon-mode
+        icon="add"
+        color="primary"
+        @onClick="showForm = !showForm"
+      />
+      <Tbtn
+        :bottom="true"
+        :tooltip-text="'Download data ' + title"
+        icon-mode
+        icon="cloud_download"
+        color="primary"
+        @onClick="downloadData"
+      />
+
+      <v-spacer />
+      <v-text-field
+        v-model="options.search"
+        append-icon="search"
+        label="Cari"
+        single-line
+        hide-details
+      />
+    </v-toolbar>
+    <v-card-text class="mt-4">
       <v-data-table
-        v-if="items"
         :headers="headers"
         :items="items"
+        :search="options.search"
         :loading="loading"
-        :pagination.sync="pagination"
-        :total-items="totalItems"
-        :rows-per-page-items="rowsPerPage"
-        class="elevation-1"
+        :footer-props="footerProps"
+        :server-items-length="total"
+        :options.sync="options"
       >
-        <template slot="items" slot-scope="props">
-          <td>
-            <a @click="toDetail(props.item)">{{ props.item.code }}</a>
-          </td>
-          <td>
-            {{
-              props.item.schedulle &&
-                props.item.schedulle.target &&
-                props.item.schedulle.target.study &&
-                props.item.schedulle.target.study.university
-                ? props.item.schedulle.target.study.university.name
-                : ""
-            }}
-          </td>
-          <td>
-            {{
-              props.item.schedulle &&
-                props.item.schedulle.target &&
-                props.item.schedulle.target.study &&
-                props.item.schedulle.target.study.studyName
-                ? props.item.schedulle.target.study.studyName.name
-                : ""
-            }}
-          </td>
-          <td>
-            {{
-              props.item.schedulle && props.item.schedulle.action
-                ? props.item.schedulle.action.name
-                : ""
-            }}
-          </td>
-          <td>{{ props.item.result }}</td>
-          <td class="justify-center layout px-0">
-            <v-btn icon class="mx-0" @click="getEdit(props.item)">
-              <v-icon color="primary">edit</v-icon>
-            </v-btn>
-          </td>
+        <template v-slot:item.code="{ item }">
+          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">{{ item.code }}</v-btn>
+        </template>
+
+        <template v-slot:item.marketing_target_id="{ item }">
+          {{
+          item.target ? item.target.code : ""
+          }}
+        </template>
+        <template v-slot:item.marketing_id="{ item }">
+          {{
+          item.marketing ? item.marketing.name : ""
+          }}
+        </template>
+        <template v-slot:item.marketing_action_id="{ item }">
+          {{
+          item.action ? item.action.name : ""
+          }}
         </template>
       </v-data-table>
-    </v-card>
-    <dform
-      :show="showForm"
-      :is-edit="isEdit"
-      :data-to-edit="dataToEdit"
-      @onClose="onClose"
-      @onAdd="addData"
-      @onEdit="editData"
+    </v-card-text>
+    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" :link="link" />
+    <DownloadDialog
+      :show-dialog="showDownloadDialog"
+      :data-to-export="dataToExport"
+      :fillable="fillable"
+      :type-dates="typeDates"
+      model="Laporan"
+      @onClose="showDownloadDialog = false"
     />
   </div>
 </template>
+
 <script>
-import debounce from "lodash/debounce"
-import findIndex from "lodash/findIndex"
-import { MARKETING_REPORTS_URL } from "~/utils/apis"
-import { global } from "~/mixins"
-import catchError from "~/utils/catchError"
-import axios from "axios"
-import dform from "./dform"
-
+import debounce from "lodash/debounce";
+import { headers, downloadData } from "./util";
+import { global, catchError } from "~/mixins";
+import dform from "./dform";
+import DownloadDialog from "../DownloadDialog";
 export default {
-  components: { dform },
-  mixins: [global],
-  data: () => ({
-    title: "Laporan Marketing",
-    headers: [
-      { text: "Kode Laporan", align: "left", value: "code" },
-      {
-        text: "Perguruan Tinggi",
-        align: "left",
-        value: "schedulle.target.study.university.name"
-      },
-      {
-        text: "Program Studi",
-        align: "left",
-        value: "schedulle.target.study.studyName.name"
-      },
-      { text: "Aksi", align: "left", value: "schedulle.action.name" },
-      { text: "Hasil", align: "left", value: "result" },
-
-      { text: "Aksi", align: "center", value: "", sortable: false }
-    ],
-    items: [],
-    confirmMessage: "Yakin mau menghapus ?",
-    showConfirm: false,
-    showForm: false,
-    isEdit: false,
-    dataToEdit: null
-  }),
-
+  mixins: [global, catchError],
+  components: { DownloadDialog, dform },
+  data() {
+    return {
+      title: "Laporan",
+      link: "/marketing-reports",
+      headers: headers,
+      fillable: downloadData,
+      typeDates: ["created_at"],
+      dataToExport: []
+    };
+  },
+  mounted() {
+    this.populateTable();
+  },
   watch: {
-    pagination: {
+    options: {
       handler: debounce(function() {
-        this.pupulateTable()
+        if (!this.loading) {
+          this.populateTable();
+        }
       }, 500),
       deep: true
     }
   },
-
-  mounted() {
-    this.pupulateTable()
-  },
-
   methods: {
-    async pupulateTable() {
+    async populateTable() {
       try {
-        this.activateLoader()
-        const { descending, sortBy } = this.pagination
-        if (
-          this.schedulleId != null ||
-          this.targetId != null ||
-          this.universityId != null
-        ) {
-          const endPoint = `${MARKETING_REPORTS_URL}?${this.getQueryParams()}schedulle_id=${this
-            .schedulleId || ""}&marketing_target_id=${this.targetId ||
-            ""}&university_id=${this.universityId || ""}`
-
-          const res = await axios.get(endPoint).then(res => res.data)
-          this.items = res.data
-          this.totalItems = res.meta.total
-          if (this.pagination.sortBy) {
-            this.items = this.items.sort((a, b) => {
-              const sortA = a[sortBy]
-              const sortB = b[sortBy]
-
-              if (descending) {
-                if (sortA < sortB) return 1
-                if (sortA > sortB) return -1
-                return 0
-              } else {
-                if (sortA < sortB) return -1
-                if (sortA > sortB) return 1
-                return 0
-              }
-            })
-          }
-          this.deactivateLoader()
-        }
+        this.activateLoader();
+        const queries = this.getQueries();
+        const resp = await this.$axios.$get(`${this.link + queries}`);
+        this.total = resp.meta.total;
+        this.items = resp.data;
+        this.deactivateLoader();
       } catch (e) {
-        this.deactivateLoader()
-        this.showForm = false
-        catchError(e, null, this.$router)
+        this.deactivateLoader();
+        this.showForm = false;
+        this.catchError(e, null, this.$router);
       }
     },
     toDetail(data) {
-      this.$router.push(`/marketing-reports/${data.id}`)
-    },
-    getEdit(data) {
-      this.dataToEdit = data
-      this.isEdit = true
+      this.$router.push(`${this.link}/${data.id}`);
     },
     addData(data) {
-      this.items.unshift(data)
-      this.showForm = false
+      this.items.unshift(data);
+      this.showForm = false;
     },
-    editData(data) {
-      let index = findIndex(this.items, { id: data.id })
-      this.items.splice(index, 1, data)
-      this.onClose()
-    },
-    onClose() {
-      this.showForm = false
-      this.dataToEdit = null
-      this.isEdit = false
+    downloadData() {
+      this.dataToExport = [];
+      const notIncludes = ["schedulle_id"];
+      this.items.map(i => {
+        const data = Object.assign({}, i);
+        data.university = this.normalizeObject(
+          data,
+          "schedulle.target.study.university.name"
+        );
+        data.study = this.normalizeObject(
+          data,
+          "schedulle.target.study.studyName.name"
+        );
+        data.action = this.normalizeObject(data, "schedulle.action.name");
+        data.schedulle = this.normalizeObject(data, "schedulle.code");
+        notIncludes.map(n => delete data[n]);
+        this.dataToExport.push(data);
+      });
+      if (this.dataToExport.length) {
+        this.showDownloadDialog = true;
+      }
     }
   }
-}
+};
 </script>
+
+<style lang="scss" scoped></style>

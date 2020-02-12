@@ -3,13 +3,23 @@
     <v-dialog v-model="dialog" max-width="500px" persistent>
       <v-card light>
         <v-card-title>
-          <span class="primary--text headline">{{$messages.downloadDialog.TITLE}}</span>
+          <span class="primary--text headline">{{
+            $messages.downloadDialog.TITLE
+          }}</span>
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text style="padding: 0;" />
-        <v-container fluid style="padding-top: 0; padding-bottom: 0;" grid-list-md>
+        <v-container
+          fluid
+          style="padding-top: 0; padding-bottom: 0;"
+          grid-list-md
+        >
           <v-radio-group v-model="radios">
-            <v-radio :label="$messages.downloadDialog.SEEN_ON_SCREEN" value="1" color="primary" />
+            <v-radio
+              :label="$messages.downloadDialog.SEEN_ON_SCREEN"
+              value="1"
+              color="primary"
+            />
             <!-- <v-radio label="Custom" value="2" color="primary"/> -->
           </v-radio-group>
           <v-layout v-if="radios == '2'" row wrap>
@@ -35,7 +45,11 @@
             </v-flex>
             <v-flex sm6 xs12>
               <label>Limit</label>
-              <v-text-field v-model="queryData.limit" name="limit" type="String" />
+              <v-text-field
+                v-model="queryData.limit"
+                name="limit"
+                type="String"
+              />
             </v-flex>
             <v-flex sm6 xs12>
               <label>Date Range By</label>
@@ -183,7 +197,7 @@ export default {
     },
     async downloadData() {
       if (this.radios === "1") {
-        this.csvExport(this.model + "s", this.dataToExport);
+        this.csvExport(this.model, this.dataToExport);
         this.onClose();
       } else if (this.radios === "2") {
         try {
@@ -204,8 +218,7 @@ export default {
             resp.data.data &&
             resp.data.data.length > 0
           ) {
-            console.log(resp.data.data);
-            this.csvExport(this.model + "s", resp.data.data);
+            this.csvExport(this.model, resp.data.data);
           } else {
             showNoty("No result found", "error");
           }

@@ -43,6 +43,64 @@
             @change="comboChange(f.value, formData[f.value])"
           ></v-autocomplete>
 
+          <v-menu
+            v-if="f.el === 'date'"
+            v-model="dateMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="formData[f.value]"
+                v-validate="f.rules"
+                :type="f.type"
+                :error-messages="errors.collect(f.value)"
+                :name="f.value"
+                :data-vv-name="f.value"
+                :data-vv-as="f.text"
+                :label="f.text"
+                readonly
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="formData[f.value]"
+              @input="dateMenu = false"
+            ></v-date-picker>
+          </v-menu>
+
+          <v-menu
+            v-if="f.el === 'time'"
+            v-model="timeMenu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="formData[f.value]"
+                v-validate="f.rules"
+                :type="f.type"
+                :error-messages="errors.collect(f.value)"
+                :name="f.value"
+                :data-vv-name="f.value"
+                :data-vv-as="f.text"
+                :label="f.text"
+                readonly
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              v-model="formData[f.value]"
+              @input="timeMenu = false"
+            ></v-time-picker>
+          </v-menu>
+
           <v-textarea
             v-if="f.el === 'textarea'"
             v-model="formData[f.value]"
@@ -71,9 +129,9 @@
     <v-card-actions>
       <v-btn v-if="showCancel" @click="close">{{ messages.form.CANCEL }}</v-btn>
       <v-spacer></v-spacer>
-      <v-btn v-if="showButton" color="primary" @click="submit">
-        {{ messages.form.SAVE }}
-      </v-btn>
+      <v-btn v-if="showButton" color="primary" @click="submit">{{
+        messages.form.SAVE
+      }}</v-btn>
     </v-card-actions>
   </form>
 </template>
@@ -114,7 +172,9 @@ export default {
   data() {
     return {
       formData: {},
-      messages: messages
+      messages: messages,
+      dateMenu: false,
+      timeMenu: false
     };
   },
 
@@ -143,6 +203,7 @@ export default {
       });
     },
     close() {
+      this.formData = {};
       this.$emit("onClose");
     },
     assignInitValue() {
