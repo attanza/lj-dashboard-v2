@@ -45,7 +45,13 @@
         </v-toolbar>
         <v-card-text>
           <v-layout v-if="items" row wrap>
-            <v-flex v-for="permission in items" :key="permission.id" md3 sm4 xs6>
+            <v-flex
+              v-for="permission in items"
+              :key="permission.id"
+              md3
+              sm4
+              xs6
+            >
               <v-checkbox
                 v-model="permissionArray"
                 :label="permission.name"

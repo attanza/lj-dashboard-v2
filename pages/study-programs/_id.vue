@@ -17,7 +17,7 @@
         <maps />
       </v-tab-item>
       <v-tab-item :id="'targets'">
-        <targets />
+        <targets :study-id="$route.params.id" />
       </v-tab-item>
     </v-tabs>
   </div>
@@ -36,11 +36,6 @@ export default {
       // Current Edit
       let currentEdit = await $axios.$get(STUDIES_URL + "/" + params.id);
       if (currentEdit) store.commit("currentEdit", currentEdit.data);
-
-      let resp = await $axios.$get(COMBO_DATA_URL + "University");
-      if (resp) store.commit("comboData", resp);
-      let resp2 = await $axios.$get(COMBO_DATA_URL + "StudyName");
-      if (resp2) store.commit("comboData2", resp2);
     } catch (e) {
       if (process.client) this.catchError(e);
       else {

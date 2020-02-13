@@ -96,12 +96,14 @@ export default {
     async editData(data) {
       try {
         this.activateLoader();
+        data.roles = [data.roles];
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
             this.link + "/" + this.currentEdit.id,
             data
           );
           this.$store.commit("currentEdit", resp.data);
+          this.populateFormItem();
           this.showNoty(this.$messages.form.UPDATED, "success");
           this.deactivateLoader();
         }

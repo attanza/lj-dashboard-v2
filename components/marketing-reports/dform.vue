@@ -41,7 +41,7 @@ export default {
     return {
       dialog: false,
       formItem: formItem,
-      formTitle: "Tambah Jadwal",
+      formTitle: "Tambah Laporan",
       initValue: {}
     };
   },

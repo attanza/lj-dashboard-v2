@@ -17,7 +17,7 @@
         <studyList :university-id="$route.params.id" />
       </v-tab-item>
       <v-tab-item :id="'reports'">
-        <reportList />
+        <reportList :university-id="$route.params.id" />
       </v-tab-item>
       <v-tab-item :id="'maps'">
         <maps />

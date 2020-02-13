@@ -40,24 +40,27 @@
       >
         <template v-slot:item.code="{ item }">
           <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
-            {{
-            item.code
-            }}
+            {{ item.code }}
           </v-btn>
         </template>
 
-        <template
-          v-slot:item.marketing_target_id="{ item }"
-        >{{ item.target ? item.target.code : '' }}</template>
-        <template
-          v-slot:item.marketing_id="{ item }"
-        >{{ item.marketing ? item.marketing.name : '' }}</template>
-        <template
-          v-slot:item.marketing_action_id="{ item }"
-        >{{ item.action ? item.action.name : '' }}</template>
+        <template v-slot:item.marketing_target_id="{ item }">{{
+          item.target ? item.target.code : ""
+        }}</template>
+        <template v-slot:item.marketing_id="{ item }">{{
+          item.marketing ? item.marketing.name : ""
+        }}</template>
+        <template v-slot:item.marketing_action_id="{ item }">{{
+          item.action ? item.action.name : ""
+        }}</template>
       </v-data-table>
     </v-card-text>
-    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" :link="link" />
+    <dform
+      :show="showForm"
+      @onClose="showForm = false"
+      @onAdd="addData"
+      :link="link"
+    />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
@@ -88,6 +91,14 @@ export default {
       dataToExport: []
     };
   },
+  props: {
+    targetId: {
+      type: String,
+      required: false,
+      default: null
+    }
+  },
+
   mounted() {
     this.populateTable();
   },
@@ -105,13 +116,16 @@ export default {
     async populateTable() {
       try {
         this.activateLoader();
-        const queries = this.getQueries();
+        let queries = this.getQueries();
+        if (this.targetId) {
+          queries += `marketing_target_id=${this.targetId}&`;
+        }
+
         const resp = await this.$axios.$get(`${this.link + queries}`);
         this.total = resp.meta.total;
         this.items = resp.data;
         this.deactivateLoader();
       } catch (e) {
-        console.log("e", e);
         this.deactivateLoader();
         this.showForm = false;
         this.catchError(e, null, this.$router);

@@ -28,9 +28,8 @@ export default {
       let resp = await $axios.get(ROLE_URL + "/" + params.id);
       if (resp) store.commit("currentEdit", resp.data.data);
 
-      let permissions = await $axios.get(COMBO_DATA_URL + "Permission");
-      if (permissions) store.commit("comboData", permissions.data);
-
+      let permissions = await $axios.$get(COMBO_DATA_URL + "Permission");
+      if (permissions) store.commit("comboData", permissions);
       let rolePermissions = await $axios.get(
         "/role/" + params.id + "/permissions"
       );

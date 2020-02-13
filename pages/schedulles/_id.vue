@@ -6,8 +6,13 @@
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
+      <v-tab href="#report">Laporan</v-tab>
+
       <v-tab-item :id="'detail'">
         <detail />
+      </v-tab-item>
+      <v-tab-item :id="'report'">
+        <reportList :schedulle-id="$route.params.id" />
       </v-tab-item>
     </v-tabs>
   </div>
@@ -18,6 +23,8 @@ import { COMBO_DATA_URL } from "~/utils/apis";
 import { detail } from "~/components/schedulles";
 import { global } from "~/mixins";
 import catchError from "~/utils/catchError";
+import { reportList } from "~/components/marketing-reports";
+
 export default {
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
@@ -31,7 +38,7 @@ export default {
       }
     }
   },
-  components: { detail },
+  components: { detail, reportList },
   mixins: [global]
 };
 </script>

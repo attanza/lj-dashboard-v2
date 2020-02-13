@@ -39,27 +39,28 @@
         :options.sync="options"
       >
         <template v-slot:item.code="{ item }">
-          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">{{ item.code }}</v-btn>
+          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">{{
+            item.code
+          }}</v-btn>
         </template>
 
         <template v-slot:item.marketing_target_id="{ item }">
-          {{
-          item.target ? item.target.code : ""
-          }}
+          {{ item.target ? item.target.code : "" }}
         </template>
         <template v-slot:item.marketing_id="{ item }">
-          {{
-          item.marketing ? item.marketing.name : ""
-          }}
+          {{ item.marketing ? item.marketing.name : "" }}
         </template>
         <template v-slot:item.marketing_action_id="{ item }">
-          {{
-          item.action ? item.action.name : ""
-          }}
+          {{ item.action ? item.action.name : "" }}
         </template>
       </v-data-table>
     </v-card-text>
-    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" :link="link" />
+    <dform
+      :show="showForm"
+      @onClose="showForm = false"
+      @onAdd="addData"
+      :link="link"
+    />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
@@ -90,6 +91,23 @@ export default {
       dataToExport: []
     };
   },
+  props: {
+    universityId: {
+      type: String,
+      required: false,
+      default: null
+    },
+    targetId: {
+      type: String,
+      required: false,
+      default: null
+    },
+    schedulleId: {
+      type: String,
+      required: false,
+      default: null
+    }
+  },
   mounted() {
     this.populateTable();
   },
@@ -107,7 +125,16 @@ export default {
     async populateTable() {
       try {
         this.activateLoader();
-        const queries = this.getQueries();
+        let queries = this.getQueries();
+        if (this.universityId) {
+          queries += `university_id=${this.universityId}&`;
+        }
+        if (this.targetId) {
+          queries += `marketing_target_id=${this.targetId}&`;
+        }
+        if (this.schedulleId) {
+          queries += `schedulle_id=${this.schedulleId}&`;
+        }
         const resp = await this.$axios.$get(`${this.link + queries}`);
         this.total = resp.meta.total;
         this.items = resp.data;

@@ -111,13 +111,6 @@ export default {
     },
     clearStore() {
       this.$store.commit("currentEdit", null);
-      this.$store.commit("currentEdit2", null);
-      this.$store.commit("comboData", null);
-      this.$store.commit("comboData2", null);
-      this.$store.commit("universityId", null);
-      this.$store.commit("studyId", null);
-      this.$store.commit("targetId", null);
-      this.$store.commit("schedulleId", null);
     },
     checkPermission(permission) {
       return includes(this.userPermissions, permission);
@@ -190,15 +183,9 @@ export default {
       "token",
       "currentEdit",
       "comboData",
-      "comboData2",
-      "comboData3",
       "permissions",
       "user",
-      "dashboardData",
-      // "universityId",
-      // "studyId",
-      "targetId",
-      "schedulleId"
+      "dashboardData"
     ]),
     userPermissions() {
       const permissions =

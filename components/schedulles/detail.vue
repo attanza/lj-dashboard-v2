@@ -84,44 +84,29 @@ export default {
     },
 
     async populateTarget() {
-      try {
-        const resp = await this.$axios.$get(
-          "/combo-data?model=MarketingTarget"
-        );
-        const targetData = resp.map(r => ({ id: r.id, name: r.code }));
-        const idx = this.formItem.findIndex(
-          f => f.value === "marketing_target_id"
-        );
-        if (idx !== -1) {
-          this.formItem[idx].items = targetData;
-        }
-      } catch (e) {
-        this.catchError(e);
-      }
+      await this.populateComboData(
+        "/combo-data?model=MarketingTarget",
+        "code",
+        "marketing_target_id",
+        this.currentEdit.marketing_target_id,
+        "marketing-targets"
+      );
     },
     async populateMarketing() {
-      try {
-        const resp = await this.$axios.$get("/combo-data?model=Marketing");
-        const idx = this.formItem.findIndex(f => f.value === "marketing_id");
-        if (idx !== -1) {
-          this.formItem[idx].items = resp;
-        }
-      } catch (e) {
-        this.catchError(e);
-      }
+      await this.populateComboData(
+        "/combo-data?model=Marketing",
+        "name",
+        "marketing_id",
+        this.currentEdit.marketing_id,
+        "marketings"
+      );
     },
     async populateAction() {
-      try {
-        const resp = await this.$axios.$get("/combo-data?model=Action");
-        const idx = this.formItem.findIndex(
-          f => f.value === "marketing_action_id"
-        );
-        if (idx !== -1) {
-          this.formItem[idx].items = resp;
-        }
-      } catch (e) {
-        this.catchError(e);
-      }
+      await this.populateComboData(
+        "/combo-data?model=Action",
+        "name",
+        "marketing_action_id"
+      );
     },
 
     async editData(data) {

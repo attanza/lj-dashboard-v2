@@ -6,8 +6,14 @@
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
+      <v-tab href="#maps">Peta</v-tab>
+
       <v-tab-item :id="'detail'">
         <detail />
+      </v-tab-item>
+
+      <v-tab-item :id="'maps'">
+        <maps />
       </v-tab-item>
     </v-tabs>
   </div>
@@ -15,7 +21,7 @@
 
 <script>
 import { COMBO_DATA_URL } from "~/utils/apis";
-import { detail } from "~/components/marketing-reports";
+import { detail, maps } from "~/components/marketing-reports";
 import { global } from "~/mixins";
 import catchError from "~/utils/catchError";
 export default {
@@ -31,7 +37,7 @@ export default {
       }
     }
   },
-  components: { detail },
+  components: { detail, maps },
   mixins: [global]
 };
 </script>

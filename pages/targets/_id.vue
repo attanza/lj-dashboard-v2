@@ -13,13 +13,13 @@
         <detail />
       </v-tab-item>
       <v-tab-item :id="'schedulles'">
-        <schedulleList />
+        <schedulleList :target-id="$route.params.id" />
       </v-tab-item>
       <v-tab-item :id="'reports'">
-        <reportList />
+        <reportList :target-id="$route.params.id" />
       </v-tab-item>
       <v-tab-item :id="'dps'">
-        <dpList />
+        <downPaymentList :target-id="$route.params.id" />
       </v-tab-item>
     </v-tabs>
   </div>
@@ -30,14 +30,13 @@ import { TARGET_URL, COMBO_DATA_URL } from "~/utils/apis";
 import { detail } from "~/components/targets";
 import { schedulleList } from "~/components/schedulles";
 import { reportList } from "~/components/marketing-reports";
-import { dpList } from "~/components/down-payments";
+import { downPaymentList } from "~/components/down-payments";
 import { global } from "~/mixins";
 import catchError from "~/utils/catchError";
 
 export default {
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
-      store.commit("targetId", params.id || null);
       let currentEdit = await $axios.$get(TARGET_URL + "/" + params.id);
       if (currentEdit) store.commit("currentEdit", currentEdit.data);
     } catch (e) {
@@ -47,11 +46,7 @@ export default {
       }
     }
   },
-  components: { schedulleList, detail, reportList, dpList },
-  mixins: [global],
-
-  mounted() {
-    this.$store.commit("targetId", this.$route.params.id || null);
-  }
+  components: { schedulleList, detail, reportList, downPaymentList },
+  mixins: [global]
 };
 </script>

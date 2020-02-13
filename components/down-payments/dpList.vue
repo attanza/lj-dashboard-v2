@@ -40,19 +40,20 @@
       >
         <template v-slot:item.transaction_no="{ item }">
           <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
-            {{
-            item.transaction_no
-            }}
+            {{ item.transaction_no }}
           </v-btn>
         </template>
         <template v-slot:item.marketing_target_id="{ item }">
-          {{
-          item.target.code || ''
-          }}
+          {{ item.target.code || "" }}
         </template>
       </v-data-table>
     </v-card-text>
-    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" :link="link" />
+    <dform
+      :show="showForm"
+      @onClose="showForm = false"
+      @onAdd="addData"
+      :link="link"
+    />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
@@ -86,6 +87,18 @@ export default {
   mounted() {
     this.populateTable();
   },
+  props: {
+    studyId: {
+      type: String,
+      required: false,
+      default: null
+    },
+    targetId: {
+      type: String,
+      required: false,
+      default: null
+    }
+  },
   watch: {
     options: {
       handler: debounce(function() {
@@ -100,7 +113,13 @@ export default {
     async populateTable() {
       try {
         this.activateLoader();
-        const queries = this.getQueries();
+        let queries = this.getQueries();
+        if (this.targetId) {
+          queries += `marketing_target_id=${this.targetId}&`;
+        }
+        if (this.studyId) {
+          queries += `marketing_target_id=${this.studyId}&`;
+        }
         const resp = await this.$axios.$get(`${this.link + queries}`);
         this.total = resp.meta.total;
         this.items = resp.data;

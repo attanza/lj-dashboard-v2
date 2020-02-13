@@ -81,6 +81,13 @@ export default {
       dataToExport: []
     };
   },
+  props: {
+    studyId: {
+      type: String,
+      required: false,
+      default: null
+    }
+  },
   mounted() {
     this.populateTable();
   },
@@ -99,7 +106,9 @@ export default {
       try {
         this.activateLoader();
         let queries = this.getQueries();
-
+        if (this.studyId) {
+          queries += `study_id=${this.studyId}`;
+        }
         const resp = await this.$axios.$get(`${this.link + queries}`);
         this.total = resp.meta.total;
         this.items = resp.data;

@@ -47,7 +47,7 @@ export const formItem = [
     value: "angkatan",
     el: "text",
     type: "text",
-    rules: "required|max:40",
+    rules: "required|max:10",
     inForm: true
   },
 
