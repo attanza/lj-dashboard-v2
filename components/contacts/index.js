@@ -1,4 +1,4 @@
-import dform from "./dform"
-import detail from "./detail"
-
-export { dform, detail }
+import detail from "./detail";
+import dform from "./dform";
+import contactList from "./list";
+export { dform, detail, contactList };
