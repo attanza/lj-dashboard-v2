@@ -86,6 +86,16 @@ export const adminItems = [
     to: "/down-payments"
   },
   {
+    title: "Produk",
+    icon: "chrome_reader_mode",
+    to: "/products"
+  },
+  {
+    title: "Referral",
+    icon: "euro_symbol",
+    to: "/referrals"
+  },
+  {
     title: "Kontak",
     icon: "contact_phone",
     to: "/contacts"

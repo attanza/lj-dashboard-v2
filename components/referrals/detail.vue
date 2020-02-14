@@ -13,7 +13,7 @@
           />
 
           <Tbtn
-            v-if="checkPermission('delete-product')"
+            v-if="checkPermission('delete-referral')"
             color="primary"
             icon="delete"
             icon-mode
@@ -24,7 +24,7 @@
         <v-card-text>
           <sharedForm
             :items="formItem"
-            :show-button="checkPermission('update-product')"
+            :show-button="checkPermission('update-referral')"
             :init-value="currentEdit"
             @onSubmit="editData"
           ></sharedForm>
@@ -51,7 +51,7 @@ export default {
   mixins: [global, catchError],
   data() {
     return {
-      link: "/products",
+      link: "/referrals",
       formItem: formItem,
       showDialog: false
     };
@@ -67,7 +67,7 @@ export default {
         this.activateLoader();
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
-            this.link + "/" + this.currentEdit.id,
+            this.link + "/" + this.currentEdit._id,
             data
           );
           this.$store.commit("currentEdit", resp.data);
@@ -87,7 +87,7 @@ export default {
         this.activateLoader();
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            this.link + "/" + this.currentEdit.id
+            this.link + "/" + this.currentEdit._id
           );
           if (resp.meta.status === 200) {
             this.showNoty(this.$messages.form.DELETED, "success");

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 v-if="currentEdit" class="headline primary--text mb-2">
-      {{ currentEdit.name }}
-    </h2>
+    <h2 v-if="currentEdit" class="headline primary--text mb-2">{{ currentEdit.name }}</h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
@@ -38,7 +36,6 @@ import { global } from "~/mixins";
 export default {
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
-      store.commit("universityId", params.id || null);
       let resp = await $axios.$get(UNIVERSITY_URL + "/" + params.id);
       if (resp) store.commit("currentEdit", resp.data);
     } catch (e) {
@@ -49,11 +46,7 @@ export default {
     }
   },
   components: { detail, dform, maps, studyList, reportList },
-  mixins: [global],
-
-  mounted() {
-    this.$store.commit("universityId", this.$route.params.id || null);
-  }
+  mixins: [global]
 };
 </script>
 

@@ -11,7 +11,7 @@
             :items="formItem"
             @onClose="onClose"
             @onSubmit="saveData"
-            :show-button="checkPermission('create-permission')"
+            :show-button="checkPermission('create-referral')"
             :show-cancel="true"
             :init-value="initValue"
           ></sharedForm>
@@ -41,7 +41,7 @@ export default {
     return {
       dialog: false,
       formItem: formItem,
-      formTitle: "Tambah Produk",
+      formTitle: "Tambah Referral",
       initValue: {}
     };
   },
@@ -50,20 +50,15 @@ export default {
       this.dialog = this.show;
     }
   },
-  mounted() {
-    this.generateCode();
-  },
+
   methods: {
-    generateCode() {
-      const code = this.$moment().unix();
-      this.initValue.code = code;
-    },
     onClose() {
       this.$emit("onClose");
     },
     async saveData(data) {
       try {
         this.activateLoader();
+
         const resp = await this.$axios.$post(this.link, data);
         this.showNoty(this.$messages.form.SAVED, "success");
         this.$emit("onAdd", resp.data);
