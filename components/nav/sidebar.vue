@@ -28,7 +28,6 @@
               nuxt
               :to="child.to"
             >
-              >
               <v-list-item-title v-text="child.title" />
               <v-list-item-icon>
                 <v-icon v-text="child.icon" />

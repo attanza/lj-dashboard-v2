@@ -33,52 +33,52 @@
             @onClick="confirmDelete"
           />
         </v-toolbar>
-        <form>
-          <v-layout row wrap>
-            <v-flex
-              v-for="(f, index) in fillable"
-              v-if="f.key != 'marketing_target_id'"
-              :key="index"
-              sm6
-              xs12
-            >
-              <label>{{ f.caption }}</label>
-              <v-text-field
-                v-model="formData[f.key]"
-                v-validate="f.rules"
-                :error-messages="errors.collect(f.key)"
-                :name="f.key"
-                :data-vv-name="f.key"
-                :data-vv-as="f.caption"
-              />
-            </v-flex>
-            <v-flex
-              v-for="(f, index) in fillable"
-              v-if="f.key == 'marketing_target_id'"
-              :key="index"
-              sm6
-              xs12
-            >
-              <label>Kode Jadwal</label>
-              <v-autocomplete
-                v-model="formData['marketing_target_id']"
-                v-validate="'required|integer'"
-                :items="targetItems"
-                :loading="targetComboLoading"
-                :search-input.sync="searchTarget"
-                :error-messages="errors.collect('marketing_target_id')"
-                item-text="code"
-                item-value="id"
-                placeholder="Ketik untuk mencari kode target"
-                name="marketing_target_id"
-                data-vv-name="marketing_target_id"
-                data-vv-as="Kode Target"
-                hide-no-data
-                hide-selected
-              />
-            </v-flex>
-          </v-layout>
-        </form>
+        <ValidationObserver ref="observer">
+          <form>
+            <v-layout row wrap>
+              <v-flex v-for="(f, index) in fillable" :key="index" sm6 xs12>
+                <span v-if="f.key != 'marketing_target_id'">
+                  <label>{{ f.caption }}</label>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    :name="f.value"
+                    :rules="f.rules"
+                  >
+                    <v-text-field
+                      v-model="formData[f.key]"
+                      :error-messages="errors"
+                      :name="f.key"
+                    />
+                  </ValidationProvider>
+                </span>
+              </v-flex>
+              <v-flex v-for="(f, index) in fillable" :key="index" sm6 xs12>
+                <span v-if="f.key == 'marketing_target_id'">
+                  <label>Kode Jadwal</label>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    :name="f.value"
+                    :rules="'required|integer'"
+                  >
+                    <v-autocomplete
+                      v-model="formData['marketing_target_id']"
+                      :items="targetItems"
+                      :loading="targetComboLoading"
+                      :search-input.sync="searchTarget"
+                      :error-messages="errors"
+                      item-text="code"
+                      item-value="id"
+                      placeholder="Ketik untuk mencari kode target"
+                      name="marketing_target_id"
+                      hide-no-data
+                      hide-selected
+                    />
+                  </ValidationProvider>
+                </span>
+              </v-flex>
+            </v-layout>
+          </form>
+        </ValidationObserver>
       </v-container>
     </v-card>
     <Dialog

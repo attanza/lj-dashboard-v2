@@ -14,18 +14,13 @@
           v-on="on"
           @click="onClick"
         >
-          >
           <v-icon v-if="icon != ''">
             {{ icon }}
           </v-icon>
-          <span v-if="title">
-            {{ title }}
-          </span>
+          <span v-if="title">{{ title }}</span>
         </v-btn>
       </template>
-      <span v-if="tooltipText">
-        {{ tooltipText }}
-      </span>
+      <span v-if="tooltipText">{{ tooltipText }}</span>
     </v-tooltip>
   </div>
 </template>

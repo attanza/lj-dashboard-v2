@@ -9,31 +9,42 @@
                 <v-toolbar-title>Login form</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
-                <form>
-                  <v-text-field
-                    v-model="email"
-                    v-validate="'required|email'"
-                    :error-messages="errors.collect('email')"
-                    name="email"
-                    prepend-icon="email"
-                    label="Alamat Email"
-                    data-vv-name="email"
-                  />
+                <ValidationObserver ref="observer">
+                  <form>
+                    <ValidationProvider
+                      v-slot="{ errors }"
+                      name="email"
+                      :rules="'required|email'"
+                    >
+                      <v-text-field
+                        v-model="email"
+                        :error-messages="errors"
+                        name="email"
+                        prepend-icon="email"
+                        label="Alamat Email"
+                        data-vv-name="email"
+                      />
+                    </ValidationProvider>
 
-                  <v-text-field
-                    v-model="password"
-                    v-validate="'required'"
-                    :append-icon="e1 ? 'visibility_off' : 'visibility'"
-                    :type="e1 ? 'text' : 'password'"
-                    :error-messages="errors.collect('password')"
-                    prepend-icon="lock"
-                    name="password"
-                    label="Password"
-                    hint="At least 6 characters"
-                    min="6"
-                    @click:append="e1 = !e1"
-                  />
-                </form>
+                    <ValidationProvider
+                      v-slot="{ errors }"
+                      v-model="password"
+                      name="password"
+                      :rules="'required'"
+                    >
+                      <v-text-field
+                        v-model="password"
+                        prepend-icon="lock"
+                        :error-messages="errors"
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                        :type="show1 ? 'text' : 'password'"
+                        name="password"
+                        label="Password"
+                        @click:append="show1 = !show1"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </form>
+                </ValidationObserver>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
@@ -59,25 +70,20 @@ import { catchError } from '~/mixins'
 
 export default {
   layout: 'nonav',
-  $_veeValidate: {
-    validator: 'new',
-  },
   mixins: [catchError],
   data: () => ({
     email: 'super_administrator@langsungjalan.com',
     password: 'password',
-    e1: false,
+    show1: false,
     loading: false,
     allowedLogin: ['super-administrator', 'administrator', 'supervisor'],
   }),
   methods: {
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.doLogin()
-          return
-        }
-      })
+    async submit() {
+      if (await this.$refs.observer.validate()) {
+        this.doLogin()
+      }
+      return
     },
     async doLogin() {
       try {

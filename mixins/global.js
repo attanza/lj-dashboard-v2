@@ -24,10 +24,6 @@ export default {
       showForm: false,
     }
   },
-  mounted() {
-    this.setAuth()
-  },
-
   methods: {
     inArray(keys, searchedKey) {
       let result = false
