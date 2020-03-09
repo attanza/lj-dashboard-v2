@@ -3,83 +3,85 @@
     <v-dialog v-model="dialog" persistent fullscreen>
       <v-card>
         <v-card-title>
-          <span class="primary--text headline">{{ formTitle }}</span>
+          <span class="primary--text headline">
+            {{ formTitle }}
+          </span>
         </v-card-title>
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-text>
           <sharedForm
             :items="formItem"
-            @onClose="onClose"
-            @onSubmit="saveData"
             :show-button="checkPermission('create-user')"
             :show-cancel="true"
-          ></sharedForm>
+            @onClose="onClose"
+            @onSubmit="saveData"
+          />
         </v-card-text>
       </v-card>
     </v-dialog>
   </v-layout>
 </template>
 <script>
-import { global, catchError } from "~/mixins";
-import sharedForm from "../sharedForm";
-import { formItem } from "./util";
+import { global, catchError } from '~/mixins'
+import sharedForm from '../sharedForm'
+import { formItem } from './util'
 export default {
   components: { sharedForm },
   mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
-      required: true
+      required: true,
     },
     link: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       dialog: false,
       formItem: formItem,
-      formTitle: "Tambah User"
-    };
+      formTitle: 'Tambah User',
+    }
   },
   watch: {
     show() {
-      this.dialog = this.show;
-    }
+      this.dialog = this.show
+    },
   },
   mounted() {
-    this.getRoles();
+    this.getRoles()
   },
   methods: {
     async getRoles() {
       try {
-        const index = this.formItem.findIndex(f => f.value === "roles");
+        const index = this.formItem.findIndex(f => f.value === 'roles')
         if (index !== -1) {
-          const resp = await this.$axios.get("/combo-data?model=Role");
-          this.formItem[index].items = resp.data;
+          const resp = await this.$axios.get('/combo-data?model=Role')
+          this.formItem[index].items = resp.data
         }
       } catch (e) {
-        this.catchError(e);
+        this.catchError(e)
       }
     },
     onClose() {
-      this.$emit("onClose");
+      this.$emit('onClose')
     },
     async saveData(data) {
-      data.roles = [data.roles];
+      data.roles = [data.roles]
       try {
-        this.activateLoader();
-        const resp = await this.$axios.$post(this.link, data);
-        this.showNoty(this.$messages.form.SAVED, "success");
-        this.$emit("onAdd", resp.data);
-        this.deactivateLoader();
+        this.activateLoader()
+        const resp = await this.$axios.$post(this.link, data)
+        this.showNoty(this.$messages.form.SAVED, 'success')
+        this.$emit('onAdd', resp.data)
+        this.deactivateLoader()
       } catch (e) {
-        this.dialog = false;
-        this.deactivateLoader();
-        this.catchError(e);
+        this.dialog = false
+        this.deactivateLoader()
+        this.catchError(e)
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>

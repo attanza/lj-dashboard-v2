@@ -44,22 +44,22 @@
           </v-btn>
         </template>
 
-        <template v-slot:item.marketing_target_id="{ item }">{{
-          item.target ? item.target.code : ""
-        }}</template>
-        <template v-slot:item.marketing_id="{ item }">{{
-          item.marketing ? item.marketing.name : ""
-        }}</template>
-        <template v-slot:item.marketing_action_id="{ item }">{{
-          item.action ? item.action.name : ""
-        }}</template>
+        <template v-slot:item.marketing_target_id="{ item }">
+          {{ item.target ? item.target.code : '' }}
+        </template>
+        <template v-slot:item.marketing_id="{ item }">
+          {{ item.marketing ? item.marketing.name : '' }}
+        </template>
+        <template v-slot:item.marketing_action_id="{ item }">
+          {{ item.action ? item.action.name : '' }}
+        </template>
       </v-data-table>
     </v-card-text>
     <dform
       :show="showForm"
+      :link="link"
       @onClose="showForm = false"
       @onAdd="addData"
-      :link="link"
     />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
@@ -73,93 +73,93 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { headers, downloadData } from "./util";
-import { global, catchError } from "~/mixins";
-import dform from "./dform";
-import DownloadDialog from "../DownloadDialog";
+import debounce from 'lodash/debounce'
+import { headers, downloadData } from './util'
+import { global, catchError } from '~/mixins'
+import dform from './dform'
+import DownloadDialog from '../DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
-  data() {
-    return {
-      title: "Jadwal",
-      link: "/schedulles",
-      headers: headers,
-      fillable: downloadData,
-      typeDates: ["created_at"],
-      dataToExport: []
-    };
-  },
+  mixins: [global, catchError],
   props: {
     targetId: {
       type: String,
       required: false,
-      default: null
+      default: null,
+    },
+  },
+  data() {
+    return {
+      title: 'Jadwal',
+      link: '/schedulles',
+      headers: headers,
+      fillable: downloadData,
+      typeDates: ['created_at'],
+      dataToExport: [],
     }
   },
 
-  mounted() {
-    this.populateTable();
-  },
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
+  },
+  mounted() {
+    this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        let queries = this.getQueries();
+        this.activateLoader()
+        let queries = this.getQueries()
         if (this.targetId) {
-          queries += `marketing_target_id=${this.targetId}&`;
+          queries += `marketing_target_id=${this.targetId}&`
         }
 
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
-        this.items = resp.data;
-        this.deactivateLoader();
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.total
+        this.items = resp.data
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = [];
+      this.dataToExport = []
       const notIncludes = [
-        "marketing_target_id",
-        "marketing_id",
-        "marketing_action_id",
-        "report"
-      ];
+        'marketing_target_id',
+        'marketing_id',
+        'marketing_action_id',
+        'report',
+      ]
       this.items.map(i => {
-        const data = Object.assign({}, i);
-        data.target = data.target.code;
-        data.marketing = data.marketing.name;
-        data.action = data.action.name;
-        notIncludes.map(n => delete data[n]);
-        this.dataToExport.push(data);
-      });
+        const data = Object.assign({}, i)
+        data.target = data.target.code
+        data.marketing = data.marketing.name
+        data.action = data.action.name
+        notIncludes.map(n => delete data[n])
+        this.dataToExport.push(data)
+      })
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

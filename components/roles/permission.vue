@@ -64,7 +64,7 @@
       </v-container>
     </v-card>
     <Dialog
-      :showDialog="showDialog"
+      :show-dialog="showDialog"
       text="Yakin menambah Permission ?"
       @onClose="showDialog = false"
       @onConfirmed="attachPermissions"
@@ -73,10 +73,10 @@
 </template>
 
 <script>
-import { global, catchError } from "~/mixins";
-import { ROLE_PERMISSIONS_URL } from "~/utils/apis";
-import Dialog from "~/components/Dialog";
-import debounce from "lodash/debounce";
+import { global, catchError } from '~/mixins'
+import { ROLE_PERMISSIONS_URL } from '~/utils/apis'
+import Dialog from '~/components/Dialog'
+import debounce from 'lodash/debounce'
 export default {
   components: { Dialog },
   mixins: [global, catchError],
@@ -84,63 +84,63 @@ export default {
     return {
       showDialog: false,
       permissionArray: [],
-      search: "",
-      items: []
-    };
+      search: '',
+      items: [],
+    }
   },
   watch: {
     search() {
-      if (this.search !== "") this.searchPermissions();
-    }
+      if (this.search !== '') this.searchPermissions()
+    },
   },
   mounted() {
-    this.items = this.$store.getters.getPermissions("");
-    this.setPermissionArray();
+    this.items = this.$store.getters.getPermissions('')
+    this.setPermissionArray()
   },
   methods: {
     toHome() {
-      this.$router.push("/roles");
+      this.$router.push('/roles')
     },
     setPermissionArray() {
       if (this.permissions) {
         this.permissions.forEach(p => {
-          this.permissionArray.push(p.id);
-        });
+          this.permissionArray.push(p.id)
+        })
       }
     },
     async attachPermissions() {
       try {
-        this.activateLoader();
+        this.activateLoader()
         let formData = {
           role_id: this.currentEdit.id,
-          permissions: this.permissionArray
-        };
+          permissions: this.permissionArray,
+        }
 
-        const resp = await this.$axios.$put(ROLE_PERMISSIONS_URL, formData);
-        this.$store.commit("permissions", resp.data);
-        this.showNoty("Data disimpan", "success");
-        this.showDialog = false;
-        this.deactivateLoader();
+        const resp = await this.$axios.$put(ROLE_PERMISSIONS_URL, formData)
+        this.$store.commit('permissions', resp.data)
+        this.showNoty('Data disimpan', 'success')
+        this.showDialog = false
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.catchError(e);
+        this.deactivateLoader()
+        this.catchError(e)
       }
     },
     selectAll() {
       if (this.items) {
-        this.permissionArray = [];
+        this.permissionArray = []
         this.items.forEach(c => {
-          this.permissionArray.push(c.id);
-        });
+          this.permissionArray.push(c.id)
+        })
       }
     },
     clearAll() {
-      this.permissionArray = [];
+      this.permissionArray = []
     },
     searchPermissions: debounce(function() {
-      let results = this.$store.getters.getPermissions(this.search);
-      this.items = results;
-    }, 300)
-  }
-};
+      let results = this.$store.getters.getPermissions(this.search)
+      this.items = results
+    }, 300),
+  },
+}
 </script>

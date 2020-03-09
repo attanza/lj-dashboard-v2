@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">{{ title }}</v-card-title>
+    <v-card-title class="primary--text">
+      {{ title }}
+    </v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
         v-if="checkPermission('create-marketing-action')"
@@ -39,6 +41,7 @@
         :footer-props="footerProps"
         :server-items-length="total"
       >
+        >
         <template v-slot:item.name="{ item }">
           <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
             {{ item.name }}
@@ -48,9 +51,9 @@
     </v-card-text>
     <dform
       :show="showForm"
+      :link="link"
       @onClose="showForm = false"
       @onAdd="addData"
-      :link="link"
     />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
@@ -64,68 +67,69 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { headers, downloadData } from "~/components/marketing-actions/util";
-import { global, catchError } from "~/mixins";
-import { dform } from "~/components/marketing-actions";
-import DownloadDialog from "~/components/DownloadDialog";
+import debounce from 'lodash/debounce'
+import { headers, downloadData } from '~/components/marketing-actions/util'
+import { global, catchError } from '~/mixins'
+import { dform } from '~/components/marketing-actions'
+import DownloadDialog from '~/components/DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
+  mixins: [global, catchError],
   data() {
     return {
-      title: "Marketing Action",
-      link: "/marketing-actions",
+      title: 'Marketing Action',
+      link: '/marketing-actions',
       headers: headers,
       fillable: downloadData,
-      typeDates: ["created_at"],
-      dataToExport: []
-    };
+      typeDates: ['created_at'],
+      dataToExport: [],
+    }
   },
-  mounted() {
-    this.populateTable();
-  },
+
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
+  },
+  mounted() {
+    this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        const queries = this.getQueries();
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
-        this.items = resp.data;
-        this.deactivateLoader();
+        this.activateLoader()
+        const queries = this.getQueries()
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.total
+        this.items = resp.data
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = [];
-      this.dataToExport = this.items;
+      this.dataToExport = []
+      this.dataToExport = this.items
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

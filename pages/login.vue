@@ -11,8 +11,8 @@
               <v-card-text>
                 <form>
                   <v-text-field
-                    v-validate="'required|email'"
                     v-model="email"
+                    v-validate="'required|email'"
                     :error-messages="errors.collect('email')"
                     name="email"
                     prepend-icon="email"
@@ -21,8 +21,8 @@
                   />
 
                   <v-text-field
-                    v-validate="'required'"
                     v-model="password"
+                    v-validate="'required'"
                     :append-icon="e1 ? 'visibility_off' : 'visibility'"
                     :type="e1 ? 'text' : 'password'"
                     :error-messages="errors.collect('password')"
@@ -42,8 +42,9 @@
                   :disabled="loading"
                   color="primary"
                   @click="submit"
-                  >Login</v-btn
                 >
+                  Login
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -54,49 +55,46 @@
 </template>
 
 <script>
-import { catchError } from "~/mixins";
+import { catchError } from '~/mixins'
 
 export default {
-  layout: "nonav",
+  layout: 'nonav',
   $_veeValidate: {
-    validator: "new"
+    validator: 'new',
   },
   mixins: [catchError],
-  props: {
-    source: String
-  },
   data: () => ({
-    email: "super_administrator@langsungjalan.com",
-    password: "password",
+    email: 'super_administrator@langsungjalan.com',
+    password: 'password',
     e1: false,
     loading: false,
-    allowedLogin: ["super-administrator", "administrator", "supervisor"]
+    allowedLogin: ['super-administrator', 'administrator', 'supervisor'],
   }),
   methods: {
     submit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.doLogin();
-          return;
+          this.doLogin()
+          return
         }
-      });
+      })
     },
     async doLogin() {
       try {
-        this.loading = true;
-        await this.$auth.loginWith("local", {
+        this.loading = true
+        await this.$auth.loginWith('local', {
           data: {
             email: this.email,
-            password: this.password
-          }
-        });
-        this.loading = false;
-        this.$router.push("/");
+            password: this.password,
+          },
+        })
+        this.loading = false
+        this.$router.push('/')
       } catch (e) {
-        this.loading = false;
-        this.showNoty("Login Gagal", "error");
+        this.loading = false
+        this.showNoty('Login Gagal', 'error')
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>

@@ -1,7 +1,14 @@
-import Vue from "vue"
-import VeeValidate, { Validator } from "vee-validate"
-import id from "vee-validate/dist/locale/id"
+import { extend, ValidationObserver, ValidationProvider } from 'vee-validate'
+import { messages } from 'vee-validate/dist/locale/id.json'
+import * as rules from 'vee-validate/dist/rules'
+import Vue from 'vue'
 
-Validator.localize("id", id)
+Object.keys(rules).forEach(rule => {
+  extend(rule, {
+    ...rules[rule], // copies rule configuration
+    message: messages[rule], // assign message
+  })
+})
 
-Vue.use(VeeValidate)
+Vue.component('ValidationProvider', ValidationProvider)
+Vue.component('ValidationObserver', ValidationObserver)

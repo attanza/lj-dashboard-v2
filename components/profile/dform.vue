@@ -3,7 +3,9 @@
     <v-dialog v-model="dialog" persistent max-width="500px">
       <v-card dark>
         <v-card-title>
-          <span class="headline primary--text">{{ formTitle }}</span>
+          <span class="headline primary--text">
+            {{ formTitle }}
+          </span>
         </v-card-title>
         <v-card-text>
           <v-container grid-list-md>
@@ -12,8 +14,8 @@
                 <v-flex xs12>
                   <label>Old Password</label>
                   <v-text-field
-                    v-validate="'required'"
                     v-model="old_password"
+                    v-validate="'required'"
                     :error-messages="errors.collect('old_password')"
                     data-vv-name="old_password"
                     name="old_password"
@@ -21,9 +23,9 @@
                   />
                   <label>Password</label>
                   <v-text-field
-                    v-validate="'required|min:6'"
                     ref="password"
                     v-model="password"
+                    v-validate="'required|min:6'"
                     :error-messages="errors.collect('password')"
                     data-vv-name="password"
                     name="password"
@@ -31,8 +33,8 @@
                   />
                   <label>Password Confirmation</label>
                   <v-text-field
-                    v-validate="'required|confirmed:password'"
                     v-model="password_confirmation"
+                    v-validate="'required|confirmed:password'"
                     :error-messages="errors.collect('password_confirmation')"
                     data-vv-name="password"
                     name="password_confirmation"
@@ -45,46 +47,50 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" flat @click.native="onClose">Close</v-btn>
-          <v-btn color="primary" flat @click.native="submit">Submit</v-btn>
+          <v-btn color="primary" flat @click.native="onClose">
+            Close
+          </v-btn>
+          <v-btn color="primary" flat @click.native="submit">
+            Submit
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins"
-import { PROFILE_URL } from "~/utils/apis"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
+import { global } from '~/mixins'
+import { PROFILE_URL } from '~/utils/apis'
+import axios from 'axios'
+import catchError, { showNoty } from '~/utils/catchError'
 export default {
   $_veeValidate: {
-    validator: "new"
+    validator: 'new',
   },
   mixins: [global],
   props: {
     show: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       dialog: false,
-      formTitle: "Change Password",
-      old_password: "",
-      password: "",
-      password_confirmation: ""
+      formTitle: 'Change Password',
+      old_password: '',
+      password: '',
+      password_confirmation: '',
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    }
+    },
   },
   methods: {
     onClose() {
-      this.$emit("onClose")
+      this.$emit('onClose')
     },
     submit() {
       this.$validator.validateAll().then(result => {
@@ -105,8 +111,8 @@ export default {
             )
             .then(res => res.data)
           if (resp.meta.status === 200) {
-            showNoty("Password changed", "success")
-            this.$emit("passwordChanged")
+            showNoty('Password changed', 'success')
+            this.$emit('passwordChanged')
             this.clearForm()
           }
         }
@@ -121,16 +127,16 @@ export default {
       return {
         old_password: this.old_password,
         password: this.password,
-        password_confirmation: this.password_confirmation
+        password_confirmation: this.password_confirmation,
       }
     },
     clearForm() {
-      this.old_password = ""
-      this.password = ""
-      this.password_confirmation = ""
+      this.old_password = ''
+      this.password = ''
+      this.password_confirmation = ''
       this.dialog = false
       this.onClose()
-    }
-  }
+    },
+  },
 }
 </script>

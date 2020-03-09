@@ -13,8 +13,8 @@
                   <span v-if="f.key != 'marketing_target_id' && f.show">
                     <label>{{ f.caption }}</label>
                     <v-text-field
-                      v-validate="f.rules"
                       v-model="formData[f.key]"
+                      v-validate="f.rules"
                       :error-messages="errors.collect(f.key)"
                       :name="f.key"
                       :data-vv-name="f.key"
@@ -25,8 +25,8 @@
                   <span v-if="targetId == 0 && f.key == 'marketing_target_id'">
                     <label>Kode Jadwal</label>
                     <v-autocomplete
-                      v-validate="'required|integer'"
                       v-model="formData['marketing_target_id']"
+                      v-validate="'required|integer'"
                       :items="targetItems"
                       :loading="targetComboLoading"
                       :search-input.sync="searchTarget"
@@ -48,121 +48,125 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" @click.native="onClose">Tutup</v-btn>
-          <v-btn color="primary" @click.native="submit">Simpan</v-btn>
+          <v-btn color="primary" @click.native="onClose">
+            Tutup
+          </v-btn>
+          <v-btn color="primary" @click.native="submit">
+            Simpan
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins"
-import { TARGET_YEARS, COMBO_DATA_URL } from "~/utils/apis"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
-import _ from "lodash"
+import { global } from '~/mixins'
+import { TARGET_YEARS, COMBO_DATA_URL } from '~/utils/apis'
+import axios from 'axios'
+import catchError, { showNoty } from '~/utils/catchError'
+import _ from 'lodash'
 
 export default {
   $_veeValidate: {
-    validator: "new"
+    validator: 'new',
   },
   mixins: [global],
   props: {
     show: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isEdit: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     dataToEdit: {
       type: Object,
       required: false,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       dialog: false,
-      formTitle: "Tambah Angkatan",
+      formTitle: 'Tambah Angkatan',
       fillable: [
         {
-          key: "marketing_target_id",
-          caption: "Kode Target",
-          value: "",
-          rules: "required|integer",
-          show: false
+          key: 'marketing_target_id',
+          caption: 'Kode Target',
+          value: '',
+          rules: 'required|integer',
+          show: false,
         },
         {
-          key: "year",
-          caption: "Angkatan",
-          value: "",
-          rules: "required|max:4",
-          show: false
+          key: 'year',
+          caption: 'Angkatan',
+          value: '',
+          rules: 'required|max:4',
+          show: false,
         },
         {
-          key: "class",
-          caption: "Jumlah Kelas",
-          value: "",
-          rules: "required|integer",
-          show: false
+          key: 'class',
+          caption: 'Jumlah Kelas',
+          value: '',
+          rules: 'required|integer',
+          show: false,
         },
         {
-          key: "students",
-          caption: "Jumlah Siswa",
-          value: "",
-          rules: "required|integer",
-          show: false
+          key: 'students',
+          caption: 'Jumlah Siswa',
+          value: '',
+          rules: 'required|integer',
+          show: false,
         },
         {
-          key: "count_attendence",
-          caption: "Jumlah Hadir",
-          value: "",
-          rules: "integer",
-          show: false
+          key: 'count_attendence',
+          caption: 'Jumlah Hadir',
+          value: '',
+          rules: 'integer',
+          show: false,
         },
         {
-          key: "people_dp",
-          caption: "Jumlah Orang DP",
-          value: "",
-          rules: "integer",
-          show: false
+          key: 'people_dp',
+          caption: 'Jumlah Orang DP',
+          value: '',
+          rules: 'integer',
+          show: false,
         },
         {
-          key: "count_dp",
-          caption: "Total DP Diterima",
-          value: "",
-          rules: "integer",
-          show: false
+          key: 'count_dp',
+          caption: 'Total DP Diterima',
+          value: '',
+          rules: 'integer',
+          show: false,
         },
         {
-          key: "count_add",
-          caption: "Jumlah Tambah",
-          value: "",
-          rules: "integer",
-          show: false
+          key: 'count_add',
+          caption: 'Jumlah Tambah',
+          value: '',
+          rules: 'integer',
+          show: false,
         },
         {
-          key: "count_cancel",
-          caption: "Jumlah Batal",
-          value: "",
-          rules: "integer",
-          show: false
+          key: 'count_cancel',
+          caption: 'Jumlah Batal',
+          value: '',
+          rules: 'integer',
+          show: false,
         },
         {
-          key: "count_packages",
-          caption: "Jumlah Bagi Paket",
-          value: "",
-          rules: "integer",
-          show: false
-        }
+          key: 'count_packages',
+          caption: 'Jumlah Bagi Paket',
+          value: '',
+          rules: 'integer',
+          show: false,
+        },
       ],
       formData: {},
       targetEntries: [],
       targetComboLoading: false,
-      searchTarget: null
+      searchTarget: null,
     }
   },
 
@@ -176,7 +180,7 @@ export default {
     },
     actionId() {
       return this.currentEdit.schedulle.marketing_action_id || 0
-    }
+    },
   },
   watch: {
     show() {
@@ -192,7 +196,7 @@ export default {
       if (this.isEdit) {
         this.populateData()
       }
-    }
+    },
   },
   created() {
     this.setFields()
@@ -202,7 +206,7 @@ export default {
       try {
         this.targetComboLoading = true
         this.targetEntries = await axios
-          .get(COMBO_DATA_URL + "MarketingTarget&search=" + this.searchTarget)
+          .get(COMBO_DATA_URL + 'MarketingTarget&search=' + this.searchTarget)
           .then(res => res.data)
         this.targetComboLoading = false
       } catch (e) {
@@ -211,28 +215,28 @@ export default {
       }
     }, 500),
     onClose() {
-      this.formTitle = "Tambah Kontak"
+      this.formTitle = 'Tambah Kontak'
       this.formData = {}
       this.setFields()
-      this.$emit("onClose")
+      this.$emit('onClose')
     },
     setFields() {
       this.fillable.forEach(data => (this.formData[data.key] = data.value))
       this.errors.clear()
       if (this.targetId && this.targetId != 0) {
-        this.formData["marketing_target_id"] = this.targetId
+        this.formData['marketing_target_id'] = this.targetId
       }
       this.showFormField()
     },
     showFormField() {
       if (this.actionId === 1 || this.actionId === 2 || this.actionId === 3) {
-        let shouldShow = ["year", "class", "students"]
+        let shouldShow = ['year', 'class', 'students']
         this.setShouldShow(shouldShow)
       } else return null
     },
     setShouldShow(shouldShow) {
       shouldShow.map(f => {
-        let fill = _.find(this.fillable, ["key", f])
+        let fill = _.find(this.fillable, ['key', f])
         fill.show = true
       })
     },
@@ -246,7 +250,7 @@ export default {
     },
     populateData() {
       if (this.dataToEdit) {
-        this.formTitle = "Edit Kontak"
+        this.formTitle = 'Edit Kontak'
         this.formData.marketing_target_id = this.dataToEdit.marketing_target_id
         this.formData.year = this.dataToEdit.year
         this.formData.class = this.dataToEdit.class
@@ -261,11 +265,10 @@ export default {
     },
     parseFormData(dataToParse) {
       let data = {}
-      for (var key in dataToParse) {
-        if (dataToParse.hasOwnProperty(key)) {
-          data[key] = dataToParse[key] == "" ? null : dataToParse[key]
-        }
-      }
+
+      Object.keys(dataToParse).map(
+        key => (data[key] = dataToParse[key] == '' ? null : dataToParse[key])
+      )
       return data
     },
     async saveData() {
@@ -277,8 +280,8 @@ export default {
             .put(`${TARGET_YEARS}/${this.dataToEdit.id}`, httpData)
             .then(res => res.data)
           if (resp.meta.status === 200) {
-            showNoty("Data diperbaharui", "success")
-            this.$emit("onEdit", resp.data)
+            showNoty('Data diperbaharui', 'success')
+            this.$emit('onEdit', resp.data)
             this.setFields()
           }
         } else {
@@ -286,8 +289,8 @@ export default {
             .post(TARGET_YEARS, httpData)
             .then(res => res.data)
           if (resp.meta.status === 201) {
-            showNoty("Data disimpan", "success")
-            this.$emit("onAdd", resp.data)
+            showNoty('Data disimpan', 'success')
+            this.$emit('onAdd', resp.data)
             this.setFields()
           }
         }
@@ -297,7 +300,7 @@ export default {
         this.deactivateLoader()
         catchError(e)
       }
-    }
-  }
+    },
+  },
 }
 </script>

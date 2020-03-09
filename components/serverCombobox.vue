@@ -10,16 +10,16 @@
         <v-card>
           <v-card-title>
             <span class="primary--text headline">{{ label }}</span>
-            <v-spacer></v-spacer>
+            <v-spacer />
             <v-text-field
               v-model="options.search"
               append-icon="search"
               label="Cari"
               single-line
               hide-details
-            ></v-text-field>
+            />
           </v-card-title>
-          <v-divider></v-divider>
+          <v-divider />
           <v-data-table
             :headers="headers"
             :items="items"
@@ -37,7 +37,7 @@
             </template>
           </v-data-table>
           <v-card-actions>
-            <v-spacer></v-spacer>
+            <v-spacer />
             <v-btn color="primary" text @click="dialog = false">
               Tutup
             </v-btn>
@@ -60,73 +60,75 @@
 </template>
 
 <script>
-import { catchError, global } from "~/mixins";
-import { debounce } from "lodash";
+import { catchError, global } from '~/mixins'
+import { debounce } from 'lodash'
 export default {
   mixins: [catchError, global],
-  data: () => ({
-    dialog: false,
-    formTitle: "Server Combobox",
-    errorMessage: ""
-  }),
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
     },
     headers: {
       type: Array,
-      required: true
+      required: true,
     },
     url: {
       type: String,
-      required: true
+      required: true,
     },
     errorMessages: {
-      type: Array
-    }
+      type: Array,
+      required: false,
+      default: null,
+    },
   },
+  data: () => ({
+    dialog: false,
+    formTitle: 'Server Combobox',
+    errorMessage: '',
+  }),
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.getData();
+          this.getData()
         }
       }, 500),
-      deep: true
+      deep: true,
     },
     errorMessages() {
       if (this.errorMessages.length > 0) {
-        this.errorMessage = this.errorMessages[0];
+        this.errorMessage = this.errorMessages[0]
       }
-    }
+    },
   },
 
   mounted() {
-    this.options.sortBy = ["name"];
-    this.options.sortDesc = [true];
-    this.getData();
+    this.options.sortBy = ['name']
+    this.options.sortDesc = [true]
+    this.getData()
   },
   methods: {
     async getData() {
       try {
-        this.loading = true;
-        const queries = this.getQueries();
-        const resp = await this.$axios.$get(`${this.url + queries}`);
-        this.items = resp.data;
-        this.total = resp.meta.total;
-        this.loading = false;
+        this.loading = true
+        const queries = this.getQueries()
+        const resp = await this.$axios.$get(`${this.url + queries}`)
+        this.items = resp.data
+        this.total = resp.meta.total
+        this.loading = false
       } catch (e) {
-        this.loading = false;
-        this.catchError(e);
+        this.loading = false
+        this.catchError(e)
       }
     },
     select(data) {
-      this.dialog = false;
-      this.$emit("onSelected", data);
-    }
-  }
-};
+      this.dialog = false
+      this.$emit('onSelected', data)
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

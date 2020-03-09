@@ -27,12 +27,12 @@
             :show-button="checkPermission('update-study-program')"
             :init-value="currentEdit"
             @onSubmit="editData"
-          ></sharedForm>
+          />
         </v-card-text>
       </v-container>
     </v-card>
     <Dialog
-      :showDialog="showDialog"
+      :show-dialog="showDialog"
       :text="$messages.general.CONFIRM_DELETE"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
@@ -41,95 +41,95 @@
 </template>
 
 <script>
-import { global, catchError } from "~/mixins";
-import Dialog from "~/components/Dialog";
-import sharedForm from "../sharedForm";
-import { formItem } from "./util";
+import { global, catchError } from '~/mixins'
+import Dialog from '~/components/Dialog'
+import sharedForm from '../sharedForm'
+import { formItem } from './util'
 
 export default {
   components: { Dialog, sharedForm },
   mixins: [global, catchError],
   data() {
     return {
-      link: "/studies",
+      link: '/studies',
       formItem: formItem,
-      showDialog: false
-    };
+      showDialog: false,
+    }
   },
 
   mounted() {
-    this.populateUniversity();
-    this.populateStudyName();
+    this.populateUniversity()
+    this.populateStudyName()
   },
 
   methods: {
     toHome() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
 
     async populateUniversity() {
       try {
-        const resp = await this.$axios.$get("/combo-data?model=University");
-        const idx = this.formItem.findIndex(f => f.value === "university_id");
+        const resp = await this.$axios.$get('/combo-data?model=University')
+        const idx = this.formItem.findIndex(f => f.value === 'university_id')
         if (idx !== -1) {
-          this.formItem[idx].items = resp;
+          this.formItem[idx].items = resp
         }
       } catch (e) {
-        this.catchError(e);
+        this.catchError(e)
       }
     },
 
     async populateStudyName() {
       try {
-        const resp = await this.$axios.$get("/combo-data?model=StudyName");
-        const idx = this.formItem.findIndex(f => f.value === "study_name_id");
+        const resp = await this.$axios.$get('/combo-data?model=StudyName')
+        const idx = this.formItem.findIndex(f => f.value === 'study_name_id')
         if (idx !== -1) {
-          this.formItem[idx].items = resp;
+          this.formItem[idx].items = resp
         }
       } catch (e) {
-        this.catchError(e);
+        this.catchError(e)
       }
     },
 
     async editData(data) {
       try {
-        this.activateLoader();
+        this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
-            this.link + "/" + this.currentEdit.id,
+            this.link + '/' + this.currentEdit.id,
             data
-          );
-          this.$store.commit("currentEdit", resp.data);
-          this.showNoty(this.$messages.form.UPDATED, "success");
-          this.deactivateLoader();
+          )
+          this.$store.commit('currentEdit', resp.data)
+          this.showNoty(this.$messages.form.UPDATED, 'success')
+          this.deactivateLoader()
         }
       } catch (e) {
-        this.deactivateLoader();
-        this.catchError(e);
+        this.deactivateLoader()
+        this.catchError(e)
       }
     },
     confirmDelete() {
-      this.showDialog = !this.showDialog;
+      this.showDialog = !this.showDialog
     },
     async removeData() {
       try {
-        this.activateLoader();
+        this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            this.link + "/" + this.currentEdit.id
-          );
+            this.link + '/' + this.currentEdit.id
+          )
           if (resp.meta.status === 200) {
-            this.showNoty(this.$messages.form.DELETED, "success");
-            this.$router.push("/study-programs");
+            this.showNoty(this.$messages.form.DELETED, 'success')
+            this.$router.push('/study-programs')
           }
         }
-        this.deactivateLoader();
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showDialog = false;
-        this.catchError(e);
+        this.deactivateLoader()
+        this.showDialog = false
+        this.catchError(e)
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>

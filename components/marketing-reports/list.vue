@@ -39,27 +39,27 @@
         :options.sync="options"
       >
         <template v-slot:item.code="{ item }">
-          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">{{
-            item.code
-          }}</v-btn>
+          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
+            {{ item.code }}
+          </v-btn>
         </template>
 
         <template v-slot:item.marketing_target_id="{ item }">
-          {{ item.target ? item.target.code : "" }}
+          {{ item.target ? item.target.code : '' }}
         </template>
         <template v-slot:item.marketing_id="{ item }">
-          {{ item.marketing ? item.marketing.name : "" }}
+          {{ item.marketing ? item.marketing.name : '' }}
         </template>
         <template v-slot:item.marketing_action_id="{ item }">
-          {{ item.action ? item.action.name : "" }}
+          {{ item.action ? item.action.name : '' }}
         </template>
       </v-data-table>
     </v-card-text>
     <dform
       :show="showForm"
+      :link="link"
       @onClose="showForm = false"
       @onAdd="addData"
-      :link="link"
     />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
@@ -73,109 +73,110 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { headers, downloadData } from "./util";
-import { global, catchError } from "~/mixins";
-import dform from "./dform";
-import DownloadDialog from "../DownloadDialog";
+import debounce from 'lodash/debounce'
+import { headers, downloadData } from './util'
+import { global, catchError } from '~/mixins'
+import dform from './dform'
+import DownloadDialog from '../DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
-  data() {
-    return {
-      title: "Laporan",
-      link: "/marketing-reports",
-      headers: headers,
-      fillable: downloadData,
-      typeDates: ["created_at"],
-      dataToExport: []
-    };
-  },
+  mixins: [global, catchError],
   props: {
     universityId: {
       type: String,
       required: false,
-      default: null
+      default: null,
     },
     targetId: {
       type: String,
       required: false,
-      default: null
+      default: null,
     },
     schedulleId: {
       type: String,
       required: false,
-      default: null
+      default: null,
+    },
+  },
+  data() {
+    return {
+      title: 'Laporan',
+      link: '/marketing-reports',
+      headers: headers,
+      fillable: downloadData,
+      typeDates: ['created_at'],
+      dataToExport: [],
     }
   },
-  mounted() {
-    this.populateTable();
-  },
+
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
+  },
+  mounted() {
+    this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        let queries = this.getQueries();
+        this.activateLoader()
+        let queries = this.getQueries()
         if (this.universityId) {
-          queries += `university_id=${this.universityId}&`;
+          queries += `university_id=${this.universityId}&`
         }
         if (this.targetId) {
-          queries += `marketing_target_id=${this.targetId}&`;
+          queries += `marketing_target_id=${this.targetId}&`
         }
         if (this.schedulleId) {
-          queries += `schedulle_id=${this.schedulleId}&`;
+          queries += `schedulle_id=${this.schedulleId}&`
         }
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
-        this.items = resp.data;
-        this.deactivateLoader();
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.total
+        this.items = resp.data
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = [];
-      const notIncludes = ["schedulle_id"];
+      this.dataToExport = []
+      const notIncludes = ['schedulle_id']
       this.items.map(i => {
-        const data = Object.assign({}, i);
+        const data = Object.assign({}, i)
         data.university = this.normalizeObject(
           data,
-          "schedulle.target.study.university.name"
-        );
+          'schedulle.target.study.university.name'
+        )
         data.study = this.normalizeObject(
           data,
-          "schedulle.target.study.studyName.name"
-        );
-        data.action = this.normalizeObject(data, "schedulle.action.name");
-        data.schedulle = this.normalizeObject(data, "schedulle.code");
-        notIncludes.map(n => delete data[n]);
-        this.dataToExport.push(data);
-      });
+          'schedulle.target.study.studyName.name'
+        )
+        data.action = this.normalizeObject(data, 'schedulle.action.name')
+        data.schedulle = this.normalizeObject(data, 'schedulle.code')
+        notIncludes.map(n => delete data[n])
+        this.dataToExport.push(data)
+      })
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

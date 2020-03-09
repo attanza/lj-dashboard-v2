@@ -3,7 +3,6 @@
     <v-tooltip top>
       <template v-slot:activator="{ on }">
         <v-btn
-          v-on="on"
           :color="color"
           :text="flat"
           :block="block"
@@ -12,13 +11,21 @@
           :title="title"
           :tooltip-text="tooltipText"
           :dark="dark"
+          v-on="on"
           @click="onClick"
         >
-          <v-icon v-if="icon != ''">{{ icon }}</v-icon>
-          <span v-if="title">{{ title }}</span>
+          >
+          <v-icon v-if="icon != ''">
+            {{ icon }}
+          </v-icon>
+          <span v-if="title">
+            {{ title }}
+          </span>
         </v-btn>
       </template>
-      <span v-if="tooltipText">{{ tooltipText }}</span>
+      <span v-if="tooltipText">
+        {{ tooltipText }}
+      </span>
     </v-tooltip>
   </div>
 </template>
@@ -28,55 +35,55 @@ export default {
   props: {
     color: {
       type: String,
-      required: true
+      required: true,
     },
     icon: {
       type: String,
       required: false,
-      default: ""
+      default: '',
     },
     tooltipText: {
       type: String,
       required: false,
-      default: ""
+      default: '',
     },
     title: {
       type: String,
       required: false,
-      default: ""
+      default: '',
     },
     flat: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     block: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     outline: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     iconMode: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     dark: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
   methods: {
     onClick() {
-      this.$emit("onClick");
-    }
-  }
-};
+      this.$emit('onClick')
+    },
+  },
+}
 </script>
 
 <style scoped></style>

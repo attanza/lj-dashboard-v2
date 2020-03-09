@@ -27,12 +27,12 @@
             :show-button="checkPermission('update-user')"
             :init-value="initValue"
             @onSubmit="editData"
-          ></sharedForm>
+          />
         </v-card-text>
       </v-container>
     </v-card>
     <Dialog
-      :showDialog="showDialog"
+      :show-dialog="showDialog"
       :text="$messages.general.CONFIRM_DELETE"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
@@ -41,99 +41,99 @@
 </template>
 
 <script>
-import { global, catchError } from "~/mixins";
-import Dialog from "~/components/Dialog";
-import sharedForm from "../sharedForm";
-import { formItem } from "./util";
+import { global, catchError } from '~/mixins'
+import Dialog from '~/components/Dialog'
+import sharedForm from '../sharedForm'
+import { formItem } from './util'
 
 export default {
   components: { Dialog, sharedForm },
   mixins: [global, catchError],
   data() {
     return {
-      link: "/users",
+      link: '/users',
       formItem: [],
       showDialog: false,
-      initValue: null
-    };
+      initValue: null,
+    }
   },
 
   mounted() {
-    this.populateFormItem();
-    this.getRoles();
+    this.populateFormItem()
+    this.getRoles()
   },
 
   methods: {
     populateFormItem() {
       // User Init Value
-      let initValue = Object.assign({}, this.currentEdit);
-      initValue.roles = initValue.roles[0].id;
-      this.initValue = initValue;
+      let initValue = Object.assign({}, this.currentEdit)
+      initValue.roles = initValue.roles[0].id
+      this.initValue = initValue
 
       // form item
-      const formItemForEdit = [...formItem];
-      const idx = formItemForEdit.findIndex(f => f.value === "password");
+      const formItemForEdit = [...formItem]
+      const idx = formItemForEdit.findIndex(f => f.value === 'password')
       if (idx !== -1) {
-        formItemForEdit.splice(idx, 1);
+        formItemForEdit.splice(idx, 1)
       }
-      this.formItem = formItemForEdit;
+      this.formItem = formItemForEdit
     },
     async getRoles() {
       try {
-        const index = this.formItem.findIndex(f => f.value === "roles");
+        const index = this.formItem.findIndex(f => f.value === 'roles')
         if (index !== -1) {
-          const resp = await this.$axios.get("/combo-data?model=Role");
-          this.formItem[index].items = resp.data;
+          const resp = await this.$axios.get('/combo-data?model=Role')
+          this.formItem[index].items = resp.data
         }
       } catch (e) {
-        this.catchError(e);
+        this.catchError(e)
       }
     },
     toHome() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
 
     async editData(data) {
       try {
-        this.activateLoader();
-        data.roles = [data.roles];
+        this.activateLoader()
+        data.roles = [data.roles]
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
-            this.link + "/" + this.currentEdit.id,
+            this.link + '/' + this.currentEdit.id,
             data
-          );
-          this.$store.commit("currentEdit", resp.data);
-          this.populateFormItem();
-          this.showNoty(this.$messages.form.UPDATED, "success");
-          this.deactivateLoader();
+          )
+          this.$store.commit('currentEdit', resp.data)
+          this.populateFormItem()
+          this.showNoty(this.$messages.form.UPDATED, 'success')
+          this.deactivateLoader()
         }
       } catch (e) {
-        this.deactivateLoader();
-        this.catchError(e);
+        this.deactivateLoader()
+        this.catchError(e)
       }
     },
     confirmDelete() {
-      this.showDialog = !this.showDialog;
+      this.showDialog = !this.showDialog
     },
     async removeData() {
       try {
-        this.activateLoader();
+        this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            this.link + "/" + this.currentEdit.id
-          );
+            this.link + '/' + this.currentEdit.id
+          )
           if (resp.meta.status === 200) {
-            this.showNoty(this.$messages.form.DELETED, "success");
-            this.$router.push(this.link);
+            this.showNoty(this.$messages.form.DELETED, 'success')
+            this.$router.push(this.link)
           }
         }
-        this.deactivateLoader();
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showDialog = false;
-        this.catchError(e);
+        this.deactivateLoader()
+        this.showDialog = false
+        this.catchError(e)
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>

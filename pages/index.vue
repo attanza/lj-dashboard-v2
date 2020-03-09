@@ -2,27 +2,45 @@
   <div>
     <v-layout row wrap>
       <v-flex xs12 sm6 md4>
-        <v-card v-if="dashboardData" light class="elevation-2 mb-2" max-height="200px">
+        <v-card
+          v-if="dashboardData"
+          light
+          class="elevation-2 mb-2"
+          max-height="200px"
+        >
           <v-layout>
             <v-flex xs4 class="flex-all-centered">
-              <v-icon color="primary" style="font-size: 3rem;">supervised_user_circle</v-icon>
+              <v-icon color="primary" style="font-size: 3rem;">
+                supervised_user_circle
+              </v-icon>
             </v-flex>
             <v-flex xs8>
               <div>Active Marketings</div>
-              <div class="title primary--text">{{ dashboardData.total_marketings }}</div>
+              <div class="title primary--text">
+                {{ dashboardData.total_marketings }}
+              </div>
             </v-flex>
           </v-layout>
         </v-card>
       </v-flex>
       <v-flex xs12 sm6 md4>
-        <v-card v-if="dashboardData" light class="elevation-2 mb-2" max-height="200px">
+        <v-card
+          v-if="dashboardData"
+          light
+          class="elevation-2 mb-2"
+          max-height="200px"
+        >
           <v-layout>
             <v-flex xs4 class="flex-all-centered">
-              <v-icon color="primary" style="font-size: 3rem;">account_balance</v-icon>
+              <v-icon color="primary" style="font-size: 3rem;">
+                account_balance
+              </v-icon>
             </v-flex>
             <v-flex xs8>
               <div>Registered Universities</div>
-              <div class="title primary--text">{{ dashboardData.total_universities }}</div>
+              <div class="title primary--text">
+                {{ dashboardData.total_universities }}
+              </div>
             </v-flex>
           </v-layout>
         </v-card>
@@ -48,28 +66,28 @@
   </div>
 </template>
 <script>
-import { DASHBOARD_DATA_URL } from "~/utils/apis";
-import { global, catchError } from "~/mixins";
+import { DASHBOARD_DATA_URL } from '~/utils/apis'
+import { global, catchError } from '~/mixins'
 
 export default {
   mixins: [global, catchError],
   mounted() {
-    this.seedData();
+    this.seedData()
   },
   methods: {
     async seedData() {
       try {
-        this.activateLoader();
-        let resp = await this.$axios.$get(DASHBOARD_DATA_URL);
-        if (resp) this.$store.commit("dashboardData", resp);
-        this.deactivateLoader();
+        this.activateLoader()
+        let resp = await this.$axios.$get(DASHBOARD_DATA_URL)
+        if (resp) this.$store.commit('dashboardData', resp)
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.catchError(e);
+        this.deactivateLoader()
+        this.catchError(e)
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 <style scoped>
 .flex-all-centered {

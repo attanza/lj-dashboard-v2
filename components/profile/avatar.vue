@@ -16,7 +16,7 @@
             style="display: none"
             accept="image/*"
             @change="onFilePicked"
-          >
+          />
           <Tbtn
             color="primary"
             block
@@ -31,28 +31,28 @@
 </template>
 
 <script>
-import { global } from "~/mixins"
-import axios from "axios"
-import { PROFILE_URL } from "~/utils/apis"
-import catchError, { showNoty } from "~/utils/catchError"
-import Cookie from "js-cookie"
+import { global } from '~/mixins'
+import axios from 'axios'
+import { PROFILE_URL } from '~/utils/apis'
+import catchError, { showNoty } from '~/utils/catchError'
+import Cookie from 'js-cookie'
 
 export default {
   mixins: [global],
   data() {
     return {
-      imageName: "",
-      imageUrl: "",
-      imageFile: ""
+      imageName: '',
+      imageUrl: '',
+      imageFile: '',
     }
   },
   computed: {
     avatar() {
-      if (this.user && this.user.photo != "") {
+      if (this.user && this.user.photo != '') {
         return this.user.photo
       }
-      return "/images/user.png"
-    }
+      return '/images/user.png'
+    },
   },
 
   methods: {
@@ -64,12 +64,12 @@ export default {
       const files = e.target.files
       if (files[0] !== undefined) {
         this.imageName = files[0].name
-        if (this.imageName.lastIndexOf(".") <= 0) {
+        if (this.imageName.lastIndexOf('.') <= 0) {
           return
         }
         const fr = new FileReader()
         fr.readAsDataURL(files[0])
-        fr.addEventListener("load", () => {
+        fr.addEventListener('load', () => {
           this.imageUrl = fr.result
           this.imageFile = files[0] // this is an image file that can be sent to server...
         })
@@ -80,22 +80,22 @@ export default {
     async submitFile() {
       try {
         this.activateLoader()
-        if (this.user && this.imageFile != "") {
+        if (this.user && this.imageFile != '') {
           let formData = new FormData()
-          formData.append("photo", this.imageFile)
+          formData.append('photo', this.imageFile)
           const resp = await axios
-            .post(PROFILE_URL + "/upload/" + this.user.id, formData, {
+            .post(PROFILE_URL + '/upload/' + this.user.id, formData, {
               headers: {
-                "Content-Type": "multipart/form-data"
-              }
+                'Content-Type': 'multipart/form-data',
+              },
             })
             .then(res => res.data)
-          let cookieData = await Cookie.get("lj_token")
+          let cookieData = await Cookie.get('lj_token')
           cookieData = JSON.parse(cookieData)
           cookieData.user = resp.data
-          await Cookie.set("lj_token", JSON.stringify(cookieData))
-          this.$store.commit("user", resp.data)
-          showNoty("Profile Picture Updated", "success")
+          await Cookie.set('lj_token', JSON.stringify(cookieData))
+          this.$store.commit('user', resp.data)
+          showNoty('Profile Picture Updated', 'success')
           this.clearData()
           this.deactivateLoader()
         }
@@ -105,11 +105,11 @@ export default {
       }
     },
     clearData() {
-      this.imageName = ""
-      this.imageFile = ""
-      this.imageUrl = ""
-    }
-  }
+      this.imageName = ''
+      this.imageFile = ''
+      this.imageUrl = ''
+    },
+  },
 }
 </script>
 

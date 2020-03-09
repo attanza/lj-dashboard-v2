@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">{{ title }}</v-card-title>
+    <v-card-title class="primary--text">
+      {{ title }}
+    </v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
         v-if="checkPermission('create-referral')"
@@ -41,9 +43,7 @@
       >
         <template v-slot:item.code="{ item }">
           <v-btn text color="primary" nuxt :to="`${link}/${item._id}`">
-            {{
-            item.code
-            }}
+            {{ item.code }}
           </v-btn>
         </template>
 
@@ -57,7 +57,12 @@
         </template>
       </v-data-table>
     </v-card-text>
-    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData" :link="link" />
+    <dform
+      :show="showForm"
+      :link="link"
+      @onClose="showForm = false"
+      @onAdd="addData"
+    />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
@@ -70,69 +75,70 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { headers, downloadData } from "~/components/referrals/util";
-import { global, catchError } from "~/mixins";
-import { dform } from "~/components/referrals";
-import DownloadDialog from "~/components/DownloadDialog";
+import debounce from 'lodash/debounce'
+import { headers, downloadData } from '~/components/referrals/util'
+import { global, catchError } from '~/mixins'
+import { dform } from '~/components/referrals'
+import DownloadDialog from '~/components/DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
+  mixins: [global, catchError],
   data() {
     return {
-      title: "Referral",
-      link: "/referrals",
+      title: 'Referral',
+      link: '/referrals',
       headers: headers,
       fillable: downloadData,
-      typeDates: ["created_at"],
-      dataToExport: []
-    };
+      typeDates: ['created_at'],
+      dataToExport: [],
+    }
   },
-  mounted() {
-    this.populateTable();
-  },
+
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
+  },
+  mounted() {
+    this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        const queries = this.getQueries();
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
-        this.items = resp.data;
-        console.log(this.items);
-        this.deactivateLoader();
+        this.activateLoader()
+        const queries = this.getQueries()
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.total
+        this.items = resp.data
+        console.log(this.items)
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = [];
-      this.dataToExport = this.items;
+      this.dataToExport = []
+      this.dataToExport = this.items
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

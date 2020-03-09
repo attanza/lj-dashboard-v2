@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">{{ title }}</v-card-title>
+    <v-card-title class="primary--text">
+      {{ title }}
+    </v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
         v-if="checkPermission('create-user')"
@@ -46,7 +48,9 @@
         </template>
         <template v-slot:item.is_active="{ item }">
           <span v-if="item.is_active">
-            <v-chip color="green" text-color="white">Active</v-chip>
+            <v-chip color="green" text-color="white">
+              Active
+            </v-chip>
           </span>
           <span v-else>
             <v-chip>Not Active</v-chip>
@@ -56,9 +60,9 @@
     </v-card-text>
     <dform
       :show="showForm"
+      :link="link"
       @onClose="showForm = false"
       @onAdd="addData"
-      :link="link"
     />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
@@ -72,73 +76,74 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { headers, downloadData } from "~/components/users/util";
-import { global, catchError } from "~/mixins";
-import { dform } from "~/components/users";
-import DownloadDialog from "~/components/DownloadDialog";
+import debounce from 'lodash/debounce'
+import { headers, downloadData } from '~/components/users/util'
+import { global, catchError } from '~/mixins'
+import { dform } from '~/components/users'
+import DownloadDialog from '~/components/DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
+  mixins: [global, catchError],
   data() {
     return {
-      title: "User",
-      link: "/users",
+      title: 'User',
+      link: '/users',
       headers: headers,
       fillable: downloadData,
-      typeDates: ["created_at"],
-      dataToExport: []
-    };
+      typeDates: ['created_at'],
+      dataToExport: [],
+    }
   },
-  mounted() {
-    this.populateTable();
-  },
+
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
+  },
+  mounted() {
+    this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        const queries = this.getQueries();
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
-        this.items = resp.data;
-        this.deactivateLoader();
+        this.activateLoader()
+        const queries = this.getQueries()
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.total
+        this.items = resp.data
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = [];
+      this.dataToExport = []
       this.items.map(i => {
-        let data = Object.assign({}, i);
-        data.role = data.roles[0].name;
-        delete data["roles"];
-        this.dataToExport.push(data);
-      });
+        let data = Object.assign({}, i)
+        data.role = data.roles[0].name
+        delete data['roles']
+        this.dataToExport.push(data)
+      })
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

@@ -50,14 +50,14 @@
           <td>
             <a @click="toDetail(props.item)">{{ props.item.transaction_no }}</a>
           </td>
-          <td>{{ props.item.target ? props.item.target.code : "" }}</td>
+          <td>{{ props.item.target ? props.item.target.code : '' }}</td>
           <td>
             {{
               props.item.target &&
                 props.item.target.study &&
-                props.item.target.study.university
+              props.item.target.study.university
                 ? props.item.target.study.university.name
-                : ""
+                : ''
             }}
           </td>
           <td>
@@ -66,16 +66,16 @@
                 props.item.target.study &&
                 props.item.target.study.studyName
                 ? props.item.target.study.studyName.name
-                : ""
+                : ''
             }}
           </td>
           <td>{{ props.item.name }}</td>
           <td>{{ props.item.phone }}</td>
-          <td>{{ props.item.dp ? props.item.dp.toLocaleString("id") : 0 }}</td>
+          <td>{{ props.item.dp ? props.item.dp.toLocaleString('id') : 0 }}</td>
           <td>{{ props.item.kelas }}</td>
           <td>{{ props.item.produk }}</td>
           <td>
-            {{ props.item.harga ? props.item.harga.toLocaleString("id") : 0 }}
+            {{ props.item.harga ? props.item.harga.toLocaleString('id') : 0 }}
           </td>
         </template>
       </v-data-table>
@@ -92,65 +92,65 @@
   </div>
 </template>
 <script>
-import debounce from "lodash/debounce"
-import findIndex from "lodash/findIndex"
-import { DP_URL } from "~/utils/apis"
-import { global } from "~/mixins"
-import dform from "./dform"
-import axios from "axios"
-import DownloadDialog from "~/components/DownloadDialog"
-import catchError, { showNoty } from "~/utils/catchError"
+import debounce from 'lodash/debounce'
+import findIndex from 'lodash/findIndex'
+import { DP_URL } from '~/utils/apis'
+import { global } from '~/mixins'
+import dform from './dform'
+import axios from 'axios'
+import DownloadDialog from '~/components/DownloadDialog'
+import catchError, { showNoty } from '~/utils/catchError'
 
 export default {
   components: { dform, DownloadDialog },
   mixins: [global],
   data: () => ({
-    title: "Down Payment",
+    title: 'Down Payment',
     headers: [
       // { text: "Verified", align: "left", value: "is_verified" },
       {
-        text: "Nomor Transaksi",
-        align: "left",
-        value: "transaction_no"
+        text: 'Nomor Transaksi',
+        align: 'left',
+        value: 'transaction_no',
       },
       {
-        text: "Kode Target",
-        align: "left",
-        value: "marketing_target_id"
+        text: 'Kode Target',
+        align: 'left',
+        value: 'marketing_target_id',
       },
       {
-        text: "Perguruan Tinggi",
-        align: "left",
-        value: "marketing_target_id"
+        text: 'Perguruan Tinggi',
+        align: 'left',
+        value: 'marketing_target_id',
       },
       {
-        text: "Study Program",
-        align: "left",
-        value: "marketing_target_id"
+        text: 'Study Program',
+        align: 'left',
+        value: 'marketing_target_id',
       },
-      { text: "Nama", align: "left", value: "name" },
-      { text: "Telepon", align: "left", value: "phone" },
-      { text: "DP", align: "left", value: "dp" },
-      { text: "Kelas", align: "left", value: "kelas" },
-      { text: "Produk", align: "left", value: "produk" },
-      { text: "Harga", align: "left", value: "harga" }
+      { text: 'Nama', align: 'left', value: 'name' },
+      { text: 'Telepon', align: 'left', value: 'phone' },
+      { text: 'DP', align: 'left', value: 'dp' },
+      { text: 'Kelas', align: 'left', value: 'kelas' },
+      { text: 'Produk', align: 'left', value: 'produk' },
+      { text: 'Harga', align: 'left', value: 'harga' },
     ],
     items: [],
-    confirmMessage: "Yakin mau menghapus ?",
+    confirmMessage: 'Yakin mau menghapus ?',
     showConfirm: false,
     dataToExport: [],
     fillable: [
-      "id",
-      "marketing_target_id",
-      "name",
-      "phone",
-      "dp",
-      "kelas",
-      "produk",
-      "harga"
+      'id',
+      'marketing_target_id',
+      'name',
+      'phone',
+      'dp',
+      'kelas',
+      'produk',
+      'harga',
     ],
-    typeDates: ["created_at"],
-    checkbox: false
+    typeDates: ['created_at'],
+    checkbox: false,
   }),
 
   watch: {
@@ -158,8 +158,8 @@ export default {
       handler: debounce(function() {
         this.pupulateTable()
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
   },
 
   mounted() {
@@ -172,12 +172,12 @@ export default {
         this.activateLoader()
         const { descending, sortBy } = this.pagination
         const endPoint = `${DP_URL}?${this.getQueryParams()}&marketing_target_id=${this
-          .targetId || ""}`
-        console.log("targetId: " + this.targetId)
+          .targetId || ''}`
+        console.log('targetId: ' + this.targetId)
         const res = await axios.get(endPoint).then(res => res.data)
         this.items = res.data
         this.totalItems = res.meta.total
-        console.log("totalItems: " + this.totalItems)
+        console.log('totalItems: ' + this.totalItems)
         if (this.pagination.sortBy) {
           this.items = this.items.sort((a, b) => {
             const sortA = a[sortBy]
@@ -234,14 +234,14 @@ export default {
         if (resp.meta.status === 200) {
           let index = findIndex(this.items, item => item.id == data.id)
           this.items.splice(index, 1, resp.data)
-          showNoty("Data diperbaharui", "success")
+          showNoty('Data diperbaharui', 'success')
         }
         this.deactivateLoader()
       } catch (e) {
         this.deactivateLoader()
         catchError(e)
       }
-    }
-  }
+    },
+  },
 }
 </script>

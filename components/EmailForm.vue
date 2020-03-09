@@ -15,8 +15,8 @@
                 <v-flex xs12>
                   <label>Your Email Address</label>
                   <v-text-field
-                    v-validate="'required|email'"
                     v-model="email"
+                    v-validate="'required|email'"
                     :error-messages="errors.collect('email')"
                     name="email"
                     data-vv-name="email"
@@ -25,8 +25,8 @@
                 <v-flex xs12>
                   <label>Your Phone Number</label>
                   <v-text-field
-                    v-validate="'required'"
                     v-model="phone"
+                    v-validate="'required'"
                     :error-messages="errors.collect('phone')"
                     name="phone"
                     data-vv-name="phone"
@@ -38,48 +38,52 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" flat @click.native="onClose">Close</v-btn>
-          <v-btn color="primary" flat @click.native="submit">Save</v-btn>
+          <v-btn color="primary" flat @click.native="onClose">
+            Close
+          </v-btn>
+          <v-btn color="primary" flat @click.native="submit">
+            Save
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-layout>
 </template>
 <script>
-import { global } from "~/mixins"
-import { RESET_PASSWORD_URL } from "~/utils/apis"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
+import { global } from '~/mixins'
+import { RESET_PASSWORD_URL } from '~/utils/apis'
+import axios from 'axios'
+import catchError, { showNoty } from '~/utils/catchError'
 export default {
   $_veeValidate: {
-    validator: "new"
+    validator: 'new',
   },
   mixins: [global],
   props: {
     show: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       dialog: false,
-      formTitle: "Reset Password",
-      email: "",
-      phone: ""
+      formTitle: 'Reset Password',
+      email: '',
+      phone: '',
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    }
+    },
   },
   methods: {
     onClose() {
       this.dialog = false
-      this.email = ""
-      this.phone = ""
-      this.$emit("onClose")
+      this.email = ''
+      this.phone = ''
+      this.$emit('onClose')
     },
     submit() {
       this.$validator.validateAll().then(result => {
@@ -94,18 +98,18 @@ export default {
         const resp = await axios
           .post(RESET_PASSWORD_URL, {
             email: this.email,
-            phone: this.phone
+            phone: this.phone,
           })
           .then(res => res.data)
         if (resp.meta.status === 200) {
-          showNoty("Your new has been sent to you", "success")
+          showNoty('Your new has been sent to you', 'success')
           this.onClose()
         }
       } catch (e) {
         this.onClose()
         catchError(e)
       }
-    }
-  }
+    },
+  },
 }
 </script>

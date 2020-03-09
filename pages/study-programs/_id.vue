@@ -1,12 +1,22 @@
 <template>
   <div>
-    <h2 class="headline primary--text mb-2">Detail Program Studi</h2>
+    <h2 class="headline primary--text mb-2">
+      Detail Program Studi
+    </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
-      <v-tab href="#detail">Detail</v-tab>
-      <v-tab href="#years">Angkatan</v-tab>
-      <v-tab href="#maps">Peta</v-tab>
-      <v-tab href="#targets">Target</v-tab>
+      <v-tab href="#detail">
+        Detail
+      </v-tab>
+      <v-tab href="#years">
+        Angkatan
+      </v-tab>
+      <v-tab href="#maps">
+        Peta
+      </v-tab>
+      <v-tab href="#targets">
+        Target
+      </v-tab>
       <v-tab-item :id="'detail'">
         <detail />
       </v-tab-item>
@@ -24,28 +34,28 @@
 </template>
 
 <script>
-import { STUDIES_URL, COMBO_DATA_URL } from "~/utils/apis";
-import { detail, dform, maps } from "~/components/studies";
-import { list as years } from "~/components/studies/years";
-import { list as targets } from "~/components/targets";
+import { STUDIES_URL } from '~/utils/apis'
+import { detail, maps } from '~/components/studies'
+import { list as years } from '~/components/studies/years'
+import { list as targets } from '~/components/targets'
 
-import { catchError } from "~/mixins";
+import { catchError } from '~/mixins'
 export default {
+  components: { detail, maps, years, targets },
+  mixins: [catchError],
   async fetch({ store, params, redirect, $axios }) {
     try {
       // Current Edit
-      let currentEdit = await $axios.$get(STUDIES_URL + "/" + params.id);
-      if (currentEdit) store.commit("currentEdit", currentEdit.data);
+      let currentEdit = await $axios.$get(STUDIES_URL + '/' + params.id)
+      if (currentEdit) store.commit('currentEdit', currentEdit.data)
     } catch (e) {
-      if (process.client) this.catchError(e);
+      if (process.client) this.catchError(e)
       else {
-        redirect("/");
+        redirect('/')
       }
     }
   },
-  components: { detail, maps, years, targets },
-  mixins: [catchError]
-};
+}
 </script>
 
 <style scoped></style>

@@ -39,7 +39,9 @@
       >
         <template slot="items" slot-scope="props">
           <td v-if="props.item.studyName">
-            <a @click="toDetail(props.item)">{{ props.item.studyName.name }}</a>
+            <a @click="toDetail(props.item)">
+              {{ props.item.studyName.name }}
+            </a>
           </td>
           <td>{{ props.item.contact_person }}</td>
           <td>{{ props.item.phone }}</td>
@@ -59,43 +61,43 @@
   </div>
 </template>
 <script>
-import _ from "lodash"
-import { STUDIES_URL } from "~/utils/apis"
-import { global } from "~/mixins"
-import studyForm from "./studyForm"
-import axios from "axios"
-import catchError from "~/utils/catchError"
-import DownloadDialog from "~/components/DownloadDialog"
+import _ from 'lodash'
+import { STUDIES_URL } from '~/utils/apis'
+import { global } from '~/mixins'
+import studyForm from './studyForm'
+import axios from 'axios'
+import catchError from '~/utils/catchError'
+import DownloadDialog from '~/components/DownloadDialog'
 
 export default {
-  middleware: "auth",
+  middleware: 'auth',
   components: { studyForm, DownloadDialog },
   mixins: [global],
   data: () => ({
-    title: "Study Program",
+    title: 'Study Program',
 
     headers: [
-      { text: "Nama", align: "left", value: "study_name_id" },
-      { text: "Nama kontak", value: "contact_person", align: "left" },
-      { text: "Telepon", value: "phone", align: "left" },
-      { text: "Email", value: "email", align: "left" }
+      { text: 'Nama', align: 'left', value: 'study_name_id' },
+      { text: 'Nama kontak', value: 'contact_person', align: 'left' },
+      { text: 'Telepon', value: 'phone', align: 'left' },
+      { text: 'Email', value: 'email', align: 'left' },
     ],
     items: [],
-    confirmMessage: "Yakin mau menghapus ?",
+    confirmMessage: 'Yakin mau menghapus ?',
     showConfirm: false,
     dataToExport: [],
     fillable: [
-      "id",
-      "university_id",
-      "study_name_id",
-      "address",
-      "email",
-      "phone",
-      "description",
-      "address",
-      "contact_person"
+      'id',
+      'university_id',
+      'study_name_id',
+      'address',
+      'email',
+      'phone',
+      'description',
+      'address',
+      'contact_person',
     ],
-    typeDates: ["created_at"]
+    typeDates: ['created_at'],
   }),
 
   watch: {
@@ -103,13 +105,13 @@ export default {
       handler() {
         this.pupulateTable()
       },
-      deep: true
+      deep: true,
     },
     search() {
-      if (this.search != "") {
+      if (this.search != '') {
         this.searchQuery()
       }
-    }
+    },
   },
 
   mounted() {
@@ -170,10 +172,10 @@ export default {
         if (data.studyName) d.studyName = data.studyName.name
 
         if (d.years) delete d.years
-        let years = ""
+        let years = ''
         if (data.years) {
           data.years.map(y => {
-            let year = ""
+            let year = ''
             year += `[year: ${y.year}, class_per_year: ${y.class_per_year}, students_per_class: ${y.students_per_class}], `
             years += year
           })
@@ -185,7 +187,7 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    }
-  }
+    },
+  },
 }
 </script>

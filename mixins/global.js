@@ -1,8 +1,8 @@
-import { ExportToCsv } from "export-to-csv";
-import { includes } from "lodash";
-import { mapState } from "vuex";
-import Noty from "~/components/Noty";
-import Tbtn from "~/components/Tbtn";
+import { ExportToCsv } from 'export-to-csv'
+import { includes } from 'lodash'
+import { mapState } from 'vuex'
+import Noty from '~/components/Noty'
+import Tbtn from '~/components/Tbtn'
 export default {
   components: { Noty, Tbtn },
   data() {
@@ -10,94 +10,88 @@ export default {
       loading: false,
       items: [],
       total: 1,
-      search: "",
+      search: '',
       options: {
-        search: "",
-        sortDesc: [true]
+        search: '',
+        sortDesc: [true],
       },
       footerProps: {
-        itemsPerPageOptions: [10, 25, 50, 100]
+        itemsPerPageOptions: [10, 25, 50, 100],
       },
       showDownloadDialog: false,
       showConfirm: false,
 
-      showForm: false
-    };
+      showForm: false,
+    }
   },
   mounted() {
-    this.setAuth();
+    this.setAuth()
   },
 
   methods: {
     inArray(keys, searchedKey) {
-      let result = false;
+      let result = false
       for (let i in keys) {
         if (keys[i] === searchedKey) {
-          result = true;
+          result = true
         }
       }
-      return result;
+      return result
     },
     setCase(txt) {
-      return this.$changeCase.titleCase(txt);
+      return this.$changeCase.titleCase(txt)
     },
     setSnakeCase(txt) {
-      return this.$changeCase.snakeCase(txt);
-    },
-    setAuth() {
-      if (this.token) {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
-        axios.defaults.headers.post["Content-Type"] = "application/json";
-      }
+      return this.$changeCase.snakeCase(txt)
     },
     activateLoader() {
-      this.$bus.$emit("activate_loader");
+      this.$bus.$emit('activate_loader')
     },
     deactivateLoader() {
-      this.$bus.$emit("deactivate_loader");
+      this.$bus.$emit('deactivate_loader')
     },
 
     csvExport(title, data) {
       const options = {
         filename: title,
-        fieldSeparator: ",",
+        fieldSeparator: ',',
         quoteStrings: '"',
-        decimalseparator: ".",
+        decimalseparator: '.',
         showLabels: true,
         showTitle: true,
         title: title,
         useBom: true,
-        useKeysAsHeaders: true
-      };
+        useKeysAsHeaders: true,
+      }
 
       if (data.length) {
-        const csvExporter = new ExportToCsv(options);
-        csvExporter.generateCsv(data);
+        const csvExporter = new ExportToCsv(options)
+        csvExporter.generateCsv(data)
       }
     },
     getQueries() {
-      let query = "?";
+      let query = '?'
       const sortBy =
         this.options.sortBy && this.options.sortBy[0]
           ? this.options.sortBy[0]
-          : "created_at";
-      const sortMode = this.options.sortDesc[0] ? "desc" : "asc";
+          : 'created_at'
+      const sortMode = this.options.sortDesc[0] ? 'desc' : 'asc'
       const queryString = {
         page: this.options.page || 1,
         limit: this.options.itemsPerPage,
         sort_by: sortBy,
         sort_mode: sortMode,
-        category: this.options.category || ""
-      };
-      const { search } = this.options;
-      if (search && search !== "") queryString.search = search;
-      Object.keys(queryString).map(q => (query += `${q}=${queryString[q]}&`));
-      return query;
+        category: this.options.category || '',
+      }
+      const { search } = this.options
+      if (search && search !== '') queryString.search = search
+      Object.keys(queryString).map(q => (query += `${q}=${queryString[q]}&`))
+      return query
     },
 
     resetPagination() {
       this.pagination = {
-        sortBy: "",
+        sortBy: '',
         descending: false,
         search: null,
         search_by: null,
@@ -106,14 +100,14 @@ export default {
         start_date: null,
         end_date: null,
         sort_by: null,
-        sort_mode: null
-      };
+        sort_mode: null,
+      }
     },
     clearStore() {
-      this.$store.commit("currentEdit", null);
+      this.$store.commit('currentEdit', null)
     },
     checkPermission(permission) {
-      return includes(this.userPermissions, permission);
+      return includes(this.userPermissions, permission)
     },
     /**
      * Normalize Nested Object to prevent error of in existence
@@ -121,15 +115,15 @@ export default {
      * @param {string} children
      */
     normalizeObject(data, children) {
-      let lookup = Object.assign({}, data);
-      const child = children.split(".");
+      let lookup = Object.assign({}, data)
+      const child = children.split('.')
       child.map(c => {
-        lookup = lookup[c];
+        lookup = lookup[c]
         if (!lookup) {
-          return false;
+          return false
         }
-      });
-      return lookup;
+      })
+      return lookup
     },
 
     /**
@@ -149,43 +143,43 @@ export default {
       searchLink = null
     ) {
       try {
-        const resp = await this.$axios.$get(comboDataLink);
-        const comboData = resp.map(r => ({ id: r.id, name: r[strValue] }));
+        const resp = await this.$axios.$get(comboDataLink)
+        const comboData = resp.map(r => ({ id: r.id, name: r[strValue] }))
         if (comboData && comboData.length > 0) {
           if (currentId) {
             const currentDataToEdit = comboData.filter(
               data => data.id === currentId
-            );
+            )
             if (currentDataToEdit.length === 0) {
               const resp2 = await this.$axios.$get(
                 `/${searchLink}/${currentId}`
-              );
+              )
               if (resp2 && resp2.data) {
                 comboData.push({
                   id: resp2.data.id,
-                  name: resp2.data[strValue]
-                });
+                  name: resp2.data[strValue],
+                })
               }
             }
           }
-          const idx = this.formItem.findIndex(f => f.value === formItemKey);
+          const idx = this.formItem.findIndex(f => f.value === formItemKey)
           if (idx !== -1) {
-            this.formItem[idx].items = comboData;
+            this.formItem[idx].items = comboData
           }
         }
       } catch (e) {
-        this.catchError(e);
+        this.catchError(e)
       }
-    }
+    },
   },
   computed: {
     ...mapState([
-      "token",
-      "currentEdit",
-      "comboData",
-      "permissions",
-      "user",
-      "dashboardData"
+      'token',
+      'currentEdit',
+      'comboData',
+      'permissions',
+      'user',
+      'dashboardData',
     ]),
     userPermissions() {
       const permissions =
@@ -193,10 +187,10 @@ export default {
         this.$store.state.auth.user &&
         this.$store.state.auth.user.roles
           ? this.$store.state.auth.user.roles[0].permissions
-          : [];
-      let permissionArray = [];
-      permissions.map(p => permissionArray.push(p.slug));
-      return permissionArray;
-    }
-  }
-};
+          : []
+      let permissionArray = []
+      permissions.map(p => permissionArray.push(p.slug))
+      return permissionArray
+    },
+  },
+}

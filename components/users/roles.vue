@@ -44,14 +44,19 @@
         <v-card-text>
           <v-layout v-if="items" row wrap>
             <v-flex v-for="role in items" :key="role.id" md3 sm4 xs6>
-              <v-checkbox v-model="rolesArray" :label="role.name" :value="role.id" color="primary" />
+              <v-checkbox
+                v-model="rolesArray"
+                :label="role.name"
+                :value="role.id"
+                color="primary"
+              />
             </v-flex>
           </v-layout>
         </v-card-text>
       </v-container>
     </v-card>
     <Dialog
-      :showDialog="showDialog"
+      :show-dialog="showDialog"
       text="Yakin akan diperbaharui ?"
       @onClose="showDialog = false"
       @onConfirmed="attachRoles"
@@ -60,83 +65,83 @@
 </template>
 
 <script>
-import { global, catchError } from "~/mixins";
-import { USER_URL } from "~/utils/apis";
-import Dialog from "~/components/Dialog";
-import debounce from "lodash/debounce";
+import { global, catchError } from '~/mixins'
+import { USER_URL } from '~/utils/apis'
+import Dialog from '~/components/Dialog'
+import debounce from 'lodash/debounce'
 export default {
   components: { Dialog },
   mixins: [global, catchError],
   data() {
     return {
       showDialog: false,
-      search: "",
+      search: '',
       items: [],
-      rolesArray: []
-    };
+      rolesArray: [],
+    }
   },
   watch: {
     search() {
-      if (this.search !== "") this.searchRoles();
-    }
+      if (this.search !== '') this.searchRoles()
+    },
   },
   mounted() {
-    this.items = this.$store.getters.getRoles("");
-    this.setRoleArray();
+    this.items = this.$store.getters.getRoles('')
+    this.setRoleArray()
   },
   methods: {
     toHome() {
-      this.$router.push("/users");
+      this.$router.push('/users')
     },
     setRoleArray() {
       if (this.currentEdit.roles) {
         this.currentEdit.roles.forEach(r => {
-          this.rolesArray.push(r.id);
-        });
+          this.rolesArray.push(r.id)
+        })
       }
     },
     selectAll() {
       if (this.items) {
-        this.rolesArray = [];
+        this.rolesArray = []
         this.items.forEach(c => {
-          this.rolesArray.push(c.id);
-        });
+          this.rolesArray.push(c.id)
+        })
       }
     },
     clearAll() {
-      this.rolesArray = [];
+      this.rolesArray = []
     },
     searchRoles: debounce(function() {
-      let results = this.$store.getters.getRoles(this.search);
-      this.items = results;
+      let results = this.$store.getters.getRoles(this.search)
+      this.items = results
     }, 300),
     async attachRoles() {
       try {
-        this.activateLoader();
+        this.activateLoader()
 
         let formData = {
           name: this.currentEdit.name,
           email: this.currentEdit.email,
           phone: this.currentEdit.phone,
           address: this.currentEdit.address,
-          roles: this.rolesArray
-        };
+          roles: this.rolesArray,
+        }
         const resp = await this.$axios.$put(
-          USER_URL + "/" + this.currentEdit.id,
+          USER_URL + '/' + this.currentEdit.id,
           formData
-        );
-        this.$store.commit("currentEdit", resp.data);
-        this.showNoty("Data disimpan", "success");
-        this.showDialog = false;
-        this.deactivateLoader();
+        )
+        this.$store.commit('currentEdit', resp.data)
+        this.showNoty('Data disimpan', 'success')
+        this.showDialog = false
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
+        this.deactivateLoader()
 
-        this.catchError(e);
+        this.catchError(e)
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style scoped></style>

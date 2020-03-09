@@ -1,26 +1,28 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">{{ title }}</v-card-title>
-    <list></list>
+    <v-card-title class="primary--text">
+      {{ title }}
+    </v-card-title>
+    <list />
   </v-card>
 </template>
 
 <script>
-import { list } from "~/components/targets";
-import { global } from "~/mixins";
+import { list } from '~/components/targets'
+import { global } from '~/mixins'
 
 export default {
   components: { list },
   mixins: [global],
   data() {
     return {
-      title: "Target Marketing "
-    };
+      title: 'Target Marketing ',
+    }
   },
   mounted() {
-    this.clearStore();
-  }
-};
+    this.clearStore()
+  },
+}
 </script>
 
 <style scoped></style>

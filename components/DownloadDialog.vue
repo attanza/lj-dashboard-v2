@@ -7,13 +7,14 @@
             $messages.downloadDialog.TITLE
           }}</span>
         </v-card-title>
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-text style="padding: 0;" />
         <v-container
           fluid
           style="padding-top: 0; padding-bottom: 0;"
           grid-list-md
         >
+          >
           <v-radio-group v-model="radios">
             <v-radio
               :label="$messages.downloadDialog.SEEN_ON_SCREEN"
@@ -26,8 +27,8 @@
             <v-flex sm6 xs12>
               <label>Sort By</label>
               <v-autocomplete
-                :items="fillable"
                 v-model="queryData.sort_by"
+                :items="fillable"
                 label="Select sort by"
                 single-line
                 cache-items
@@ -36,8 +37,8 @@
             <v-flex sm6 xs12>
               <label>Sort Mode</label>
               <v-autocomplete
-                :items="sortModes"
                 v-model="queryData.sort_mode"
+                :items="sortModes"
                 label="Select sort mode"
                 single-line
                 cache-items
@@ -54,8 +55,8 @@
             <v-flex sm6 xs12>
               <label>Date Range By</label>
               <v-autocomplete
-                :items="typeDates"
                 v-model="queryData.range_by"
+                :items="typeDates"
                 label="Select range date by"
                 single-line
                 cache-items
@@ -65,8 +66,8 @@
               <label>Range Start</label>
               <v-menu
                 ref="menu_range_start"
-                :close-on-content-click="false"
                 v-model="menu_range_start"
+                :close-on-content-click="false"
                 :nudge-right="40"
                 :return-value.sync="queryData.range_start"
                 lazy
@@ -91,8 +92,8 @@
               <label>Range End</label>
               <v-menu
                 ref="menu_range_end"
-                :close-on-content-click="false"
                 v-model="menu_range_end"
+                :close-on-content-click="false"
                 :nudge-right="40"
                 :return-value.sync="queryData.range_end"
                 lazy
@@ -101,6 +102,7 @@
                 full-width
                 min-width="290px"
               >
+                >
                 <v-text-field
                   slot="activator"
                   v-model="queryData.range_end"
@@ -117,8 +119,12 @@
         </v-container>
         <v-card-actions>
           <v-spacer />
-          <v-btn @click="onClose">Batal</v-btn>
-          <v-btn dark color="primary" @click="downloadData">Download</v-btn>
+          <v-btn @click="onClose">
+            Batal
+          </v-btn>
+          <v-btn dark color="primary" @click="downloadData">
+            Download
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -126,130 +132,130 @@
 </template>
 
 <script>
-import { global } from "~/mixins";
-import axios from "axios";
-import catchError, { showNoty } from "~/utils/catchError";
-import moment from "moment";
-import { DATA_EXPORT_URL } from "~/utils/apis";
+import { global } from '~/mixins'
+import axios from 'axios'
+import catchError, { showNoty } from '~/utils/catchError'
+import moment from 'moment'
+import { DATA_EXPORT_URL } from '~/utils/apis'
 
 export default {
   mixins: [global],
   props: {
     showDialog: {
       type: Boolean,
-      required: true
+      required: true,
     },
     dataToExport: {
       type: Array,
-      required: true
+      required: true,
     },
     model: {
       type: String,
-      required: true
+      required: true,
     },
     fillable: {
       type: Array,
-      required: true
+      required: true,
     },
     typeDates: {
       type: Array,
-      required: true
+      required: true,
     },
     query: {
       type: String,
       required: false,
-      default: ""
-    }
+      default: '',
+    },
   },
 
   data() {
     return {
       dialog: false,
-      radios: "1",
-      sortModes: ["asc", "desc"],
+      radios: '1',
+      sortModes: ['asc', 'desc'],
       queryData: {
-        sort_by: "",
-        sort_mode: "asc",
-        limit: "100",
-        range_by: "",
+        sort_by: '',
+        sort_mode: 'asc',
+        limit: '100',
+        range_by: '',
         range_start: moment()
-          .add(-1, "M")
-          .format("YYYY-MM-DD"),
+          .add(-1, 'M')
+          .format('YYYY-MM-DD'),
         range_end: moment()
-          .add(1, "d")
-          .format("YYYY-MM-DD")
+          .add(1, 'd')
+          .format('YYYY-MM-DD'),
       },
       menu_range_start: false,
-      menu_range_end: false
-    };
+      menu_range_end: false,
+    }
   },
   watch: {
     showDialog() {
       if (this.showDialog || !this.showDialog) {
-        this.dialog = this.showDialog;
+        this.dialog = this.showDialog
       }
-    }
+    },
   },
   methods: {
     onClose() {
-      this.clearForm();
-      this.$emit("onClose");
+      this.clearForm()
+      this.$emit('onClose')
     },
     async downloadData() {
-      if (this.radios === "1") {
-        this.csvExport(this.model, this.dataToExport);
-        this.onClose();
-      } else if (this.radios === "2") {
+      if (this.radios === '1') {
+        this.csvExport(this.model, this.dataToExport)
+        this.onClose()
+      } else if (this.radios === '2') {
         try {
-          this.activateLoader();
-          let query = "";
+          this.activateLoader()
+          let query = ''
           for (let key in this.queryData) {
-            query += `&${key}=${this.queryData[key]}`;
+            query += `&${key}=${this.queryData[key]}`
           }
           if (this.query) {
-            query += "&" + this.query;
+            query += '&' + this.query
           }
           let resp = await axios.get(
-            DATA_EXPORT_URL + "?model=" + this.model + query
-          );
+            DATA_EXPORT_URL + '?model=' + this.model + query
+          )
 
           if (
             resp.status === 200 &&
             resp.data.data &&
             resp.data.data.length > 0
           ) {
-            this.csvExport(this.model, resp.data.data);
+            this.csvExport(this.model, resp.data.data)
           } else {
-            showNoty("No result found", "error");
+            showNoty('No result found', 'error')
           }
-          this.onClose();
-          this.deactivateLoader();
+          this.onClose()
+          this.deactivateLoader()
         } catch (e) {
-          this.clearForm();
-          this.deactivateLoader();
-          catchError(e);
+          this.clearForm()
+          this.deactivateLoader()
+          catchError(e)
         }
       }
     },
     clearForm() {
-      this.dialog = false;
-      this.radios = "1";
-      this.sortModes = ["asc", "desc"];
+      this.dialog = false
+      this.radios = '1'
+      this.sortModes = ['asc', 'desc']
       this.queryData = {
-        sort_by: "",
-        sort_mode: "asc",
-        limit: "100",
-        range_by: "",
+        sort_by: '',
+        sort_mode: 'asc',
+        limit: '100',
+        range_by: '',
         range_start: moment()
-          .add(-1, "M")
-          .format("YYYY-MM-DD"),
-        range_end: moment().format("YYYY-MM-DD")
-      };
-      this.menu_range_start = false;
-      this.menu_range_end = false;
-    }
-  }
-};
+          .add(-1, 'M')
+          .format('YYYY-MM-DD'),
+        range_end: moment().format('YYYY-MM-DD'),
+      }
+      this.menu_range_start = false
+      this.menu_range_end = false
+    },
+  },
+}
 </script>
 
 <style scoped></style>

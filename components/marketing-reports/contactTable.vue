@@ -1,6 +1,8 @@
 <template>
   <div class="mt-4">
-    <h3 class="subheading ml-3">Contact Person</h3>
+    <h3 class="subheading ml-3">
+      Contact Person
+    </h3>
     <v-toolbar flat color="transparent">
       <Tbtn
         :bottom="true"
@@ -54,7 +56,7 @@
       </template>
     </v-data-table>
     <Dialog
-      :showDialog="showDialog"
+      :show-dialog="showDialog"
       text="Yakin mau menghapus ?"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
@@ -71,13 +73,13 @@
 </template>
 
 <script>
-import { CONTACT_URL } from "~/utils/apis"
-import catchError, { showNoty } from "~/utils/catchError"
-import axios from "axios"
-import { global } from "~/mixins"
-import _ from "lodash"
-import Dialog from "~/components/Dialog"
-import { dform } from "~/components/contacts"
+import { CONTACT_URL } from '~/utils/apis'
+import catchError, { showNoty } from '~/utils/catchError'
+import axios from 'axios'
+import { global } from '~/mixins'
+import _ from 'lodash'
+import Dialog from '~/components/Dialog'
+import { dform } from '~/components/contacts'
 
 export default {
   components: { Dialog, dform },
@@ -85,23 +87,23 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Nama", align: "left", value: "name" },
-        { text: "Jabatan", align: "left", value: "title" },
-        { text: "Telepon", align: "left", value: "phone" },
-        { text: "Email", align: "left", value: "email" },
+        { text: 'Nama', align: 'left', value: 'name' },
+        { text: 'Jabatan', align: 'left', value: 'title' },
+        { text: 'Telepon', align: 'left', value: 'phone' },
+        { text: 'Email', align: 'left', value: 'email' },
         {
-          text: "Aksi",
-          value: "name",
-          align: "center",
-          sortable: false
-        }
+          text: 'Aksi',
+          value: 'name',
+          align: 'center',
+          sortable: false,
+        },
       ],
       items: [],
       showDialog: false,
       dataToDelete: null,
       showForm: false,
       dataToEdit: null,
-      isEdit: false
+      isEdit: false,
     }
   },
   watch: {
@@ -109,8 +111,8 @@ export default {
       handler: _.debounce(function() {
         this.pupulateTable()
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
   },
 
   mounted() {
@@ -177,7 +179,7 @@ export default {
     getTargetId(data) {
       return data.schedulle && data.schedulle.target
         ? data.schedulle.target.id
-        : ""
+        : ''
     },
     getEdit(data) {
       this.dataToEdit = data
@@ -186,14 +188,14 @@ export default {
     removeData() {
       try {
         this.activateLoader()
-        axios.delete(CONTACT_URL + "/" + this.dataToDelete.id).then(resp => {
+        axios.delete(CONTACT_URL + '/' + this.dataToDelete.id).then(resp => {
           if (resp.status === 200) {
             let index = _.findIndex(
               this.items,
               item => item.id == this.dataToDelete.id
             )
             this.items.splice(index, 1)
-            showNoty("Data dihapus", "success")
+            showNoty('Data dihapus', 'success')
             this.showDialog = false
             this.dataToDelete = null
           }
@@ -203,8 +205,8 @@ export default {
         this.deactivateLoader()
         catchError(e)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

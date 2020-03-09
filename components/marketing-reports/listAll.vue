@@ -38,9 +38,9 @@
               props.item.schedulle &&
                 props.item.schedulle.target &&
                 props.item.schedulle.target.study &&
-                props.item.schedulle.target.study.university
+              props.item.schedulle.target.study.university
                 ? props.item.schedulle.target.study.university.name
-                : ""
+                : ''
             }}
           </td>
           <td>
@@ -50,20 +50,22 @@
                 props.item.schedulle.target.study &&
                 props.item.schedulle.target.study.studyName
                 ? props.item.schedulle.target.study.studyName.name
-                : ""
+                : ''
             }}
           </td>
           <td>
             {{
               props.item.schedulle && props.item.schedulle.action
                 ? props.item.schedulle.action.name
-                : ""
+                : ''
             }}
           </td>
           <td>{{ props.item.result }}</td>
           <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="getEdit(props.item)">
-              <v-icon color="primary">edit</v-icon>
+              <v-icon color="primary">
+                edit
+              </v-icon>
             </v-btn>
           </td>
         </template>
@@ -80,42 +82,42 @@
   </div>
 </template>
 <script>
-import debounce from "lodash/debounce"
-import findIndex from "lodash/findIndex"
-import { MARKETING_REPORTS_URL } from "~/utils/apis"
-import { global } from "~/mixins"
-import catchError from "~/utils/catchError"
-import axios from "axios"
-import dform from "./dform"
+import debounce from 'lodash/debounce'
+import findIndex from 'lodash/findIndex'
+import { MARKETING_REPORTS_URL } from '~/utils/apis'
+import { global } from '~/mixins'
+import catchError from '~/utils/catchError'
+import axios from 'axios'
+import dform from './dform'
 
 export default {
   components: { dform },
   mixins: [global],
   data: () => ({
-    title: "Laporan Marketing",
+    title: 'Laporan Marketing',
     headers: [
-      { text: "Kode Laporan", align: "left", value: "code" },
+      { text: 'Kode Laporan', align: 'left', value: 'code' },
       {
-        text: "Perguruan Tinggi",
-        align: "left",
-        value: "schedulle.target.study.university.name"
+        text: 'Perguruan Tinggi',
+        align: 'left',
+        value: 'schedulle.target.study.university.name',
       },
       {
-        text: "Program Studi",
-        align: "left",
-        value: "schedulle.target.study.studyName.name"
+        text: 'Program Studi',
+        align: 'left',
+        value: 'schedulle.target.study.studyName.name',
       },
-      { text: "Aksi", align: "left", value: "schedulle.action.name" },
-      { text: "Hasil", align: "left", value: "result" },
+      { text: 'Aksi', align: 'left', value: 'schedulle.action.name' },
+      { text: 'Hasil', align: 'left', value: 'result' },
 
-      { text: "Aksi", align: "center", value: "", sortable: false }
+      { text: 'Aksi', align: 'center', value: '', sortable: false },
     ],
     items: [],
-    confirmMessage: "Yakin mau menghapus ?",
+    confirmMessage: 'Yakin mau menghapus ?',
     showConfirm: false,
     showForm: false,
     isEdit: false,
-    dataToEdit: null
+    dataToEdit: null,
   }),
 
   watch: {
@@ -123,8 +125,8 @@ export default {
       handler: debounce(function() {
         this.pupulateTable()
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
   },
 
   mounted() {
@@ -137,8 +139,8 @@ export default {
         this.activateLoader()
         const { descending, sortBy } = this.pagination
         const endPoint = `${MARKETING_REPORTS_URL}?${this.getQueryParams()}schedulle_id=${this
-          .schedulleId || ""}&marketing_target_id=${this.targetId ||
-          ""}&university_id=${this.universityId || ""}`
+          .schedulleId || ''}&marketing_target_id=${this.targetId ||
+          ''}&university_id=${this.universityId || ''}`
 
         const res = await axios.get(endPoint).then(res => res.data)
         this.items = res.data
@@ -186,7 +188,7 @@ export default {
       this.showForm = false
       this.dataToEdit = null
       this.isEdit = false
-    }
-  }
+    },
+  },
 }
 </script>

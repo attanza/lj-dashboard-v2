@@ -14,8 +14,8 @@
             />
             <v-autocomplete
               v-if="addMode && comboData"
-              :items="comboData"
               v-model="marketingsToAdd"
+              :items="comboData"
               label="Pilih marketing"
               multiple
               item-text="name"
@@ -75,7 +75,9 @@
 
               <v-card-title>
                 <div>
-                  <h3 class="title mb-0">{{ marketing.name }}</h3>
+                  <h3 class="title mb-0">
+                    {{ marketing.name }}
+                  </h3>
                 </div>
               </v-card-title>
 
@@ -91,7 +93,7 @@
       </v-container>
     </v-card>
     <Dialog
-      :showDialog="showDialog"
+      :show-dialog="showDialog"
       text="Yakin mau menghapus ?"
       @onClose="clear"
       @onConfirmed="detachMarketing"
@@ -100,17 +102,17 @@
 </template>
 
 <script>
-import { global, catchError } from "~/mixins";
+import { global, catchError } from '~/mixins'
 import {
   MARKETING_URL,
   ADD_MARKETING_URL,
   DETACH_MARKETING_URL,
-  COMBO_DATA_URL
-} from "~/utils/apis";
-import debounce from "lodash/debounce";
-import union from "lodash/union";
+  COMBO_DATA_URL,
+} from '~/utils/apis'
+import debounce from 'lodash/debounce'
+import union from 'lodash/union'
 
-import Dialog from "~/components/Dialog";
+import Dialog from '~/components/Dialog'
 
 export default {
   components: { Dialog },
@@ -121,113 +123,113 @@ export default {
       marketings: [],
       addMode: false,
       marketingsToAdd: [],
-      marketingsToDelete: []
-    };
+      marketingsToDelete: [],
+    }
   },
   watch: {
     options: {
       handler: debounce(function() {
-        this.getMarketings();
+        this.getMarketings()
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {
-    this.getMarketings();
+    this.getMarketings()
   },
   methods: {
     toHome() {
-      this.$router.push("/supervisors");
+      this.$router.push('/supervisors')
     },
     async getMarketings() {
       try {
-        this.activateLoader();
-        const queries = ``;
+        this.activateLoader()
+        const queries = ``
         if (this.currentEdit) {
-          const endPoint = `${MARKETING_URL}?${queries}supervisor_id=${this.currentEdit.id}`;
-          const resp = await this.$axios.$get(endPoint);
-          this.marketings = resp.data;
-          this.totalItems = resp.meta.total;
-          this.loading = false;
-          this.deactivateLoader();
+          const endPoint = `${MARKETING_URL}?${queries}supervisor_id=${this.currentEdit.id}`
+          const resp = await this.$axios.$get(endPoint)
+          this.marketings = resp.data
+          this.totalItems = resp.meta.total
+          this.loading = false
+          this.deactivateLoader()
         }
       } catch (error) {
-        this.deactivateLoader();
-        this.catchError(error);
+        this.deactivateLoader()
+        this.catchError(error)
       }
     },
 
     async addMarketing() {
       try {
-        this.activateLoader();
-        this.loading = true;
+        this.activateLoader()
+        this.loading = true
         if (this.marketingsToAdd.length > 0 && this.currentEdit) {
-          let exisitingMarketings = [];
+          let exisitingMarketings = []
           if (this.marketings.length) {
-            this.marketings.map(m => exisitingMarketings.push(m.id));
+            this.marketings.map(m => exisitingMarketings.push(m.id))
           }
           let data = {
             supervisor_id: this.currentEdit.id,
-            marketings: union(exisitingMarketings, this.marketingsToAdd)
-          };
-          const resp = await this.$axios.$post(ADD_MARKETING_URL, data);
-          this.showNoty("Marketing ditambahkan.", "success");
-          this.clear();
-          this.repopulateData();
+            marketings: union(exisitingMarketings, this.marketingsToAdd),
+          }
+          await this.$axios.$post(ADD_MARKETING_URL, data)
+          this.showNoty('Marketing ditambahkan.', 'success')
+          this.clear()
+          this.repopulateData()
         }
-        this.deactivateLoader();
+        this.deactivateLoader()
       } catch (e) {
-        this.clear();
-        this.deactivateLoader();
-        this.catchError(e);
+        this.clear()
+        this.deactivateLoader()
+        this.catchError(e)
       }
     },
     prepareForDelete(id) {
-      this.marketingsToDelete.push(id);
-      this.showDialog = true;
+      this.marketingsToDelete.push(id)
+      this.showDialog = true
     },
     async detachMarketing() {
       try {
-        this.activateLoader();
-        this.loading = true;
+        this.activateLoader()
+        this.loading = true
         if (this.marketingsToDelete.length > 0 && this.currentEdit) {
           let data = {
             supervisor_id: this.currentEdit.id,
-            marketings: this.marketingsToDelete
-          };
-          const resp = await this.$axios.$put(DETACH_MARKETING_URL, data);
-          this.showNoty("Marketing dilepas.", "success");
-          this.clear();
-          this.repopulateData();
-          this.deactivateLoader();
+            marketings: this.marketingsToDelete,
+          }
+          await this.$axios.$put(DETACH_MARKETING_URL, data)
+          this.showNoty('Marketing dilepas.', 'success')
+          this.clear()
+          this.repopulateData()
+          this.deactivateLoader()
         }
       } catch (e) {
-        this.clear();
-        this.deactivateLoader();
+        this.clear()
+        this.deactivateLoader()
 
-        this.catchError(e);
+        this.catchError(e)
       }
     },
 
     async repopulateData() {
       try {
-        this.getMarketings();
-        const resp = await this.$axios.$get(COMBO_DATA_URL + "Marketing");
-        this.$store.commit("comboData", resp);
+        this.getMarketings()
+        const resp = await this.$axios.$get(COMBO_DATA_URL + 'Marketing')
+        this.$store.commit('comboData', resp)
       } catch (e) {
-        this.catchError(e);
+        this.catchError(e)
       }
     },
 
     clear() {
-      this.marketingsToAdd = [];
-      this.marketingsToDelete = [];
-      this.loading = false;
-      this.addMode = false;
-      this.showDialog = false;
-    }
-  }
-};
+      this.marketingsToAdd = []
+      this.marketingsToDelete = []
+      this.loading = false
+      this.addMode = false
+      this.showDialog = false
+    },
+  },
+}
 </script>
 
 <style scoped></style>

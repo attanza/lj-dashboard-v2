@@ -53,30 +53,30 @@
   </div>
 </template>
 <script>
-import debounce from "lodash/debounce"
-import { ACTIVITIES_URL } from "~/utils/apis"
-import { global } from "~/mixins"
-import axios from "axios"
-import catchError from "~/utils/catchError"
-import DownloadDialog from "~/components/DownloadDialog"
+import debounce from 'lodash/debounce'
+import { ACTIVITIES_URL } from '~/utils/apis'
+import { global } from '~/mixins'
+import axios from 'axios'
+import catchError from '~/utils/catchError'
+import DownloadDialog from '~/components/DownloadDialog'
 
 export default {
-  middleware: "auth",
+  middleware: 'auth',
   components: { DownloadDialog },
   mixins: [global],
   data: () => ({
-    title: "Activity",
+    title: 'Activity',
     headers: [
-      { text: "IP Address", align: "left", value: "ip" },
-      { text: "Browser", align: "left", value: "browser" },
-      { text: "Activity", align: "left", value: "activity" },
-      { text: "Created", align: "left", value: "created_at" }
+      { text: 'IP Address', align: 'left', value: 'ip' },
+      { text: 'Browser', align: 'left', value: 'browser' },
+      { text: 'Activity', align: 'left', value: 'activity' },
+      { text: 'Created', align: 'left', value: 'created_at' },
       // { text: "Actions", value: "name", sortable: false }
     ],
     items: [],
     dataToExport: [],
-    fillable: ["id", "ip", "browser", "activity", "created_at"],
-    typeDates: ["created_at"]
+    fillable: ['id', 'ip', 'browser', 'activity', 'created_at'],
+    typeDates: ['created_at'],
   }),
 
   watch: {
@@ -84,13 +84,13 @@ export default {
       handler() {
         this.pupulateTable()
       },
-      deep: true
+      deep: true,
     },
     search() {
-      if (this.search == "" || this.search.length > 2) {
+      if (this.search == '' || this.search.length > 2) {
         this.searchQuery()
       }
-    }
+    },
   },
 
   mounted() {
@@ -142,7 +142,7 @@ export default {
       this.dataToExport = []
       let localItems = this.items
       localItems.map(i => {
-        let user = ""
+        let user = ''
         let data = Object.assign({}, i)
         delete data.user
         delete data.user_id
@@ -153,7 +153,7 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    }
-  }
+    },
+  },
 }
 </script>

@@ -55,9 +55,9 @@
     </v-card-text>
     <dform
       :show="showForm"
+      :link="link"
       @onClose="showForm = false"
       @onAdd="addData"
-      :link="link"
     />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
@@ -71,72 +71,79 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { headers, downloadData } from "./util";
-import { global, catchError } from "~/mixins";
-import dform from "./dform";
-import DownloadDialog from "~/components/DownloadDialog";
+import debounce from 'lodash/debounce'
+import { headers, downloadData } from './util'
+import { global, catchError } from '~/mixins'
+import dform from './dform'
+import DownloadDialog from '~/components/DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
+  mixins: [global, catchError],
+  props: {
+    studyId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
   data() {
     return {
-      title: "Angkatan",
-      link: "/study-years",
+      title: 'Angkatan',
+      link: '/study-years',
       headers: headers,
       fillable: downloadData,
-      typeDates: ["created_at"],
-      dataToExport: []
-    };
+      typeDates: ['created_at'],
+      dataToExport: [],
+    }
   },
-  mounted() {
-    this.populateTable();
-  },
-  props: ["studyId"],
+
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
+  },
+  mounted() {
+    this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        let queries = this.getQueries();
+        this.activateLoader()
+        let queries = this.getQueries()
         if (this.studyId) {
-          queries += `study_program_id=${this.studyId}`;
+          queries += `study_program_id=${this.studyId}`
         }
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
-        this.items = resp.data;
-        this.deactivateLoader();
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.total
+        this.items = resp.data
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = [];
-      this.dataToExport = this.items;
+      this.dataToExport = []
+      this.dataToExport = this.items
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

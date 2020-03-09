@@ -7,8 +7,12 @@
     <table class="table is-fullwidth mt-3">
       <tbody>
         <tr>
-          <th width="30%">Perizinan</th>
-          <td width="70%">{{ currentEdit.terms }}</td>
+          <th width="30%">
+            Perizinan
+          </th>
+          <td width="70%">
+            {{ currentEdit.terms }}
+          </td>
         </tr>
         <tr>
           <th>Hasil</th>
@@ -28,15 +32,15 @@
 </template>
 
 <script>
-import { global } from "~/mixins"
-import marketingTable from "./marketingTable"
-import contactTable from "./contactTable"
-import yearsTable from "./yearsTable/yearsTable"
-import attachmentTable from "./attachmentTable"
+import { global } from '~/mixins'
+import marketingTable from './marketingTable'
+import contactTable from './contactTable'
+import yearsTable from './yearsTable/yearsTable'
+import attachmentTable from './attachmentTable'
 
 export default {
   components: { marketingTable, contactTable, yearsTable, attachmentTable },
-  mixins: [global]
+  mixins: [global],
 }
 </script>
 

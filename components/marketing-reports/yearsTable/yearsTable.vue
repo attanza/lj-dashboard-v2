@@ -1,6 +1,8 @@
 <template>
   <div class="mt-4">
-    <h3 class="subheading ml-3">Angkatan</h3>
+    <h3 class="subheading ml-3">
+      Angkatan
+    </h3>
     <v-toolbar flat color="transparent">
       <Tbtn
         :bottom="true"
@@ -67,7 +69,7 @@
       </template>
     </v-data-table>
     <Dialog
-      :showDialog="showDialog"
+      :show-dialog="showDialog"
       text="Yakin mau menghapus ?"
       @onClose="showDialog = false"
       @onConfirmed="removeData"
@@ -85,13 +87,13 @@
 </template>
 
 <script>
-import { TARGET_YEARS } from "~/utils/apis"
-import catchError, { showNoty } from "~/utils/catchError"
-import axios from "axios"
-import { global } from "~/mixins"
-import _ from "lodash"
-import Dialog from "~/components/Dialog"
-import yearForm from "./yearForm"
+import { TARGET_YEARS } from '~/utils/apis'
+import catchError, { showNoty } from '~/utils/catchError'
+import axios from 'axios'
+import { global } from '~/mixins'
+import _ from 'lodash'
+import Dialog from '~/components/Dialog'
+import yearForm from './yearForm'
 
 export default {
   components: { Dialog, yearForm },
@@ -99,48 +101,48 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Angkatan", align: "left", value: "year" },
-        { text: "Jumlah Kelas", align: "left", value: "class" },
+        { text: 'Angkatan', align: 'left', value: 'year' },
+        { text: 'Jumlah Kelas', align: 'left', value: 'class' },
         {
-          text: "Total Siswa",
-          align: "left",
-          value: "students"
+          text: 'Total Siswa',
+          align: 'left',
+          value: 'students',
         },
-        { text: "Aksi", value: "", align: "center", sortable: false }
+        { text: 'Aksi', value: '', align: 'center', sortable: false },
       ],
       headers2: [
-        { text: "Angkatan", align: "left", value: "year" },
+        { text: 'Angkatan', align: 'left', value: 'year' },
         {
-          text: "Jumlah Hadir",
-          align: "left",
-          value: "count_attendence"
+          text: 'Jumlah Hadir',
+          align: 'left',
+          value: 'count_attendence',
         },
-        { text: "Jumlah Orang DP", align: "left", value: "people_dp" },
-        { text: "Total DP Diterima", align: "left", value: "count_dp" },
-        { text: "Aksi", value: "", align: "center", sortable: false }
+        { text: 'Jumlah Orang DP', align: 'left', value: 'people_dp' },
+        { text: 'Total DP Diterima', align: 'left', value: 'count_dp' },
+        { text: 'Aksi', value: '', align: 'center', sortable: false },
       ],
       headers3: [
-        { text: "Angkatan", align: "left", value: "year" },
-        { text: "Jumlah Tambah", align: "left", value: "count_add" },
-        { text: "Jumlah Batal", align: "left", value: "count_cancel" },
+        { text: 'Angkatan', align: 'left', value: 'year' },
+        { text: 'Jumlah Tambah', align: 'left', value: 'count_add' },
+        { text: 'Jumlah Batal', align: 'left', value: 'count_cancel' },
         {
-          text: "Jumlah Bagi Paket",
-          align: "left",
-          value: "count_packages"
+          text: 'Jumlah Bagi Paket',
+          align: 'left',
+          value: 'count_packages',
         },
-        { text: "Aksi", value: "", align: "center", sortable: false }
+        { text: 'Aksi', value: '', align: 'center', sortable: false },
       ],
       items: [],
       showDialog: false,
       dataToDelete: null,
       showForm: false,
       dataToEdit: null,
-      isEdit: false
+      isEdit: false,
     }
   },
   computed: {
     targetId() {
-      return this.$route.params ? this.$route.params.id.toString() : ""
+      return this.$route.params ? this.$route.params.id.toString() : ''
     },
     getHeaders() {
       if (
@@ -160,15 +162,15 @@ export default {
             return null
         }
       }
-    }
+    },
   },
   watch: {
     pagination: {
       handler: _.debounce(function() {
         this.pupulateTable()
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {
     this.pupulateTable()
@@ -254,14 +256,14 @@ export default {
     removeData() {
       try {
         this.activateLoader()
-        axios.delete(TARGET_YEARS + "/" + this.dataToDelete.id).then(resp => {
+        axios.delete(TARGET_YEARS + '/' + this.dataToDelete.id).then(resp => {
           if (resp.status === 200) {
             let index = _.findIndex(
               this.items,
               item => item.id == this.dataToDelete.id
             )
             this.items.splice(index, 1)
-            showNoty("Data dihapus", "success")
+            showNoty('Data dihapus', 'success')
             this.showDialog = false
             this.dataToDelete = null
           }
@@ -271,8 +273,8 @@ export default {
         this.deactivateLoader()
         catchError(e)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

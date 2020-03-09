@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">{{ title }}</v-card-title>
+    <v-card-title class="primary--text">
+      {{ title }}
+    </v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
         v-if="checkPermission('create-marketing')"
@@ -56,9 +58,9 @@
     </v-card-text>
     <dform
       :show="showForm"
+      :link="link"
       @onClose="showForm = false"
       @onAdd="addData"
-      :link="link"
     />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
@@ -72,82 +74,83 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { headers, downloadData } from "~/components/marketings/util";
-import { global, catchError } from "~/mixins";
-import { dform } from "~/components/marketings";
-import DownloadDialog from "~/components/DownloadDialog";
+import debounce from 'lodash/debounce'
+import { headers, downloadData } from '~/components/marketings/util'
+import { global, catchError } from '~/mixins'
+import { dform } from '~/components/marketings'
+import DownloadDialog from '~/components/DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
+  mixins: [global, catchError],
   data() {
     return {
-      title: "Marketing",
-      link: "/marketings",
+      title: 'Marketing',
+      link: '/marketings',
       headers: headers,
       fillable: downloadData,
-      typeDates: ["created_at"],
-      dataToExport: []
-    };
-  },
-  mounted() {
-    this.populateTable();
+      typeDates: ['created_at'],
+      dataToExport: [],
+    }
   },
   computed: {
     supervisorId() {
       if (this.user && this.user.roles) {
-        const role = this.user.roles[0].slug;
-        if (role === "supervisor") {
-          return this.user.id;
+        const role = this.user.roles[0].slug
+        if (role === 'supervisor') {
+          return this.user.id
         }
       }
-      return "";
-    }
+      return ''
+    },
   },
+
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
+  },
+  mounted() {
+    this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        let queries = this.getQueries();
-        if (this.supervisorId !== "") {
-          queries += `supervisor_id=${this.supervisorId}`;
+        this.activateLoader()
+        let queries = this.getQueries()
+        if (this.supervisorId !== '') {
+          queries += `supervisor_id=${this.supervisorId}`
         }
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
-        this.items = resp.data;
-        this.deactivateLoader();
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.total
+        this.items = resp.data
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = [];
-      this.dataToExport = this.items;
+      this.dataToExport = []
+      this.dataToExport = this.items
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

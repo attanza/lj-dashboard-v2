@@ -40,16 +40,16 @@
       >
         <template v-slot:item.marketing_target_id="{ item }">
           <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
-            {{ item.target ? item.target.code : "N/A" }}
+            {{ item.target ? item.target.code : 'N/A' }}
           </v-btn>
         </template>
       </v-data-table>
     </v-card-text>
     <dform
       :show="showForm"
+      :link="link"
       @onClose="showForm = false"
       @onAdd="addData"
-      :link="link"
     />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
@@ -63,67 +63,68 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { headers, downloadData } from "./util";
-import { global, catchError } from "~/mixins";
-import dform from "./dform";
-import DownloadDialog from "../DownloadDialog";
+import debounce from 'lodash/debounce'
+import { headers, downloadData } from './util'
+import { global, catchError } from '~/mixins'
+import dform from './dform'
+import DownloadDialog from '../DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
+  mixins: [global, catchError],
   data() {
     return {
-      title: "Kontak",
-      link: "/contacts",
+      title: 'Kontak',
+      link: '/contacts',
       headers: headers,
       fillable: downloadData,
-      typeDates: ["created_at"],
-      dataToExport: []
-    };
+      typeDates: ['created_at'],
+      dataToExport: [],
+    }
   },
-  mounted() {
-    this.populateTable();
-  },
+
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
+  },
+  mounted() {
+    this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        const queries = this.getQueries();
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.total;
-        this.items = resp.data;
-        this.deactivateLoader();
+        this.activateLoader()
+        const queries = this.getQueries()
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.total
+        this.items = resp.data
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = this.items;
+      this.dataToExport = this.items
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>

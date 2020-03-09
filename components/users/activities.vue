@@ -29,16 +29,17 @@
         :footer-props="footerProps"
         :server-items-length="total"
       >
+        >
         <template v-slot:item.createdAt="{ item }">
-          {{ $moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
+          {{ $moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
       </v-data-table>
     </v-card-text>
     <dform
       :show="showForm"
+      :link="link"
       @onClose="showForm = false"
       @onAdd="addData"
-      :link="link"
     />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
@@ -52,80 +53,80 @@
 </template>
 
 <script>
-import debounce from "lodash/debounce";
-import { activityHeaders, activityDownloadData } from "./util";
-import { global, catchError } from "~/mixins";
-import { dform } from "~/components/roles";
-import DownloadDialog from "~/components/DownloadDialog";
+import debounce from 'lodash/debounce'
+import { activityHeaders, activityDownloadData } from './util'
+import { global, catchError } from '~/mixins'
+import { dform } from '~/components/roles'
+import DownloadDialog from '~/components/DownloadDialog'
 export default {
-  mixins: [global, catchError],
   components: { DownloadDialog, dform },
+  mixins: [global, catchError],
   data() {
     return {
-      title: "Aktifitas",
-      link: "/activities",
+      title: 'Aktifitas',
+      link: '/activities',
       headers: activityHeaders,
       fillable: activityDownloadData,
-      typeDates: ["createdAt"],
-      dataToExport: []
-    };
+      typeDates: ['createdAt'],
+      dataToExport: [],
+    }
   },
   computed: {
     user() {
-      return this.$store.state.auth.user;
-    }
+      return this.$store.state.auth.user
+    },
   },
 
   watch: {
     options: {
       handler: debounce(function() {
         if (!this.loading) {
-          this.populateTable();
+          this.populateTable()
         }
       }, 500),
-      deep: true
-    }
+      deep: true,
+    },
   },
   methods: {
     async populateTable() {
       try {
-        this.activateLoader();
-        let queries = this.getQueries();
-        queries += `search_by=user.id&search_query=${this.currentEdit.id}`;
-        const resp = await this.$axios.$get(`${this.link + queries}`);
-        this.total = resp.meta.totalDocs;
-        this.items = resp.data;
-        this.deactivateLoader();
+        this.activateLoader()
+        let queries = this.getQueries()
+        queries += `search_by=user.id&search_query=${this.currentEdit.id}`
+        const resp = await this.$axios.$get(`${this.link + queries}`)
+        this.total = resp.meta.totalDocs
+        this.items = resp.data
+        this.deactivateLoader()
       } catch (e) {
-        this.deactivateLoader();
-        this.showForm = false;
-        this.catchError(e, null, this.$router);
+        this.deactivateLoader()
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
     },
     toDetail(data) {
-      this.$router.push(`${this.link}/${data.id}`);
+      this.$router.push(`${this.link}/${data.id}`)
     },
     addData(data) {
-      this.items.unshift(data);
-      this.showForm = false;
+      this.items.unshift(data)
+      this.showForm = false
     },
     downloadData() {
-      this.dataToExport = [];
+      this.dataToExport = []
       // this.dataToExport = this.items;
       this.items.map(i => {
-        let data = Object.assign({}, i);
-        data.userId = data.user.id;
-        data.userEmail = data.user.email;
-        delete data["user"];
-        delete data["__v"];
-        this.dataToExport.push(data);
-      });
+        let data = Object.assign({}, i)
+        data.userId = data.user.id
+        data.userEmail = data.user.email
+        delete data['user']
+        delete data['__v']
+        this.dataToExport.push(data)
+      })
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true;
+        this.showDownloadDialog = true
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped></style>
