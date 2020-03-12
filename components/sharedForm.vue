@@ -7,7 +7,7 @@
             <ValidationProvider
               v-if="f.el == 'text'"
               v-slot="{ errors }"
-              :name="f.value"
+              :name="f.text"
               :rules="f.rules"
             >
               <v-text-field
@@ -16,13 +16,14 @@
                 :error-messages="errors"
                 :name="f.value"
                 :label="f.text"
+                :disabled="f.disabled"
               />
             </ValidationProvider>
 
             <ValidationProvider
               v-if="f.el == 'switch'"
               v-slot="{ errors }"
-              :name="f.value"
+              :name="f.text"
               :rules="f.rules"
             >
               <v-switch
@@ -37,7 +38,7 @@
             <ValidationProvider
               v-if="f.el == 'combobox'"
               v-slot="{ errors }"
-              :name="f.value"
+              :name="f.text"
               :rules="f.rules"
             >
               <v-autocomplete
@@ -56,7 +57,7 @@
             <ValidationProvider
               v-if="f.el == 'date'"
               v-slot="{ errors }"
-              :name="f.value"
+              :name="f.text"
               :rules="f.rules"
             >
               <v-menu
@@ -78,17 +79,14 @@
                     v-on="on"
                   />
                 </template>
-                <v-date-picker
-                  v-model="formData[f.value]"
-                  @input="dateMenu = false"
-                />
+                <v-date-picker v-model="formData[f.value]" @input="dateMenu = false" />
               </v-menu>
             </ValidationProvider>
 
             <ValidationProvider
               v-if="f.el == 'time'"
               v-slot="{ errors }"
-              :name="f.value"
+              :name="f.text"
               :rules="f.rules"
             >
               <v-menu
@@ -110,17 +108,14 @@
                     v-on="on"
                   />
                 </template>
-                <v-time-picker
-                  v-model="formData[f.value]"
-                  @input="timeMenu = false"
-                />
+                <v-time-picker v-model="formData[f.value]" @input="timeMenu = false" />
               </v-menu>
             </ValidationProvider>
 
             <ValidationProvider
               v-if="f.el == 'textarea'"
               v-slot="{ errors }"
-              :name="f.value"
+              :name="f.text"
               :rules="f.rules"
             >
               <v-textarea
@@ -134,7 +129,7 @@
             <ValidationProvider
               v-if="f.el == 'editor'"
               v-slot="{ errors }"
-              :name="f.value"
+              :name="f.text"
               :rules="f.rules"
             >
               <vue-editor
@@ -149,13 +144,9 @@
       </v-container>
       <v-divider class="mb-3" />
       <v-card-actions>
-        <v-btn v-if="showCancel" @click="close">
-          {{ messages.form.CANCEL }}
-        </v-btn>
+        <v-btn v-if="showCancel" @click="close">{{ messages.form.CANCEL }}</v-btn>
         <v-spacer />
-        <v-btn v-if="showButton" color="primary" @click="submit">
-          {{ messages.form.SAVE }}
-        </v-btn>
+        <v-btn v-if="showButton" color="primary" @click="submit">{{ messages.form.SAVE }}</v-btn>
       </v-card-actions>
     </form>
   </ValidationObserver>

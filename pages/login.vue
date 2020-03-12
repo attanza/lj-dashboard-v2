@@ -72,13 +72,23 @@ export default {
   layout: 'nonav',
   mixins: [catchError],
   data: () => ({
-    email: 'super_administrator@langsungjalan.com',
-    password: 'password',
+    email: '',
+    password: '',
     show1: false,
     loading: false,
     allowedLogin: ['super-administrator', 'administrator', 'supervisor'],
   }),
+  mounted() {
+    this.fillEmailAndPassword()
+  },
   methods: {
+    fillEmailAndPassword() {
+      const NODE_ENV = process.env.NODE_ENV
+      if (NODE_ENV === 'development') {
+        this.email = 'super_administrator@langsungjalan.com'
+        this.password = 'password'
+      }
+    },
     async submit() {
       if (await this.$refs.observer.validate()) {
         this.doLogin()

@@ -21,7 +21,7 @@ export default {
             break
           case 401:
             {
-              this.$suth.logout()
+              this.$auth.logout()
               this.$router.push('/login')
             }
             break
@@ -35,11 +35,11 @@ export default {
               'Internal Server Error, please contact our Administrator',
               'error'
             )
-            console.log("Unknown Status"); //eslint-disable-line
+            console.log('Unknown Status') //eslint-disable-line
             break
         }
       } else {
-        console.log("default error"); //eslint-disable-line
+        console.log('default error') //eslint-disable-line
         this.showNoty(
           'Internal Server Error, please contact our Administrator',
           'error'

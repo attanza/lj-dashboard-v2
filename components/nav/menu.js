@@ -89,6 +89,24 @@ export const adminItems = [
     title: 'Produk',
     icon: 'chrome_reader_mode',
     to: '/products',
+    hasChild: true,
+    children: [
+      {
+        title: 'Produk',
+        icon: 'chrome_reader_mode',
+        to: '/products',
+      },
+      {
+        title: 'Produk Order',
+        icon: 'chrome_reader_mode',
+        to: '/online-product-orders',
+      },
+      {
+        title: 'Produk Aktifator',
+        icon: 'chrome_reader_mode',
+        to: '/products',
+      },
+    ],
   },
   {
     title: 'Referral',
