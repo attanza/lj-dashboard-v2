@@ -79,7 +79,10 @@
                     v-on="on"
                   />
                 </template>
-                <v-date-picker v-model="formData[f.value]" @input="dateMenu = false" />
+                <v-date-picker
+                  v-model="formData[f.value]"
+                  @input="dateMenu = false"
+                />
               </v-menu>
             </ValidationProvider>
 
@@ -108,7 +111,10 @@
                     v-on="on"
                   />
                 </template>
-                <v-time-picker v-model="formData[f.value]" @input="timeMenu = false" />
+                <v-time-picker
+                  v-model="formData[f.value]"
+                  @input="timeMenu = false"
+                />
               </v-menu>
             </ValidationProvider>
 
@@ -144,9 +150,13 @@
       </v-container>
       <v-divider class="mb-3" />
       <v-card-actions>
-        <v-btn v-if="showCancel" @click="close">{{ messages.form.CANCEL }}</v-btn>
+        <v-btn v-if="showCancel" @click="close">
+          {{ messages.form.CANCEL }}
+        </v-btn>
         <v-spacer />
-        <v-btn v-if="showButton" color="primary" @click="submit">{{ messages.form.SAVE }}</v-btn>
+        <v-btn v-if="showButton" color="primary" @click="submit">
+          {{ messages.form.SAVE }}
+        </v-btn>
       </v-card-actions>
     </form>
   </ValidationObserver>

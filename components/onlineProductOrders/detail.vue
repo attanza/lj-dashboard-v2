@@ -104,6 +104,9 @@ export default {
     },
 
     async editData(data) {
+      if (data.marketing_id === '') {
+        data.marketing_id = undefined
+      }
       try {
         this.activateLoader()
         if (this.currentEdit) {

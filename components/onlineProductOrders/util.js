@@ -116,14 +116,14 @@ export const formItem = [
     text: 'Marketing',
     value: 'marketing_id',
     el: 'text',
-    rules: 'required|integer',
+    rules: '',
     inForm: true,
   },
   {
     text: 'Product',
     value: 'product_id',
     el: 'combobox',
-    rules: 'required',
+    rules: 'required|integer',
     inForm: true,
   },
   {
