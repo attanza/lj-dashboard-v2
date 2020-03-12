@@ -9,7 +9,7 @@
         <v-card-text>
           <sharedForm
             :items="formItem"
-            :show-button="checkPermission('create-online-product-order')"
+            :show-button="checkPermission('create-product-activator')"
             :show-cancel="true"
             :init-value="initValue"
             :sm6="true"
@@ -24,7 +24,7 @@
 <script>
 import { global, catchError } from '~/mixins'
 import sharedForm from '../sharedForm'
-import { formItem, orderStatus } from './util'
+import { formItem } from './util'
 export default {
   components: { sharedForm },
   mixins: [global, catchError],
@@ -42,8 +42,7 @@ export default {
     return {
       dialog: false,
       formItem: formItem,
-      orderStatus: orderStatus,
-      formTitle: 'Tambah Order',
+      formTitle: 'Tambah Aktivator',
       initValue: {},
     }
   },

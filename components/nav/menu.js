@@ -104,7 +104,7 @@ export const adminItems = [
       {
         title: 'Produk Aktifator',
         icon: 'chrome_reader_mode',
-        to: '/products',
+        to: '/product-activators',
       },
     ],
   },
