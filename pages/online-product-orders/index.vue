@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">{{ title }}</v-card-title>
+    <v-card-title class="primary--text">
+      {{ title }}
+    </v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
         v-if="checkPermission('create-online-product-order')"
@@ -41,14 +43,21 @@
       >
         >
         <template v-slot:item.order_no="{ item }">
-          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">{{ item.order_no }}</v-btn>
+          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
+            {{ item.order_no }}
+          </v-btn>
         </template>
-        <template
-          v-slot:item.marketing_id="{ item }"
-        >{{ item.marketing ? item.marketing.name : '' }}</template>
+        <template v-slot:item.marketing_id="{ item }">
+          {{ item.marketing ? item.marketing.name : '' }}
+        </template>
       </v-data-table>
     </v-card-text>
-    <dform :show="showForm" :link="link" @onClose="showForm = false" @onAdd="addData" />
+    <dform
+      :show="showForm"
+      :link="link"
+      @onClose="showForm = false"
+      @onAdd="addData"
+    />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"

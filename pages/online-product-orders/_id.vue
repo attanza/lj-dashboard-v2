@@ -1,9 +1,13 @@
 <template>
   <div>
-    <h2 v-if="currentEdit" class="headline primary--text mb-2">{{ currentEdit.name }}</h2>
+    <h2 v-if="currentEdit" class="headline primary--text mb-2">
+      {{ currentEdit.name }}
+    </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
-      <v-tab href="#detail">Detail</v-tab>
+      <v-tab href="#detail">
+        Detail
+      </v-tab>
       <v-tab-item :id="'detail'">
         <detail />
       </v-tab-item>
