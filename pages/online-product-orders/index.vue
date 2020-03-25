@@ -47,8 +47,8 @@
             {{ item.order_no }}
           </v-btn>
         </template>
-        <template v-slot:item.marketing_id="{ item }">
-          {{ item.marketing ? item.marketing.name : '' }}
+        <template v-slot:item.price="{ item }">
+          {{ item.price.toLocaleString() }}
         </template>
       </v-data-table>
     </v-card-text>

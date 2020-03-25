@@ -1,68 +1,46 @@
 <template>
   <div>
-    <v-layout row wrap>
-      <v-flex xs12 sm6 md4>
-        <v-card
-          v-if="dashboardData"
-          light
-          class="elevation-2 mb-2"
-          max-height="200px"
-        >
-          <v-layout>
-            <v-flex xs4 class="flex-all-centered">
+    <v-row v-if="dashboardData">
+      <v-col cols="12" sm="6">
+        <v-card light class="elevation-2 mb-2" max-height="200px">
+          <v-row class="px-3">
+            <v-col cols="4">
               <v-icon color="primary" style="font-size: 3rem;">
                 supervised_user_circle
               </v-icon>
-            </v-flex>
-            <v-flex xs8>
+            </v-col>
+            <v-col cols="8">
               <div>Active Marketings</div>
               <div class="title primary--text">
                 {{ dashboardData.total_marketings }}
               </div>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-card>
-      </v-flex>
-      <v-flex xs12 sm6 md4>
-        <v-card
-          v-if="dashboardData"
-          light
-          class="elevation-2 mb-2"
-          max-height="200px"
-        >
-          <v-layout>
-            <v-flex xs4 class="flex-all-centered">
+      </v-col>
+      <v-col cols="12" sm="6">
+        <v-card>
+          <v-row class="px-3">
+            <v-col cols="4" align-self="center">
               <v-icon color="primary" style="font-size: 3rem;">
                 account_balance
               </v-icon>
-            </v-flex>
-            <v-flex xs8>
+            </v-col>
+            <v-col cols="8">
               <div>Registered Universities</div>
               <div class="title primary--text">
                 {{ dashboardData.total_universities }}
               </div>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-card>
-      </v-flex>
-      <!-- <v-flex xs12 sm6 md4>
-        <v-card v-if="dashboardData" light class="elevation-8 mb-2" max-height="200px">
-          <v-layout>
-            <v-flex xs4 class="flex-all-centered">
-              <v-icon color="primary" style="font-size: 4rem;">donut_small</v-icon>
-            </v-flex>
-            <v-flex xs8>
-              <v-card-title primary-title>
-                <div>
-                  <div>Products</div>
-                  <div class="headline primary--text"> {{ dashboardData.total_products }}</div>
-                </div>
-              </v-card-title>
-            </v-flex>
-          </v-layout>
-        </v-card>
-      </v-flex>-->
-    </v-layout>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <bar-chart :data="chartdata" :options="options" />
+      </v-col>
+    </v-row>
   </div>
 </template>
 <script>
@@ -71,6 +49,22 @@ import { global, catchError } from '~/mixins'
 
 export default {
   mixins: [global, catchError],
+  data: () => ({
+    chartdata: {
+      labels: ['January', 'February', 'Maret'],
+      datasets: [
+        {
+          label: 'Data One',
+          backgroundColor: '#f87979',
+          data: [40, 20, 50],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    },
+  }),
   mounted() {
     this.seedData()
   },

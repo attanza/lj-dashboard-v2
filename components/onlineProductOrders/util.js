@@ -48,10 +48,9 @@ export const orderStatus = [
 export const headers = [
   { text: 'Order#', align: 'left', value: 'order_no' },
   { text: 'Nama', align: 'left', value: 'name' },
-  { text: 'Email', align: 'left', value: 'email' },
+  { text: 'Harga', align: 'left', value: 'price' },
   { text: 'Status', align: 'left', value: 'status' },
-  { text: 'Marketing', align: 'left', value: 'marketing_id' },
-  { text: 'Tanggal', align: 'left', value: 'created_at' },
+  { text: 'Tanggal', align: 'left', value: 'date' },
 ]
 
 export const downloadData = []

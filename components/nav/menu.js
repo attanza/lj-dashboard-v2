@@ -87,23 +87,23 @@ export const adminItems = [
   },
   {
     title: 'Produk',
-    icon: 'chrome_reader_mode',
+    icon: 'markunread_mailbox',
     to: '/products',
     hasChild: true,
     children: [
       {
         title: 'Produk',
-        icon: 'chrome_reader_mode',
+        icon: 'markunread_mailbox',
         to: '/products',
       },
       {
-        title: 'Produk Order',
-        icon: 'chrome_reader_mode',
+        title: 'Order Produk',
+        icon: 'inbox',
         to: '/online-product-orders',
       },
       {
-        title: 'Produk Aktifator',
-        icon: 'chrome_reader_mode',
+        title: 'Aktifator Produk',
+        icon: 'how_to_vote',
         to: '/product-activators',
       },
     ],

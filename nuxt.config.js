@@ -58,6 +58,7 @@ export default {
     '~/plugins/eventBus.js',
     '~/plugins/messages.js',
     '~/plugins/gmaps.js',
+    { src: '~plugins/chart.js', ssr: false },
   ],
   /*
    ** Nuxt.js dev-modules

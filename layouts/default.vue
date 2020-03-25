@@ -9,7 +9,7 @@
         <Loader />
       </v-content>
       <v-footer fixed app>
-        <span>&copy; 2018</span>
+        <span>&copy; 2020</span>
       </v-footer>
     </client-only>
   </v-app>
