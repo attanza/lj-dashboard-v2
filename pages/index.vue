@@ -36,9 +36,9 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="chartData">
       <v-col>
-        <bar-chart :data="chartdata" :options="options" />
+        <bar-chart :chart-data="chartData" :options="options" />
       </v-col>
     </v-row>
   </div>
@@ -50,16 +50,6 @@ import { global, catchError } from '~/mixins'
 export default {
   mixins: [global, catchError],
   data: () => ({
-    chartdata: {
-      labels: ['January', 'February', 'Maret'],
-      datasets: [
-        {
-          label: 'Data One',
-          backgroundColor: '#f87979',
-          data: [40, 20, 50],
-        },
-      ],
-    },
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -74,10 +64,40 @@ export default {
         this.activateLoader()
         let resp = await this.$axios.$get(DASHBOARD_DATA_URL)
         if (resp) this.$store.commit('dashboardData', resp)
+        this.generateChartData()
         this.deactivateLoader()
       } catch (e) {
         this.deactivateLoader()
         this.catchError(e)
+      }
+    },
+    generateChartData() {
+      if (this.dashboardData) {
+        const onlineOrders = this.dashboardData.onlineOrders
+        const data = []
+        const labels = []
+        onlineOrders.map(o => {
+          data.push(o.total)
+          labels.push(
+            this.$moment()
+              .month(o.month - 1)
+              .format('MMM')
+          )
+        })
+        const datasets = [
+          {
+            label: `Online Product Order Year of ${this.$moment().format(
+              'YYYY'
+            )}`,
+            backgroundColor: '#EF6C00',
+            data: data,
+          },
+        ]
+        const chartData = {
+          labels,
+          datasets,
+        }
+        this.$store.commit('chartData', chartData)
       }
     },
   },

@@ -176,6 +176,7 @@ export default {
       'permissions',
       'user',
       'dashboardData',
+      'chartData',
     ]),
     userPermissions() {
       const permissions =

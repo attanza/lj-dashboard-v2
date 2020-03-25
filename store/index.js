@@ -6,6 +6,7 @@ export const state = () => ({
   permissions: null,
   dashboardData: null,
   comboData: null,
+  chartData: null,
 })
 export const mutations = {
   toggleSidebar(state) {
@@ -29,6 +30,9 @@ export const mutations = {
   },
   dashboardData(state, p) {
     state.dashboardData = p
+  },
+  chartData(state, p) {
+    state.chartData = p
   },
 }
 export const actions = {}
