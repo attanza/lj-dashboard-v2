@@ -68,84 +68,84 @@
   </v-layout>
 </template>
 <script>
-import { global } from '~/mixins'
-import { STUDIES_URL, COMBO_DATA_URL } from '~/utils/apis'
-import axios from 'axios'
-import catchError, { showNoty } from '~/utils/catchError'
+import { global } from "~/mixins"
+import { STUDIES_URL, COMBO_DATA_URL } from "~/utils/apis"
+import axios from "axios"
+import catchError, { showNoty } from "~/utils/catchError"
 export default {
   $_veeValidate: {
-    validator: 'new',
+    validator: "new"
   },
   mixins: [global],
   props: {
     show: {
       type: Boolean,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       dialog: false,
       fillable: [
         {
-          key: 'study_name_id',
-          caption: 'Nama Studi',
-          value: '',
-          rules: 'required|integer',
+          key: "study_name_id",
+          caption: "Nama Studi",
+          value: "",
+          rules: "required|integer"
         },
         {
-          key: 'university_id',
-          caption: 'Universitas',
-          value: '',
-          rules: 'required|integer',
+          key: "university_id",
+          caption: "Universitas",
+          value: "",
+          rules: "required|integer"
         },
         {
-          key: 'phone',
-          caption: 'Telepon',
-          value: '',
-          rules: 'required|max:30',
+          key: "phone",
+          caption: "Telepon",
+          value: "",
+          rules: "required|max:30"
         },
         {
-          key: 'email',
-          caption: 'Email',
-          value: '',
-          rules: 'required|email',
+          key: "email",
+          caption: "Email",
+          value: "",
+          rules: "required|email"
         },
         {
-          key: 'contact_person',
-          caption: 'Nama kontak',
-          value: '',
-          rules: 'required|max:50',
+          key: "contact_person",
+          caption: "Nama kontak",
+          value: "",
+          rules: "required|max:50"
         },
         {
-          key: 'address',
-          caption: 'Alamat',
-          value: '',
-          rules: 'max:250',
+          key: "address",
+          caption: "Alamat",
+          value: "",
+          rules: "max:250"
         },
         {
-          key: 'description',
-          caption: 'Deskripsi',
-          value: '',
-          rules: 'max:250',
-        },
+          key: "description",
+          caption: "Deskripsi",
+          value: "",
+          rules: "max:250"
+        }
       ],
-      notIncluded: ['description', 'address', 'university_id', 'study_name_id'],
+      notIncluded: ["description", "address", "university_id", "study_name_id"],
       formData: {},
-      formTitle: 'Tambah Program Studi',
-      years: [],
+      formTitle: "Tambah Program Studi",
+      years: []
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    },
+    }
   },
   async created() {
     try {
       this.setAuth()
-      let resp = await axios.get(COMBO_DATA_URL + 'StudyName')
-      if (resp) this.$store.commit('comboData', resp.data)
+      let resp = await axios.get(COMBO_DATA_URL + "StudyName")
+      if (resp) this.$store.commit("comboData", resp.data)
       this.setFields()
     } catch (e) {
       catchError(e)
@@ -154,7 +154,7 @@ export default {
   methods: {
     onClose() {
       this.formData = {}
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     setFields() {
       this.errors.clear()
@@ -185,8 +185,8 @@ export default {
           .post(STUDIES_URL, this.formData)
           .then(res => res.data)
         if (resp.meta.status === 201) {
-          showNoty('Data disimpan', 'success')
-          this.$emit('onAdd', resp.data)
+          showNoty("Data disimpan", "success")
+          this.$emit("onAdd", resp.data)
           this.setFields()
         }
         this.deactivateLoader()
@@ -194,7 +194,7 @@ export default {
         this.deactivateLoader()
         catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

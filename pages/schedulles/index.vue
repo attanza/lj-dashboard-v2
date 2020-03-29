@@ -8,15 +8,15 @@
 </template>
 
 <script>
-import { schedulleList } from '~/components/schedulles'
+import { schedulleList } from "~/components/schedulles"
 
 export default {
   components: { schedulleList },
   data() {
     return {
-      title: 'Jadwal',
+      title: "Jadwal"
     }
-  },
+  }
 }
 </script>
 

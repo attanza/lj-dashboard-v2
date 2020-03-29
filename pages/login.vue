@@ -66,17 +66,17 @@
 </template>
 
 <script>
-import { catchError } from '~/mixins'
+import { catchError } from "~/mixins"
 
 export default {
-  layout: 'nonav',
+  layout: "nonav",
   mixins: [catchError],
   data: () => ({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     show1: false,
     loading: false,
-    allowedLogin: ['super-administrator', 'administrator', 'supervisor'],
+    allowedLogin: ["super-administrator", "administrator", "supervisor"]
   }),
   mounted() {
     this.fillEmailAndPassword()
@@ -84,9 +84,9 @@ export default {
   methods: {
     fillEmailAndPassword() {
       const NODE_ENV = process.env.NODE_ENV
-      if (NODE_ENV === 'development') {
-        this.email = 'super_administrator@langsungjalan.com'
-        this.password = 'password'
+      if (NODE_ENV === "development") {
+        this.email = "super_administrator@langsungjalan.com"
+        this.password = "password"
       }
     },
     async submit() {
@@ -98,19 +98,19 @@ export default {
     async doLogin() {
       try {
         this.loading = true
-        await this.$auth.loginWith('local', {
+        await this.$auth.loginWith("local", {
           data: {
             email: this.email,
-            password: this.password,
-          },
+            password: this.password
+          }
         })
         this.loading = false
-        this.$router.push('/')
+        this.$router.push("/")
       } catch (e) {
         this.loading = false
-        this.showNoty('Login Gagal', 'error')
+        this.showNoty("Login Gagal", "error")
       }
-    },
-  },
+    }
+  }
 }
 </script>

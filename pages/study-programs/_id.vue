@@ -34,27 +34,27 @@
 </template>
 
 <script>
-import { STUDIES_URL } from '~/utils/apis'
-import { detail, maps } from '~/components/studies'
-import { list as years } from '~/components/studies/years'
-import { list as targets } from '~/components/targets'
+import { STUDIES_URL } from "~/utils/apis"
+import { detail, maps } from "~/components/studies"
+import { list as years } from "~/components/studies/years"
+import { list as targets } from "~/components/targets"
 
-import { catchError } from '~/mixins'
+import { catchError } from "~/mixins"
 export default {
   components: { detail, maps, years, targets },
   mixins: [catchError],
   async fetch({ store, params, redirect, $axios }) {
     try {
       // Current Edit
-      let currentEdit = await $axios.$get(STUDIES_URL + '/' + params.id)
-      if (currentEdit) store.commit('currentEdit', currentEdit.data)
+      let currentEdit = await $axios.$get(STUDIES_URL + "/" + params.id)
+      if (currentEdit) store.commit("currentEdit", currentEdit.data)
     } catch (e) {
       if (process.client) this.catchError(e)
       else {
-        redirect('/')
+        redirect("/")
       }
     }
-  },
+  }
 }
 </script>
 

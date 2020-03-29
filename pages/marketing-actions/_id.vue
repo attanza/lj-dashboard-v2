@@ -16,26 +16,26 @@
 </template>
 
 <script>
-import { MARKETING_ACTION_URL } from '~/utils/apis'
-import { detail } from '~/components/marketing-actions'
-import { global } from '~/mixins'
-import catchError from '~/utils/catchError'
+import { MARKETING_ACTION_URL } from "~/utils/apis"
+import { detail } from "~/components/marketing-actions"
+import { global } from "~/mixins"
+import catchError from "~/utils/catchError"
 
 export default {
   components: { detail },
   mixins: [global],
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
-      let resp = await $axios.$get(MARKETING_ACTION_URL + '/' + params.id)
+      let resp = await $axios.$get(MARKETING_ACTION_URL + "/" + params.id)
 
-      store.commit('currentEdit', resp.data)
+      store.commit("currentEdit", resp.data)
     } catch (e) {
       if (process.client) catchError(e, $router, $auth)
       else {
-        redirect('/')
+        redirect("/")
       }
     }
-  },
+  }
 }
 </script>
 

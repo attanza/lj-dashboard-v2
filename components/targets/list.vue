@@ -63,11 +63,11 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from '~/components/targets/util'
-import { global, catchError } from '~/mixins'
-import { dform } from '~/components/targets'
-import DownloadDialog from '~/components/DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "~/components/targets/util"
+import { global, catchError } from "~/mixins"
+import { dform } from "~/components/targets"
+import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
@@ -75,17 +75,17 @@ export default {
     studyId: {
       type: String,
       required: false,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
-      title: 'Marketing Target',
-      link: '/marketing-targets',
+      title: "Marketing Target",
+      link: "/marketing-targets",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -96,8 +96,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -133,8 +133,8 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

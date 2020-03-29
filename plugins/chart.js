@@ -1,20 +1,20 @@
-import Vue from 'vue'
-import { Bar, mixins } from 'vue-chartjs'
+import Vue from "vue"
+import { Bar, mixins } from "vue-chartjs"
 const { reactiveProp } = mixins
-Vue.component('bar-chart', {
+Vue.component("bar-chart", {
   extends: Bar,
   mixins: [reactiveProp],
   props: {
     chartData: {
       type: Object,
-      default: null,
+      default: null
     },
     options: {
       type: Object,
-      default: null,
-    },
+      default: null
+    }
   },
   mounted() {
     this.renderChart(this.chartData, this.options)
-  },
+  }
 })

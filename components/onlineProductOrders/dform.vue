@@ -22,53 +22,53 @@
   </v-layout>
 </template>
 <script>
-import { global, catchError } from '~/mixins'
-import sharedForm from '../sharedForm'
-import { formItem, orderStatus } from './util'
+import { global, catchError } from "~/mixins"
+import sharedForm from "../sharedForm"
+import { formItem, orderStatus } from "./util"
 export default {
   components: { sharedForm },
   mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
-      required: true,
+      required: true
     },
     link: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       dialog: false,
       formItem: formItem,
       orderStatus: orderStatus,
-      formTitle: 'Tambah Order',
-      initValue: {},
+      formTitle: "Tambah Order",
+      initValue: {}
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    },
+    }
   },
   methods: {
     onClose() {
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     async saveData(data) {
       try {
         this.activateLoader()
         const resp = await this.$axios.$post(this.link, data)
-        this.showNoty(this.$messages.form.SAVED, 'success')
-        this.$emit('onAdd', resp.data)
+        this.showNoty(this.$messages.form.SAVED, "success")
+        this.$emit("onAdd", resp.data)
         this.deactivateLoader()
       } catch (e) {
         this.dialog = false
         this.deactivateLoader()
         this.catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

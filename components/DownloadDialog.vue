@@ -199,8 +199,6 @@ export default {
         this.onClose()
       } else if (this.radios === "2") {
         try {
-          console.log("query", this.queryData)
-
           this.activateLoader()
           let query = ""
           for (let key in this.queryData) {

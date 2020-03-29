@@ -67,22 +67,22 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from '~/components/marketing-actions/util'
-import { global, catchError } from '~/mixins'
-import { dform } from '~/components/marketing-actions'
-import DownloadDialog from '~/components/DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "~/components/marketing-actions/util"
+import { global, catchError } from "~/mixins"
+import { dform } from "~/components/marketing-actions"
+import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
   data() {
     return {
-      title: 'Marketing Action',
-      link: '/marketing-actions',
+      title: "Marketing Action",
+      link: "/marketing-actions",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -93,8 +93,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -127,8 +127,8 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

@@ -8,15 +8,15 @@
 </template>
 
 <script>
-import { downPaymentList } from '~/components/down-payments'
+import { downPaymentList } from "~/components/down-payments"
 
 export default {
   components: { downPaymentList },
   data() {
     return {
-      title: 'Down Payment',
+      title: "Down Payment"
     }
-  },
+  }
 }
 </script>
 

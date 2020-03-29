@@ -163,40 +163,40 @@
 </template>
 
 <script>
-import messages from '../utils/messages'
+import messages from "../utils/messages"
 export default {
   props: {
     items: {
       type: Array,
-      required: true,
+      required: true
     },
     initValue: {
       type: Object,
       required: false,
-      default: null,
+      default: null
     },
     showButton: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
     sm6: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
     showCancel: {
       type: Boolean,
       required: false,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
       formData: {},
       messages: messages,
       dateMenu: false,
-      timeMenu: false,
+      timeMenu: false
     }
   },
 
@@ -205,7 +205,7 @@ export default {
       if (this.initValue) {
         this.assignInitValue()
       }
-    },
+    }
   },
 
   mounted() {
@@ -217,21 +217,21 @@ export default {
   methods: {
     async submit() {
       if (await this.$refs.observer.validate()) {
-        this.$emit('onSubmit', this.formData)
+        this.$emit("onSubmit", this.formData)
       }
       return
     },
     close() {
       this.formData = {}
 
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     assignInitValue() {
       this.formData = Object.assign({}, this.initValue)
     },
     comboChange(key, value) {
       this.$bus.$emit(key, value)
-    },
-  },
+    }
+  }
 }
 </script>

@@ -34,11 +34,11 @@
 </template>
 
 <script>
-import _ from 'lodash'
-import { global } from '~/mixins'
-import { STUDIES_URL } from '~/utils/apis'
-import axios from 'axios'
-import catchError, { showNoty } from '~/utils/catchError'
+import _ from "lodash"
+import { global } from "~/mixins"
+import { STUDIES_URL } from "~/utils/apis"
+import axios from "axios"
+import catchError, { showNoty } from "~/utils/catchError"
 
 export default {
   mixins: [global],
@@ -51,26 +51,26 @@ export default {
       {
         position: {
           lat: -6.17511,
-          lng: 106.865039,
-        },
-      },
+          lng: 106.865039
+        }
+      }
     ],
-    formData: {},
+    formData: {}
   }),
   computed: {
     location() {
       return {
         lat: this.currentEdit.lat,
-        lng: this.currentEdit.lng,
+        lng: this.currentEdit.lng
       }
-    },
+    }
   },
   mounted() {
     this.setInitLoc()
   },
   methods: {
     toHome() {
-      this.$router.push('/study-programs')
+      this.$router.push("/study-programs")
     },
     setPlace(place) {
       this.location.lat = place.geometry.location.lat()
@@ -90,10 +90,10 @@ export default {
           this.formData.lat = this.location.lat
           this.formData.lng = this.location.lng
           const resp = await axios
-            .put(STUDIES_URL + '/' + this.currentEdit.id, this.formData)
+            .put(STUDIES_URL + "/" + this.currentEdit.id, this.formData)
             .then(res => res.data)
-          this.$store.commit('currentEdit', resp.data)
-          showNoty('Map Saved', 'success')
+          this.$store.commit("currentEdit", resp.data)
+          showNoty("Map Saved", "success")
           this.deactivateLoader()
         }
       } catch (e) {
@@ -106,8 +106,8 @@ export default {
         this.location.lat = this.currentEdit.lat
         this.location.lng = this.currentEdit.lng
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

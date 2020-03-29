@@ -41,20 +41,20 @@
 </template>
 
 <script>
-import { global, catchError } from '~/mixins'
-import Dialog from '~/components/Dialog'
-import sharedForm from '../sharedForm'
-import { formItem } from './util'
+import { global, catchError } from "~/mixins"
+import Dialog from "~/components/Dialog"
+import sharedForm from "../sharedForm"
+import { formItem } from "./util"
 
 export default {
   components: { Dialog, sharedForm },
   mixins: [global, catchError],
   data() {
     return {
-      link: '/users',
+      link: "/users",
       formItem: [],
       showDialog: false,
-      initValue: null,
+      initValue: null
     }
   },
 
@@ -72,7 +72,7 @@ export default {
 
       // form item
       const formItemForEdit = [...formItem]
-      const idx = formItemForEdit.findIndex(f => f.value === 'password')
+      const idx = formItemForEdit.findIndex(f => f.value === "password")
       if (idx !== -1) {
         formItemForEdit.splice(idx, 1)
       }
@@ -80,9 +80,9 @@ export default {
     },
     async getRoles() {
       try {
-        const index = this.formItem.findIndex(f => f.value === 'roles')
+        const index = this.formItem.findIndex(f => f.value === "roles")
         if (index !== -1) {
-          const resp = await this.$axios.get('/combo-data?model=Role')
+          const resp = await this.$axios.get("/combo-data?model=Role")
           this.formItem[index].items = resp.data
         }
       } catch (e) {
@@ -99,12 +99,12 @@ export default {
         data.roles = [data.roles]
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
-            this.link + '/' + this.currentEdit.id,
+            this.link + "/" + this.currentEdit.id,
             data
           )
-          this.$store.commit('currentEdit', resp.data)
+          this.$store.commit("currentEdit", resp.data)
           this.populateFormItem()
-          this.showNoty(this.$messages.form.UPDATED, 'success')
+          this.showNoty(this.$messages.form.UPDATED, "success")
           this.deactivateLoader()
         }
       } catch (e) {
@@ -120,10 +120,10 @@ export default {
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            this.link + '/' + this.currentEdit.id
+            this.link + "/" + this.currentEdit.id
           )
           if (resp.meta.status === 200) {
-            this.showNoty(this.$messages.form.DELETED, 'success')
+            this.showNoty(this.$messages.form.DELETED, "success")
             this.$router.push(this.link)
           }
         }
@@ -133,7 +133,7 @@ export default {
         this.showDialog = false
         this.catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

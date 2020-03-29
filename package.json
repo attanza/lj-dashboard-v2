@@ -27,6 +27,7 @@
     "nuxt": "^2.11.0",
     "vee-validate": "^3.2.5",
     "vue-chartjs": "^3.5.0",
+    "vue2-datepicker": "^3.4.1",
     "vue2-google-maps": "^0.10.7",
     "yarn": "^1.22.1"
   },

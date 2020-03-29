@@ -38,18 +38,18 @@
             {{
               props.item.study && props.item.study.university
                 ? props.item.study.university.name
-                : ''
+                : ""
             }}
           </td>
           <td>
             {{
               props.item.study && props.item.study.studyName
                 ? props.item.study.studyName.name
-                : ''
+                : ""
             }}
           </td>
           <td>{{ props.item.description }}</td>
-          <td>{{ props.item.created_at | moment('DD MMM YYYY HH:mm:ss') }}</td>
+          <td>{{ props.item.created_at | moment("DD MMM YYYY HH:mm:ss") }}</td>
           <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="toDetail(props.item)">
               <v-icon color="primary">
@@ -72,41 +72,41 @@
   </div>
 </template>
 <script>
-import { TARGET_URL } from '~/utils/apis'
-import { global } from '~/mixins'
-import { dform } from '~/components/targets'
-import axios from 'axios'
-import catchError from '~/utils/catchError'
-import DownloadDialog from '~/components/DownloadDialog'
-import debounce from 'lodash/debounce'
+import { TARGET_URL } from "~/utils/apis"
+import { global } from "~/mixins"
+import { dform } from "~/components/targets"
+import axios from "axios"
+import catchError from "~/utils/catchError"
+import DownloadDialog from "~/components/DownloadDialog"
+import debounce from "lodash/debounce"
 
 export default {
-  middleware: 'auth',
+  middleware: "auth",
   components: { dform, DownloadDialog },
   mixins: [global],
   data: () => ({
-    title: 'Target',
+    title: "Target",
     headers: [
-      { text: 'Kode', align: 'left', value: 'code' },
-      { text: 'Universitas', align: 'left', value: 'study_program_id' },
-      { text: 'Studi Program', align: 'left', value: 'study_program_id' },
-      { text: 'Deskripsi', align: 'left', value: 'description' },
-      { text: 'Tanggal', align: 'left', value: 'created_at' },
-      { text: 'Aksi', value: '', align: 'center', sortable: false },
+      { text: "Kode", align: "left", value: "code" },
+      { text: "Universitas", align: "left", value: "study_program_id" },
+      { text: "Studi Program", align: "left", value: "study_program_id" },
+      { text: "Deskripsi", align: "left", value: "description" },
+      { text: "Tanggal", align: "left", value: "created_at" },
+      { text: "Aksi", value: "", align: "center", sortable: false }
     ],
     items: [],
     showSearch: false,
     dataToExport: [],
-    fillable: ['id', 'code', 'study_program_id', 'description', 'created_at'],
-    typeDates: ['created_at'],
+    fillable: ["id", "code", "study_program_id", "description", "created_at"],
+    typeDates: ["created_at"]
   }),
   watch: {
     pagination: {
       handler: debounce(function() {
         this.pupulateTable()
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
 
   mounted() {
@@ -163,13 +163,13 @@ export default {
       this.pupulateTable()
     },
     onSearch(data) {
-      if (data.start_date == 'null null') data.start_date = null
-      if (data.end_date == 'null null') data.end_date = null
+      if (data.start_date == "null null") data.start_date = null
+      if (data.end_date == "null null") data.end_date = null
       this.pagination.search_by = data.search_by || null
       this.pagination.search_query = data.search_query || null
       this.pagination.start_date = data.start_date
       this.pagination.end_date = data.end_date
-      this.pagination.between_date = 'start_date'
+      this.pagination.between_date = "start_date"
       this.showSearch = false
       this.pupulateTable()
     },
@@ -204,7 +204,7 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>

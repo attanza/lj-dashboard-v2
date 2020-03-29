@@ -1,3 +1,3 @@
-import * as changeCase from 'change-case'
-import Vue from 'vue'
+import * as changeCase from "change-case"
+import Vue from "vue"
 Vue.prototype.$changeCase = changeCase

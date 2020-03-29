@@ -32,15 +32,15 @@
 </template>
 
 <script>
-import { global } from '~/mixins'
-import marketingTable from './marketingTable'
-import contactTable from './contactTable'
-import yearsTable from './yearsTable/yearsTable'
-import attachmentTable from './attachmentTable'
+import { global } from "~/mixins"
+import marketingTable from "./marketingTable"
+import contactTable from "./contactTable"
+import yearsTable from "./yearsTable/yearsTable"
+import attachmentTable from "./attachmentTable"
 
 export default {
   components: { marketingTable, contactTable, yearsTable, attachmentTable },
-  mixins: [global],
+  mixins: [global]
 }
 </script>
 

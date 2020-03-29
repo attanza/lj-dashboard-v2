@@ -23,28 +23,28 @@
 </template>
 
 <script>
-import { USER_URL, COMBO_DATA_URL } from '~/utils/apis'
-import { detail, activities } from '~/components/users'
-import catchError from '~/utils/catchError'
-import { global } from '~/mixins'
+import { USER_URL, COMBO_DATA_URL } from "~/utils/apis"
+import { detail, activities } from "~/components/users"
+import catchError from "~/utils/catchError"
+import { global } from "~/mixins"
 
 export default {
   components: { detail, activities },
   mixins: [global],
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
-      let resp = await $axios.$get(USER_URL + '/' + params.id)
-      if (resp) store.commit('currentEdit', resp.data)
+      let resp = await $axios.$get(USER_URL + "/" + params.id)
+      if (resp) store.commit("currentEdit", resp.data)
       // Combo / Select Data
-      let combo = await $axios.$get(COMBO_DATA_URL + 'Role')
-      if (combo) store.commit('comboData', combo)
+      let combo = await $axios.$get(COMBO_DATA_URL + "Role")
+      if (combo) store.commit("comboData", combo)
     } catch (e) {
       if (process.client) catchError(e, $router, $auth)
       else {
-        redirect('/')
+        redirect("/")
       }
     }
-  },
+  }
 }
 </script>
 

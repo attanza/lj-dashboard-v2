@@ -27,16 +27,16 @@ export default {
   props: {
     showDialog: {
       type: Boolean,
-      required: true,
+      required: true
     },
     text: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
-      dialog: false,
+      dialog: false
     }
   },
   watch: {
@@ -44,16 +44,16 @@ export default {
       if (this.showDialog || !this.showDialog) {
         this.dialog = this.showDialog
       }
-    },
+    }
   },
   methods: {
     onClose() {
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     onConfirmed() {
-      this.$emit('onConfirmed')
-    },
-  },
+      this.$emit("onConfirmed")
+    }
+  }
 }
 </script>
 

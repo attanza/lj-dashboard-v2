@@ -8,15 +8,15 @@
 </template>
 
 <script>
-import { contactList } from '~/components/contacts'
+import { contactList } from "~/components/contacts"
 
 export default {
   components: { contactList },
   data() {
     return {
-      title: 'Jadwal',
+      title: "Jadwal"
     }
-  },
+  }
 }
 </script>
 

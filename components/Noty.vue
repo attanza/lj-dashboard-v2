@@ -14,21 +14,21 @@ export default {
   props: {
     snackbar: {
       type: Boolean,
-      required: true,
+      required: true
     },
     text: {
       type: String,
-      required: true,
+      required: true
     },
     color: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       timeout: 5000,
-      show: this.snackbar,
+      show: this.snackbar
     }
   },
   watch: {
@@ -36,13 +36,13 @@ export default {
       if (this.snackbar || !this.snackbar) {
         this.show = this.snackbar
       }
-    },
+    }
   },
   methods: {
     onClose() {
-      this.$emit('onClose')
-    },
-  },
+      this.$emit("onClose")
+    }
+  }
 }
 </script>
 

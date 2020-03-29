@@ -23,43 +23,43 @@
   </v-layout>
 </template>
 <script>
-import { global } from '~/mixins'
+import { global } from "~/mixins"
 
 export default {
   $_veeValidate: {
-    validator: 'new',
+    validator: "new"
   },
   mixins: [global],
   props: {
     show: {
       type: Boolean,
-      required: true,
+      required: true
     },
     url: {
       type: String,
       required: false,
-      default: '',
-    },
+      default: ""
+    }
   },
   data() {
     return {
       dialog: false,
-      formTitle: 'Preview',
+      formTitle: "Preview"
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    },
+    }
   },
   methods: {
     onClose() {
       this.dialog = false
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     submit() {
-      console.log('submit')
-    },
-  },
+      console.log("submit")
+    }
+  }
 }
 </script>

@@ -1,3 +1,4 @@
-import catchError from './catchError'
-import global from './global'
-export { global, catchError }
+import catchError from "./catchError"
+import datePickerShortcut from "./datePickerShortcut"
+import global from "./global"
+export { global, catchError, datePickerShortcut }

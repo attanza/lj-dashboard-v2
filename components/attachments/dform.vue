@@ -82,31 +82,31 @@
   </v-layout>
 </template>
 <script>
-import { global } from '~/mixins'
-import { COMBO_DATA_URL, ATTACHMENTS_URL } from '~/utils/apis'
-import axios from 'axios'
-import catchError, { showNoty } from '~/utils/catchError'
-import debounce from 'lodash/debounce'
+import { global } from "~/mixins"
+import { COMBO_DATA_URL, ATTACHMENTS_URL } from "~/utils/apis"
+import axios from "axios"
+import catchError, { showNoty } from "~/utils/catchError"
+import debounce from "lodash/debounce"
 
 export default {
   $_veeValidate: {
-    validator: 'new',
+    validator: "new"
   },
   mixins: [global],
   props: {
     show: {
       type: Boolean,
-      required: true,
+      required: true
     },
     isEdit: {
       type: Boolean,
-      required: true,
+      required: true
     },
     dataToEdit: {
       type: Object,
       required: false,
-      default: null,
-    },
+      default: null
+    }
   },
 
   data() {
@@ -114,30 +114,30 @@ export default {
       dialog: false,
       fillable: [
         {
-          key: 'marketing_target_id',
-          caption: 'Kode Target',
-          value: '',
-          rules: 'required|integer',
+          key: "marketing_target_id",
+          caption: "Kode Target",
+          value: "",
+          rules: "required|integer"
         },
         {
-          key: 'caption',
-          caption: 'Caption',
-          value: '',
-          rules: 'max:50',
+          key: "caption",
+          caption: "Caption",
+          value: "",
+          rules: "max:50"
         },
-        { key: 'tags', caption: 'Tags', value: '', rules: 'max:50' },
+        { key: "tags", caption: "Tags", value: "", rules: "max:50" },
 
-        { key: 'url', caption: 'File', value: '', rules: 'required' },
+        { key: "url", caption: "File", value: "", rules: "required" }
       ],
-      notIncluded: ['marketing_target_id', 'url'],
+      notIncluded: ["marketing_target_id", "url"],
       formData: {},
-      formTitle: 'Tambah Lampian',
+      formTitle: "Tambah Lampian",
       targetEntries: [],
       targetComboLoading: false,
       searchTarget: null,
-      imageName: '',
-      imageUrl: '',
-      imageFile: '',
+      imageName: "",
+      imageUrl: "",
+      imageFile: ""
     }
   },
 
@@ -148,7 +148,7 @@ export default {
         this.targetEntries.map(target => items.push(target))
       }
       return items
-    },
+    }
   },
   watch: {
     show() {
@@ -163,7 +163,7 @@ export default {
       if (this.isEdit && this.dataToEdit) {
         this.setFields()
       }
-    },
+    }
   },
   created() {
     this.setFields()
@@ -173,7 +173,7 @@ export default {
       try {
         this.targetComboLoading = true
         this.targetEntries = await axios
-          .get(COMBO_DATA_URL + 'MarketingTarget&search=' + this.searchTarget)
+          .get(COMBO_DATA_URL + "MarketingTarget&search=" + this.searchTarget)
           .then(res => res.data)
         this.targetComboLoading = false
       } catch (e) {
@@ -182,7 +182,7 @@ export default {
       }
     }, 500),
     onClose() {
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     setFields() {
       this.fillable.forEach(data => (this.formData[data.key] = data.value))
@@ -193,11 +193,11 @@ export default {
         )
         this.targetEntries.push({
           id: this.formData.target.id,
-          code: this.formData.target.code,
+          code: this.formData.target.code
         })
       }
       if (this.targetId && this.targetId != 0) {
-        this.formData['marketing_target_id'] = this.targetId
+        this.formData["marketing_target_id"] = this.targetId
       }
     },
     pickFile() {
@@ -208,12 +208,12 @@ export default {
       const files = e.target.files
       if (files[0] !== undefined) {
         this.imageName = files[0].name
-        if (this.imageName.lastIndexOf('.') <= 0) {
+        if (this.imageName.lastIndexOf(".") <= 0) {
           return
         }
         const fr = new FileReader()
         fr.readAsDataURL(files[0])
-        fr.addEventListener('load', () => {
+        fr.addEventListener("load", () => {
           this.imageUrl = fr.result
           this.imageFile = files[0] // this is an image file that can be sent to server...
         })
@@ -242,17 +242,17 @@ export default {
         Object.keys(this.dataToEdit).map(
           key => (this.formData[key] = this.dataToEdit[key])
         )
-        formData.append('file', this.imageFile)
+        formData.append("file", this.imageFile)
         const resp = await axios
           .post(ATTACHMENTS_URL, formData, {
             headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+              "Content-Type": "multipart/form-data"
+            }
           })
           .then(res => res.data)
         if (resp.meta.status === 201) {
-          showNoty('Data disimpan', 'success')
-          this.$emit('onAdd', resp.data)
+          showNoty("Data disimpan", "success")
+          this.$emit("onAdd", resp.data)
           this.setFields()
         }
         this.deactivateLoader()
@@ -265,11 +265,11 @@ export default {
       try {
         this.activateLoader()
         const resp = await axios
-          .put(ATTACHMENTS_URL + '/' + this.dataToEdit.id, this.formData)
+          .put(ATTACHMENTS_URL + "/" + this.dataToEdit.id, this.formData)
           .then(res => res.data)
         if (resp.meta.status === 200) {
-          showNoty('Data diperbaharui', 'success')
-          this.$emit('onEdit', resp.data)
+          showNoty("Data diperbaharui", "success")
+          this.$emit("onEdit", resp.data)
           this.setFields()
         }
         this.deactivateLoader()
@@ -277,7 +277,7 @@ export default {
         this.deactivateLoader()
         catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

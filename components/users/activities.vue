@@ -31,7 +31,7 @@
       >
         >
         <template v-slot:item.createdAt="{ item }">
-          {{ $moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
+          {{ $moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
         </template>
       </v-data-table>
     </v-card-text>
@@ -53,28 +53,28 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { activityHeaders, activityDownloadData } from './util'
-import { global, catchError } from '~/mixins'
-import { dform } from '~/components/roles'
-import DownloadDialog from '~/components/DownloadDialog'
+import debounce from "lodash/debounce"
+import { activityHeaders, activityDownloadData } from "./util"
+import { global, catchError } from "~/mixins"
+import { dform } from "~/components/roles"
+import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
   data() {
     return {
-      title: 'Aktifitas',
-      link: '/activities',
+      title: "Aktifitas",
+      link: "/activities",
       headers: activityHeaders,
       fillable: activityDownloadData,
-      typeDates: ['createdAt'],
-      dataToExport: [],
+      typeDates: ["createdAt"],
+      dataToExport: []
     }
   },
   computed: {
     user() {
       return this.$store.state.auth.user
-    },
+    }
   },
 
   watch: {
@@ -84,8 +84,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   methods: {
     async populateTable() {
@@ -117,15 +117,15 @@ export default {
         let data = Object.assign({}, i)
         data.userId = data.user.id
         data.userEmail = data.user.email
-        delete data['user']
-        delete data['__v']
+        delete data["user"]
+        delete data["__v"]
         this.dataToExport.push(data)
       })
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

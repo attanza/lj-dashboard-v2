@@ -83,44 +83,44 @@
   </div>
 </template>
 <script>
-import _ from 'lodash'
-import { ATTACHMENTS_URL } from '~/utils/apis'
-import { global } from '~/mixins'
-import { dform, preview } from '~/components/attachments'
-import Dialog from '~/components/Dialog'
-import axios from 'axios'
-import catchError, { showNoty } from '~/utils/catchError'
+import _ from "lodash"
+import { ATTACHMENTS_URL } from "~/utils/apis"
+import { global } from "~/mixins"
+import { dform, preview } from "~/components/attachments"
+import Dialog from "~/components/Dialog"
+import axios from "axios"
+import catchError, { showNoty } from "~/utils/catchError"
 
 export default {
-  middleware: 'auth',
+  middleware: "auth",
   components: { dform, preview, Dialog },
   mixins: [global],
   data: () => ({
-    title: 'Lampiran',
+    title: "Lampiran",
     headers: [
-      { text: 'Kode Target', align: 'left', value: 'target.code' },
-      { text: 'Preview', align: 'left', value: 'url' },
-      { text: 'Caption', align: 'left', value: 'caption' },
-      { text: 'Tags', align: 'left', value: 'tags' },
-      { text: 'Aksi', align: 'center', value: '', sortable: false },
+      { text: "Kode Target", align: "left", value: "target.code" },
+      { text: "Preview", align: "left", value: "url" },
+      { text: "Caption", align: "left", value: "caption" },
+      { text: "Tags", align: "left", value: "tags" },
+      { text: "Aksi", align: "center", value: "", sortable: false }
     ],
     items: [],
-    confirmMessage: 'Yakin mau menghapus ?',
+    confirmMessage: "Yakin mau menghapus ?",
     showConfirm: false,
     showPreview: false,
     dataToExport: [],
-    fillable: ['id', 'url', 'caption', 'tags'],
-    typeDates: ['created_at'],
-    attachmentUrl: '',
+    fillable: ["id", "url", "caption", "tags"],
+    typeDates: ["created_at"],
+    attachmentUrl: "",
     isEdit: false,
     dataToEdit: null,
-    showDialog: false,
+    showDialog: false
   }),
 
   computed: {
     targetId() {
-      return this.$route.params ? this.$route.params.id.toString() : ''
-    },
+      return this.$route.params ? this.$route.params.id.toString() : ""
+    }
   },
 
   watch: {
@@ -128,8 +128,8 @@ export default {
       handler: _.debounce(function() {
         this.pupulateTable()
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
 
   mounted() {
@@ -182,7 +182,7 @@ export default {
       this.showPreview = true
     },
     closePreview() {
-      this.attachmentUrl = ''
+      this.attachmentUrl = ""
       this.showPreview = false
     },
     addData(data) {
@@ -201,7 +201,7 @@ export default {
     },
     formClose() {
       this.isEdit = false
-      this.idToEdit = ''
+      this.idToEdit = ""
       this.showForm = false
       this.showDialog = false
       this.dataToEdit = null
@@ -218,14 +218,14 @@ export default {
     removeData() {
       try {
         this.activateLoader()
-        axios.delete(ATTACHMENTS_URL + '/' + this.dataToEdit.id).then(resp => {
+        axios.delete(ATTACHMENTS_URL + "/" + this.dataToEdit.id).then(resp => {
           if (resp.status === 200) {
             let index = _.findIndex(
               this.items,
               item => item.id == this.dataToEdit.id
             )
             this.items.splice(index, 1)
-            showNoty('Data dihapus', 'success')
+            showNoty("Data dihapus", "success")
             this.showDialog = false
             this.dataToEdit = null
           }
@@ -251,7 +251,7 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>

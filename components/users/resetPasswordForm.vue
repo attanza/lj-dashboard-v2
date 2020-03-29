@@ -42,46 +42,46 @@
   </v-layout>
 </template>
 <script>
-import { global } from '~/mixins'
-import { USER_URL } from '~/utils/apis'
-import axios from 'axios'
-import catchError, { showNoty } from '~/utils/catchError'
+import { global } from "~/mixins"
+import { USER_URL } from "~/utils/apis"
+import axios from "axios"
+import catchError, { showNoty } from "~/utils/catchError"
 export default {
   $_veeValidate: {
-    validator: 'new',
+    validator: "new"
   },
   mixins: [global],
   props: {
     show: {
       type: Boolean,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       dialog: false,
       fillable: [
         {
-          key: 'password',
-          caption: 'Password',
-          value: '',
-          rules: 'required|min:6',
+          key: "password",
+          caption: "Password",
+          value: "",
+          rules: "required|min:6"
         },
         {
-          key: 'password_confirmation',
-          caption: 'Konfirmasi password',
-          value: '',
-          rules: 'required|confirmed:password',
-        },
+          key: "password_confirmation",
+          caption: "Konfirmasi password",
+          value: "",
+          rules: "required|confirmed:password"
+        }
       ],
       formData: {},
-      formTitle: 'Reset Password',
+      formTitle: "Reset Password"
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    },
+    }
   },
   created() {
     this.setFields()
@@ -89,7 +89,7 @@ export default {
   methods: {
     onClose() {
       this.dialog = false
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     setFields() {
       this.errors.clear()
@@ -109,15 +109,15 @@ export default {
         this.dialog = true
         const postData = Object.assign({}, this.currentEdit)
         postData.password = this.formData.password
-        delete postData['marketings']
-        delete postData['roles']
-        delete postData['supervisors']
+        delete postData["marketings"]
+        delete postData["roles"]
+        delete postData["supervisors"]
         const resp = await axios
           .put(`${USER_URL}/${this.currentEdit.id}`, postData)
           .then(res => res.data)
 
         if (resp.meta.status === 200) {
-          showNoty('Password diperbaharui', 'success')
+          showNoty("Password diperbaharui", "success")
           this.onClose()
         }
         this.deactivateLoader()
@@ -126,7 +126,7 @@ export default {
         this.deactivateLoader()
         catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

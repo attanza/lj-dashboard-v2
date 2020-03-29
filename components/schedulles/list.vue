@@ -45,13 +45,13 @@
         </template>
 
         <template v-slot:item.marketing_target_id="{ item }">
-          {{ item.target ? item.target.code : '' }}
+          {{ item.target ? item.target.code : "" }}
         </template>
         <template v-slot:item.marketing_id="{ item }">
-          {{ item.marketing ? item.marketing.name : '' }}
+          {{ item.marketing ? item.marketing.name : "" }}
         </template>
         <template v-slot:item.marketing_action_id="{ item }">
-          {{ item.action ? item.action.name : '' }}
+          {{ item.action ? item.action.name : "" }}
         </template>
       </v-data-table>
     </v-card-text>
@@ -73,11 +73,11 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from './util'
-import { global, catchError } from '~/mixins'
-import dform from './dform'
-import DownloadDialog from '../DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "./util"
+import { global, catchError } from "~/mixins"
+import dform from "./dform"
+import DownloadDialog from "../DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
@@ -85,17 +85,17 @@ export default {
     targetId: {
       type: String,
       required: false,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
-      title: 'Jadwal',
-      link: '/schedulles',
+      title: "Jadwal",
+      link: "/schedulles",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -106,8 +106,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -141,10 +141,10 @@ export default {
     downloadData() {
       this.dataToExport = []
       const notIncludes = [
-        'marketing_target_id',
-        'marketing_id',
-        'marketing_action_id',
-        'report',
+        "marketing_target_id",
+        "marketing_id",
+        "marketing_action_id",
+        "report"
       ]
       this.items.map(i => {
         const data = Object.assign({}, i)
@@ -157,8 +157,8 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

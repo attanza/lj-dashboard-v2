@@ -1,75 +1,75 @@
 export let headers = [
-  { text: 'Nama', align: 'left', value: 'study_name_id' },
-  { text: 'Universitas', align: 'left', value: 'university.name' },
-  { text: 'Nama kontak', value: 'contact_person', align: 'left' },
-  { text: 'Telepon', value: 'phone', align: 'left' },
-  { text: 'Email', value: 'email', align: 'left' },
+  { text: "Nama", align: "left", value: "study_name_id" },
+  { text: "Universitas", align: "left", value: "university.name" },
+  { text: "Nama kontak", value: "contact_person", align: "left" },
+  { text: "Telepon", value: "phone", align: "left" },
+  { text: "Email", value: "email", align: "left" }
 ]
 
 export const downloadData = [
-  'id',
-  'code',
-  'study_program_id',
-  'description',
-  'created_at',
+  "id",
+  "code",
+  "study_program_id",
+  "description",
+  "created_at"
 ]
 
 export const formItem = [
   {
-    value: 'university_id',
-    text: 'Universitas',
-    el: 'combobox',
+    value: "university_id",
+    text: "Universitas",
+    el: "combobox",
     items: [],
     inForm: true,
-    rules: 'required|integer',
+    rules: "required|integer"
   },
   {
-    value: 'study_name_id',
-    text: 'Nama Studi',
-    el: 'combobox',
+    value: "study_name_id",
+    text: "Nama Studi",
+    el: "combobox",
     items: [],
     inForm: true,
-    rules: 'required|integer',
+    rules: "required|integer"
   },
 
   {
-    value: 'phone',
-    text: 'Telepon',
-    el: 'text',
-    type: 'text',
+    value: "phone",
+    text: "Telepon",
+    el: "text",
+    type: "text",
     inForm: true,
-    rules: 'max:30',
+    rules: "max:30"
   },
   {
-    value: 'email',
-    text: 'Email',
-    el: 'text',
-    type: 'text',
+    value: "email",
+    text: "Email",
+    el: "text",
+    type: "text",
     inForm: true,
-    rules: 'email',
+    rules: "email"
   },
   {
-    value: 'contact_person',
-    text: 'Nama kontak',
-    el: 'text',
-    type: 'text',
+    value: "contact_person",
+    text: "Nama kontak",
+    el: "text",
+    type: "text",
     inForm: true,
-    rules: 'required|max:50',
+    rules: "required|max:50"
   },
   {
-    value: 'address',
-    text: 'Alamat',
-    el: 'text',
-    type: 'text',
+    value: "address",
+    text: "Alamat",
+    el: "text",
+    type: "text",
     inForm: true,
-    rules: 'max:250',
+    rules: "max:250"
   },
   {
-    value: 'description',
-    text: 'Deskripsi',
-    el: 'text',
-    type: 'text',
+    value: "description",
+    text: "Deskripsi",
+    el: "text",
+    type: "text",
     inForm: true,
-    rules: 'max:250',
-  },
+    rules: "max:250"
+  }
 ]

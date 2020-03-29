@@ -74,34 +74,34 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from '~/components/marketings/util'
-import { global, catchError } from '~/mixins'
-import { dform } from '~/components/marketings'
-import DownloadDialog from '~/components/DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "~/components/marketings/util"
+import { global, catchError } from "~/mixins"
+import { dform } from "~/components/marketings"
+import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
   data() {
     return {
-      title: 'Marketing',
-      link: '/marketings',
+      title: "Marketing",
+      link: "/marketings",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
   computed: {
     supervisorId() {
       if (this.user && this.user.roles) {
         const role = this.user.roles[0].slug
-        if (role === 'supervisor') {
+        if (role === "supervisor") {
           return this.user.id
         }
       }
-      return ''
-    },
+      return ""
+    }
   },
 
   watch: {
@@ -111,8 +111,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -122,7 +122,7 @@ export default {
       try {
         this.activateLoader()
         let queries = this.getQueries()
-        if (this.supervisorId !== '') {
+        if (this.supervisorId !== "") {
           queries += `supervisor_id=${this.supervisorId}`
         }
         const resp = await this.$axios.$get(`${this.link + queries}`)
@@ -148,8 +148,8 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

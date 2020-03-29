@@ -59,38 +59,38 @@
   </v-layout>
 </template>
 <script>
-import { global } from '~/mixins'
-import { PROFILE_URL } from '~/utils/apis'
-import axios from 'axios'
-import catchError, { showNoty } from '~/utils/catchError'
+import { global } from "~/mixins"
+import { PROFILE_URL } from "~/utils/apis"
+import axios from "axios"
+import catchError, { showNoty } from "~/utils/catchError"
 export default {
   $_veeValidate: {
-    validator: 'new',
+    validator: "new"
   },
   mixins: [global],
   props: {
     show: {
       type: Boolean,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       dialog: false,
-      formTitle: 'Change Password',
-      old_password: '',
-      password: '',
-      password_confirmation: '',
+      formTitle: "Change Password",
+      old_password: "",
+      password: "",
+      password_confirmation: ""
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    },
+    }
   },
   methods: {
     onClose() {
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     submit() {
       this.$validator.validateAll().then(result => {
@@ -111,8 +111,8 @@ export default {
             )
             .then(res => res.data)
           if (resp.meta.status === 200) {
-            showNoty('Password changed', 'success')
-            this.$emit('passwordChanged')
+            showNoty("Password changed", "success")
+            this.$emit("passwordChanged")
             this.clearForm()
           }
         }
@@ -127,16 +127,16 @@ export default {
       return {
         old_password: this.old_password,
         password: this.password,
-        password_confirmation: this.password_confirmation,
+        password_confirmation: this.password_confirmation
       }
     },
     clearForm() {
-      this.old_password = ''
-      this.password = ''
-      this.password_confirmation = ''
+      this.old_password = ""
+      this.password = ""
+      this.password_confirmation = ""
       this.dialog = false
       this.onClose()
-    },
-  },
+    }
+  }
 }
 </script>

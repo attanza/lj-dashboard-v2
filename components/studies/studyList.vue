@@ -63,11 +63,11 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from '~/components/studies/util'
-import { global, catchError } from '~/mixins'
-import { dform } from '~/components/studies'
-import DownloadDialog from '~/components/DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "~/components/studies/util"
+import { global, catchError } from "~/mixins"
+import { dform } from "~/components/studies"
+import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
@@ -75,17 +75,17 @@ export default {
     universityId: {
       type: String,
       required: false,
-      default: '',
-    },
+      default: ""
+    }
   },
   data() {
     return {
-      title: 'Program Studi',
-      link: '/studies',
+      title: "Program Studi",
+      link: "/studies",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -96,8 +96,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -138,10 +138,10 @@ export default {
         if (data.studyName) d.studyName = data.studyName.name
 
         if (d.years) delete d.years
-        let years = ''
+        let years = ""
         if (data.years) {
           data.years.map(y => {
-            let year = ''
+            let year = ""
             year += `[year: ${y.year}, class_per_year: ${y.class_per_year}, students_per_class: ${y.students_per_class}], `
             years += year
           })
@@ -153,8 +153,8 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

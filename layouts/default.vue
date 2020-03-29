@@ -16,10 +16,10 @@
 </template>
 
 <script>
-import sidebar from '@/components/nav/sidebar'
-import Loader from '@/components/Loader'
+import sidebar from "@/components/nav/sidebar"
+import Loader from "@/components/Loader"
 export default {
-  middleware: 'auth',
-  components: { sidebar, Loader },
+  middleware: "auth",
+  components: { sidebar, Loader }
 }
 </script>

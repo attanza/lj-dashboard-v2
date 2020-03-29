@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import { list } from '~/components/study-names'
+import { list } from "~/components/study-names"
 export default {
   components: { list },
   data: () => ({
-    title: 'Nama Studi',
-  }),
+    title: "Nama Studi"
+  })
 }
 </script>
 

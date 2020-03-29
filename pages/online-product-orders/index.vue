@@ -21,14 +21,33 @@
         color="primary"
         @onClick="downloadData"
       />
-
-      <v-spacer />
+      <v-spacer></v-spacer>
       <v-text-field
         v-model="options.search"
         append-icon="search"
         label="Cari"
         single-line
         hide-details
+      />
+    </v-toolbar>
+    <v-toolbar flat color="transparent" class="mt-2">
+      <v-combobox
+        v-model="rangeBy"
+        :items="typeDates"
+        label="Range"
+        color="primary"
+      />
+      <v-spacer></v-spacer>
+      <date-picker
+        v-model="date1"
+        :shortcuts="shortcuts"
+        :not-after="today"
+        range
+        lang="eng"
+        width="100%"
+        class="mx-3"
+        placeholder="Pilih range tanggal"
+        :disabled="pickerDisabled"
       />
     </v-toolbar>
     <v-card-text class="mt-4">
@@ -73,20 +92,21 @@
 <script>
 import debounce from "lodash/debounce"
 import { headers, downloadData } from "~/components/onlineProductOrders/util"
-import { global, catchError } from "~/mixins"
+import { global, catchError, datePickerShortcut } from "~/mixins"
 import { dform } from "~/components/onlineProductOrders"
 import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
-  mixins: [global, catchError],
+  mixins: [global, catchError, datePickerShortcut],
   data() {
     return {
       title: "Produk Order",
       link: "/online-product-orders",
       headers: headers,
       fillable: downloadData,
-      typeDates: ["paid_at"],
-      dataToExport: []
+      typeDates: ["paid_at", "created_at"],
+      dataToExport: [],
+      rangeBy: ""
     }
   },
 
@@ -98,6 +118,20 @@ export default {
         }
       }, 500),
       deep: true
+    },
+    date1() {
+      this.options.range_start = this.date1[0]
+      this.options.range_end = this.date1[1]
+      this.populateTable()
+    },
+    rangeBy() {
+      if (this.rangeBy !== "") {
+        this.options.range_by = this.rangeBy
+        this.pickerDisabled = false
+      } else {
+        this.options.range_by = ""
+        this.pickerDisabled = true
+      }
     }
   },
   mounted() {
@@ -108,6 +142,7 @@ export default {
       try {
         this.activateLoader()
         const queries = this.getQueries()
+        console.log("queries", queries)
         const resp = await this.$axios.$get(`${this.link + queries}`)
         this.total = resp.meta.total
         this.items = resp.data

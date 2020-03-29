@@ -75,22 +75,22 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from '~/components/supervisors/util'
-import { global, catchError } from '~/mixins'
-import { dform } from '~/components/supervisors'
-import DownloadDialog from '~/components/DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "~/components/supervisors/util"
+import { global, catchError } from "~/mixins"
+import { dform } from "~/components/supervisors"
+import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
   data() {
     return {
-      title: 'Supervisor',
-      link: '/supervisors',
+      title: "Supervisor",
+      link: "/supervisors",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -101,8 +101,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -135,8 +135,8 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

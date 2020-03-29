@@ -73,10 +73,10 @@
 </template>
 
 <script>
-import { global, catchError } from '~/mixins'
-import { ROLE_PERMISSIONS_URL } from '~/utils/apis'
-import Dialog from '~/components/Dialog'
-import debounce from 'lodash/debounce'
+import { global, catchError } from "~/mixins"
+import { ROLE_PERMISSIONS_URL } from "~/utils/apis"
+import Dialog from "~/components/Dialog"
+import debounce from "lodash/debounce"
 export default {
   components: { Dialog },
   mixins: [global, catchError],
@@ -84,22 +84,22 @@ export default {
     return {
       showDialog: false,
       permissionArray: [],
-      search: '',
-      items: [],
+      search: "",
+      items: []
     }
   },
   watch: {
     search() {
-      if (this.search !== '') this.searchPermissions()
-    },
+      if (this.search !== "") this.searchPermissions()
+    }
   },
   mounted() {
-    this.items = this.$store.getters.getPermissions('')
+    this.items = this.$store.getters.getPermissions("")
     this.setPermissionArray()
   },
   methods: {
     toHome() {
-      this.$router.push('/roles')
+      this.$router.push("/roles")
     },
     setPermissionArray() {
       if (this.permissions) {
@@ -113,12 +113,12 @@ export default {
         this.activateLoader()
         let formData = {
           role_id: this.currentEdit.id,
-          permissions: this.permissionArray,
+          permissions: this.permissionArray
         }
 
         const resp = await this.$axios.$put(ROLE_PERMISSIONS_URL, formData)
-        this.$store.commit('permissions', resp.data)
-        this.showNoty('Data disimpan', 'success')
+        this.$store.commit("permissions", resp.data)
+        this.showNoty("Data disimpan", "success")
         this.showDialog = false
         this.deactivateLoader()
       } catch (e) {
@@ -140,7 +140,7 @@ export default {
     searchPermissions: debounce(function() {
       let results = this.$store.getters.getPermissions(this.search)
       this.items = results
-    }, 300),
-  },
+    }, 300)
+  }
 }
 </script>

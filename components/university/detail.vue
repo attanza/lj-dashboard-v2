@@ -42,19 +42,19 @@
 </template>
 
 <script>
-import { global, catchError } from '~/mixins'
-import Dialog from '~/components/Dialog'
-import sharedForm from '../sharedForm'
-import { formItem } from './util'
+import { global, catchError } from "~/mixins"
+import Dialog from "~/components/Dialog"
+import sharedForm from "../sharedForm"
+import { formItem } from "./util"
 
 export default {
   components: { Dialog, sharedForm },
   mixins: [global, catchError],
   data() {
     return {
-      link: '/universities',
+      link: "/universities",
       formItem: formItem,
-      showDialog: false,
+      showDialog: false
     }
   },
 
@@ -68,11 +68,11 @@ export default {
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
-            this.link + '/' + this.currentEdit.id,
+            this.link + "/" + this.currentEdit.id,
             data
           )
-          this.$store.commit('currentEdit', resp.data)
-          this.showNoty(this.$messages.form.UPDATED, 'success')
+          this.$store.commit("currentEdit", resp.data)
+          this.showNoty(this.$messages.form.UPDATED, "success")
           this.deactivateLoader()
         }
       } catch (e) {
@@ -88,10 +88,10 @@ export default {
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            this.link + '/' + this.currentEdit.id
+            this.link + "/" + this.currentEdit.id
           )
           if (resp.meta.status === 200) {
-            this.showNoty(this.$messages.form.DELETED, 'success')
+            this.showNoty(this.$messages.form.DELETED, "success")
             this.$router.push(this.link)
           }
         }
@@ -101,7 +101,7 @@ export default {
         this.showDialog = false
         this.catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

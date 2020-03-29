@@ -44,16 +44,16 @@
   </div>
 </template>
 <script>
-import { DASHBOARD_DATA_URL } from '~/utils/apis'
-import { global, catchError } from '~/mixins'
+import { DASHBOARD_DATA_URL } from "~/utils/apis"
+import { global, catchError } from "~/mixins"
 
 export default {
   mixins: [global, catchError],
   data: () => ({
     options: {
       responsive: true,
-      maintainAspectRatio: false,
-    },
+      maintainAspectRatio: false
+    }
   }),
   mounted() {
     this.seedData()
@@ -63,7 +63,7 @@ export default {
       try {
         this.activateLoader()
         let resp = await this.$axios.$get(DASHBOARD_DATA_URL)
-        if (resp) this.$store.commit('dashboardData', resp)
+        if (resp) this.$store.commit("dashboardData", resp)
         this.generateChartData()
         this.deactivateLoader()
       } catch (e) {
@@ -81,26 +81,26 @@ export default {
           labels.push(
             this.$moment()
               .month(o.month - 1)
-              .format('MMM')
+              .format("MMM")
           )
         })
         const datasets = [
           {
             label: `Online Product Order Year of ${this.$moment().format(
-              'YYYY'
+              "YYYY"
             )}`,
-            backgroundColor: '#EF6C00',
-            data: data,
-          },
+            backgroundColor: "#EF6C00",
+            data: data
+          }
         ]
         const chartData = {
           labels,
-          datasets,
+          datasets
         }
-        this.$store.commit('chartData', chartData)
+        this.$store.commit("chartData", chartData)
       }
-    },
-  },
+    }
+  }
 }
 </script>
 <style scoped>

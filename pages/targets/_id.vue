@@ -34,27 +34,27 @@
 </template>
 
 <script>
-import { TARGET_URL } from '~/utils/apis'
-import { detail } from '~/components/targets'
-import { schedulleList } from '~/components/schedulles'
-import { reportList } from '~/components/marketing-reports'
-import { downPaymentList } from '~/components/down-payments'
-import { global } from '~/mixins'
-import catchError from '~/utils/catchError'
+import { TARGET_URL } from "~/utils/apis"
+import { detail } from "~/components/targets"
+import { schedulleList } from "~/components/schedulles"
+import { reportList } from "~/components/marketing-reports"
+import { downPaymentList } from "~/components/down-payments"
+import { global } from "~/mixins"
+import catchError from "~/utils/catchError"
 
 export default {
   components: { schedulleList, detail, reportList, downPaymentList },
   mixins: [global],
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
-      let currentEdit = await $axios.$get(TARGET_URL + '/' + params.id)
-      if (currentEdit) store.commit('currentEdit', currentEdit.data)
+      let currentEdit = await $axios.$get(TARGET_URL + "/" + params.id)
+      if (currentEdit) store.commit("currentEdit", currentEdit.data)
     } catch (e) {
       if (process.client) catchError(e, $router, $auth)
       else {
-        redirect('/')
+        redirect("/")
       }
     }
-  },
+  }
 }
 </script>

@@ -65,33 +65,33 @@
 </template>
 
 <script>
-import { global, catchError } from '~/mixins'
-import { USER_URL } from '~/utils/apis'
-import Dialog from '~/components/Dialog'
-import debounce from 'lodash/debounce'
+import { global, catchError } from "~/mixins"
+import { USER_URL } from "~/utils/apis"
+import Dialog from "~/components/Dialog"
+import debounce from "lodash/debounce"
 export default {
   components: { Dialog },
   mixins: [global, catchError],
   data() {
     return {
       showDialog: false,
-      search: '',
+      search: "",
       items: [],
-      rolesArray: [],
+      rolesArray: []
     }
   },
   watch: {
     search() {
-      if (this.search !== '') this.searchRoles()
-    },
+      if (this.search !== "") this.searchRoles()
+    }
   },
   mounted() {
-    this.items = this.$store.getters.getRoles('')
+    this.items = this.$store.getters.getRoles("")
     this.setRoleArray()
   },
   methods: {
     toHome() {
-      this.$router.push('/users')
+      this.$router.push("/users")
     },
     setRoleArray() {
       if (this.currentEdit.roles) {
@@ -124,14 +124,14 @@ export default {
           email: this.currentEdit.email,
           phone: this.currentEdit.phone,
           address: this.currentEdit.address,
-          roles: this.rolesArray,
+          roles: this.rolesArray
         }
         const resp = await this.$axios.$put(
-          USER_URL + '/' + this.currentEdit.id,
+          USER_URL + "/" + this.currentEdit.id,
           formData
         )
-        this.$store.commit('currentEdit', resp.data)
-        this.showNoty('Data disimpan', 'success')
+        this.$store.commit("currentEdit", resp.data)
+        this.showNoty("Data disimpan", "success")
         this.showDialog = false
         this.deactivateLoader()
       } catch (e) {
@@ -139,8 +139,8 @@ export default {
 
         this.catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

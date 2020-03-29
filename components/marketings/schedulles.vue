@@ -36,8 +36,8 @@
             {{ props.item.study.studyName.name }} ~
             {{ props.item.study.university.name }}
           </td>
-          <td>{{ props.item.start_date | moment('DD MMM YYYY HH:mm:ss') }}</td>
-          <td>{{ props.item.end_date | moment('DD MMM YYYY HH:mm:ss') }}</td>
+          <td>{{ props.item.start_date | moment("DD MMM YYYY HH:mm:ss") }}</td>
+          <td>{{ props.item.end_date | moment("DD MMM YYYY HH:mm:ss") }}</td>
           <!-- <td>{{ props.item.description }}</td> -->
           <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="toDetail(props.item)">
@@ -58,60 +58,60 @@
   </div>
 </template>
 <script>
-import { SCHEDULLE_URL, COMBO_DATA_URL } from '~/utils/apis'
-import { global } from '~/mixins'
-import { searchForm } from '~/components/schedulles'
-import axios from 'axios'
-import catchError from '~/utils/catchError'
+import { SCHEDULLE_URL, COMBO_DATA_URL } from "~/utils/apis"
+import { global } from "~/mixins"
+import { searchForm } from "~/components/schedulles"
+import axios from "axios"
+import catchError from "~/utils/catchError"
 
 export default {
-  middleware: 'auth',
+  middleware: "auth",
   components: { searchForm },
   mixins: [global],
   async fetch({ store }) {
     try {
       axios.defaults.headers.common[
-        'Authorization'
+        "Authorization"
       ] = `Bearer ${store.state.token}`
-      axios.defaults.headers.post['Content-Type'] = 'application/json'
+      axios.defaults.headers.post["Content-Type"] = "application/json"
       // Marketing Combo Data
-      let marketings = await axios.get(COMBO_DATA_URL + 'MarketingAll')
-      if (marketings) store.commit('comboData', marketings.data)
+      let marketings = await axios.get(COMBO_DATA_URL + "MarketingAll")
+      if (marketings) store.commit("comboData", marketings.data)
       // Study Program Combo Data
-      let studies = await axios.get(COMBO_DATA_URL + 'StudyProgram')
-      if (studies) store.commit('comboData2', studies.data)
+      let studies = await axios.get(COMBO_DATA_URL + "StudyProgram")
+      if (studies) store.commit("comboData2", studies.data)
       // Marketing Action Combo Data
-      let actions = await axios.get(COMBO_DATA_URL + 'Action')
-      if (actions) store.commit('comboData3', actions.data)
+      let actions = await axios.get(COMBO_DATA_URL + "Action")
+      if (actions) store.commit("comboData3", actions.data)
     } catch (e) {
       console.log(e)
       catchError(e)
     }
   },
   data: () => ({
-    title: 'Schedulle',
+    title: "Schedulle",
     headers: [
-      { text: 'Action', align: 'left', value: 'marketing_action_id' },
-      { text: 'Program Studi', align: 'left', value: 'study_id' },
-      { text: 'Tanggal Mulai', align: 'left', value: 'start_date' },
-      { text: 'Tanggal Akhir', align: 'left', value: 'end_date' },
+      { text: "Action", align: "left", value: "marketing_action_id" },
+      { text: "Program Studi", align: "left", value: "study_id" },
+      { text: "Tanggal Mulai", align: "left", value: "start_date" },
+      { text: "Tanggal Akhir", align: "left", value: "end_date" },
       // { text: "Description", align: "left", value: "description" },
-      { text: 'Aksi', value: '', align: 'center', sortable: false },
+      { text: "Aksi", value: "", align: "center", sortable: false }
     ],
     items: [],
     showSearch: false,
-    search_by: '',
-    search_query: '',
-    start_date: '',
-    end_date: '',
+    search_by: "",
+    search_query: "",
+    start_date: "",
+    end_date: ""
   }),
   watch: {
     pagination: {
       handler() {
         this.pupulateTable()
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
 
   mounted() {
@@ -163,11 +163,11 @@ export default {
       this.end_date = data.end_date
       this.showSearch = false
       this.pupulateTable()
-      this.search_by = ''
-      this.search_query = ''
-      this.start_date = ''
-      this.end_date = ''
-    },
-  },
+      this.search_by = ""
+      this.search_query = ""
+      this.start_date = ""
+      this.end_date = ""
+    }
+  }
 }
 </script>

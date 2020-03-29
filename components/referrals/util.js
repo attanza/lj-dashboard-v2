@@ -12,28 +12,28 @@ code: string;
  */
 
 export const headers = [
-  { text: 'Kode', align: 'left', value: 'code' },
-  { text: 'Kreator', align: 'left', value: 'creator.email' },
-  { text: 'Expired', align: 'left', value: 'isExpired' },
-  { text: 'Deskripsi', align: 'left', value: 'description' },
+  { text: "Kode", align: "left", value: "code" },
+  { text: "Kreator", align: "left", value: "creator.email" },
+  { text: "Expired", align: "left", value: "isExpired" },
+  { text: "Deskripsi", align: "left", value: "description" }
 ]
 
 export const downloadData = []
 
 export const formItem = [
   {
-    text: 'Kode',
-    value: 'code',
-    el: 'text',
-    type: 'text',
-    rules: 'required|max:20',
-    inForm: true,
+    text: "Kode",
+    value: "code",
+    el: "text",
+    type: "text",
+    rules: "required|max:20",
+    inForm: true
   },
   {
-    text: 'Deskripsi',
-    value: 'description',
-    el: 'textarea',
-    rules: 'max:250',
-    inForm: true,
-  },
+    text: "Deskripsi",
+    value: "description",
+    el: "textarea",
+    rules: "max:250",
+    inForm: true
+  }
 ]

@@ -17,12 +17,12 @@ export default {
     loading: {
       type: Boolean,
       required: false,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
-      dialog: false,
+      dialog: false
     }
   },
   watch: {
@@ -30,17 +30,17 @@ export default {
       if (this.loading || !this.loading) {
         this.dialog = this.loading
       }
-    },
+    }
   },
   created() {
-    this.$bus.$on('activate_loader', () => {
+    this.$bus.$on("activate_loader", () => {
       this.dialog = true
     })
 
-    this.$bus.$on('deactivate_loader', () => {
+    this.$bus.$on("deactivate_loader", () => {
       this.dialog = false
     })
-  },
+  }
 }
 </script>
 

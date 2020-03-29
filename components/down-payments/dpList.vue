@@ -44,7 +44,7 @@
           </v-btn>
         </template>
         <template v-slot:item.marketing_target_id="{ item }">
-          {{ item.target.code || '' }}
+          {{ item.target.code || "" }}
         </template>
       </v-data-table>
     </v-card-text>
@@ -66,11 +66,11 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from './util'
-import { global, catchError } from '~/mixins'
-import dform from './dform'
-import DownloadDialog from '../DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "./util"
+import { global, catchError } from "~/mixins"
+import dform from "./dform"
+import DownloadDialog from "../DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
@@ -78,22 +78,22 @@ export default {
     studyId: {
       type: String,
       required: false,
-      default: null,
+      default: null
     },
     targetId: {
       type: String,
       required: false,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
-      title: 'Down Payment',
-      link: '/down-payments',
+      title: "Down Payment",
+      link: "/down-payments",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -104,8 +104,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -144,8 +144,8 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

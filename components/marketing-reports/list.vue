@@ -45,13 +45,13 @@
         </template>
 
         <template v-slot:item.marketing_target_id="{ item }">
-          {{ item.target ? item.target.code : '' }}
+          {{ item.target ? item.target.code : "" }}
         </template>
         <template v-slot:item.marketing_id="{ item }">
-          {{ item.marketing ? item.marketing.name : '' }}
+          {{ item.marketing ? item.marketing.name : "" }}
         </template>
         <template v-slot:item.marketing_action_id="{ item }">
-          {{ item.action ? item.action.name : '' }}
+          {{ item.action ? item.action.name : "" }}
         </template>
       </v-data-table>
     </v-card-text>
@@ -73,11 +73,11 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from './util'
-import { global, catchError } from '~/mixins'
-import dform from './dform'
-import DownloadDialog from '../DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "./util"
+import { global, catchError } from "~/mixins"
+import dform from "./dform"
+import DownloadDialog from "../DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
@@ -85,27 +85,27 @@ export default {
     universityId: {
       type: String,
       required: false,
-      default: null,
+      default: null
     },
     targetId: {
       type: String,
       required: false,
-      default: null,
+      default: null
     },
     schedulleId: {
       type: String,
       required: false,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
-      title: 'Laporan',
-      link: '/marketing-reports',
+      title: "Laporan",
+      link: "/marketing-reports",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -116,8 +116,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -155,27 +155,27 @@ export default {
     },
     downloadData() {
       this.dataToExport = []
-      const notIncludes = ['schedulle_id']
+      const notIncludes = ["schedulle_id"]
       this.items.map(i => {
         const data = Object.assign({}, i)
         data.university = this.normalizeObject(
           data,
-          'schedulle.target.study.university.name'
+          "schedulle.target.study.university.name"
         )
         data.study = this.normalizeObject(
           data,
-          'schedulle.target.study.studyName.name'
+          "schedulle.target.study.studyName.name"
         )
-        data.action = this.normalizeObject(data, 'schedulle.action.name')
-        data.schedulle = this.normalizeObject(data, 'schedulle.code')
+        data.action = this.normalizeObject(data, "schedulle.action.name")
+        data.schedulle = this.normalizeObject(data, "schedulle.code")
         notIncludes.map(n => delete data[n])
         this.dataToExport.push(data)
       })
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

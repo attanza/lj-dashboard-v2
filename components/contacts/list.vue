@@ -40,7 +40,7 @@
       >
         <template v-slot:item.marketing_target_id="{ item }">
           <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
-            {{ item.target ? item.target.code : 'N/A' }}
+            {{ item.target ? item.target.code : "N/A" }}
           </v-btn>
         </template>
       </v-data-table>
@@ -63,22 +63,22 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from './util'
-import { global, catchError } from '~/mixins'
-import dform from './dform'
-import DownloadDialog from '../DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "./util"
+import { global, catchError } from "~/mixins"
+import dform from "./dform"
+import DownloadDialog from "../DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
   data() {
     return {
-      title: 'Kontak',
-      link: '/contacts',
+      title: "Kontak",
+      link: "/contacts",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -89,8 +89,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -122,8 +122,8 @@ export default {
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

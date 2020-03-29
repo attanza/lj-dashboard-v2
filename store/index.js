@@ -6,7 +6,7 @@ export const state = () => ({
   permissions: null,
   dashboardData: null,
   comboData: null,
-  chartData: null,
+  chartData: null
 })
 export const mutations = {
   toggleSidebar(state) {
@@ -33,7 +33,7 @@ export const mutations = {
   },
   chartData(state, p) {
     state.chartData = p
-  },
+  }
 }
 export const actions = {}
 
@@ -47,5 +47,5 @@ export const getters = {
     return state.comboData.filter(
       item => item.name.toLowerCase().indexOf(name) > -1
     )
-  },
+  }
 }

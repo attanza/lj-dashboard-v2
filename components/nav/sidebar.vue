@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { adminItems, supervisorItems } from './menu'
+import { adminItems, supervisorItems } from "./menu"
 export default {
   data() {
     return {
@@ -98,11 +98,11 @@ export default {
       mini: false,
       right: true,
       rightDrawer: false,
-      title: 'Langsung Jalan',
+      title: "Langsung Jalan",
       righItems: [
-        { title: 'Profile', icon: 'account_box' },
-        { title: 'Logout', icon: 'exit_to_app' },
-      ],
+        { title: "Profile", icon: "account_box" },
+        { title: "Logout", icon: "exit_to_app" }
+      ]
     }
   },
   computed: {
@@ -110,11 +110,11 @@ export default {
       return this.$store.state.auth.user
     },
     avatar() {
-      if (this.user && this.user.photo != '') {
+      if (this.user && this.user.photo != "") {
         return this.user.photo
       }
-      return '/images/user.png'
-    },
+      return "/images/user.png"
+    }
   },
   mounted() {
     this.getMenus()
@@ -124,15 +124,15 @@ export default {
       if (this.user && this.user.roles) {
         const role = this.user.roles[0].slug
         switch (role) {
-          case 'super-administrator':
+          case "super-administrator":
             this.items = adminItems
             break
 
-          case 'administrator':
+          case "administrator":
             this.items = adminItems
             break
 
-          case 'supervisor':
+          case "supervisor":
             this.items = supervisorItems
             break
 
@@ -144,25 +144,25 @@ export default {
     },
     logout() {
       this.$auth.logout()
-      this.$router.push('/login')
+      this.$router.push("/login")
     },
     toProfile() {
-      this.$router.push('/profile')
+      this.$router.push("/profile")
     },
     itemActions(title) {
       switch (title) {
-        case 'Logout':
+        case "Logout":
           this.logout()
           break
-        case 'Profile':
+        case "Profile":
           this.toProfile()
           break
 
         default:
           break
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

@@ -60,33 +60,33 @@
 </template>
 
 <script>
-import { catchError, global } from '~/mixins'
-import { debounce } from 'lodash'
+import { catchError, global } from "~/mixins"
+import { debounce } from "lodash"
 export default {
   mixins: [catchError, global],
   props: {
     label: {
       type: String,
-      required: true,
+      required: true
     },
     headers: {
       type: Array,
-      required: true,
+      required: true
     },
     url: {
       type: String,
-      required: true,
+      required: true
     },
     errorMessages: {
       type: Array,
       required: false,
-      default: null,
-    },
+      default: null
+    }
   },
   data: () => ({
     dialog: false,
-    formTitle: 'Server Combobox',
-    errorMessage: '',
+    formTitle: "Server Combobox",
+    errorMessage: ""
   }),
   watch: {
     options: {
@@ -95,17 +95,17 @@ export default {
           this.getData()
         }
       }, 500),
-      deep: true,
+      deep: true
     },
     errorMessages() {
       if (this.errorMessages.length > 0) {
         this.errorMessage = this.errorMessages[0]
       }
-    },
+    }
   },
 
   mounted() {
-    this.options.sortBy = ['name']
+    this.options.sortBy = ["name"]
     this.options.sortDesc = [true]
     this.getData()
   },
@@ -125,9 +125,9 @@ export default {
     },
     select(data) {
       this.dialog = false
-      this.$emit('onSelected', data)
-    },
-  },
+      this.$emit("onSelected", data)
+    }
+  }
 }
 </script>
 

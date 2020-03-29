@@ -30,54 +30,54 @@ export default {
   props: {
     color: {
       type: String,
-      required: true,
+      required: true
     },
     icon: {
       type: String,
       required: false,
-      default: '',
+      default: ""
     },
     tooltipText: {
       type: String,
       required: false,
-      default: '',
+      default: ""
     },
     title: {
       type: String,
       required: false,
-      default: '',
+      default: ""
     },
     flat: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
     block: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
     outline: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
     iconMode: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
     dark: {
       type: Boolean,
       required: false,
-      default: false,
-    },
+      default: false
+    }
   },
   methods: {
     onClick() {
-      this.$emit('onClick')
-    },
-  },
+      this.$emit("onClick")
+    }
+  }
 }
 </script>
 

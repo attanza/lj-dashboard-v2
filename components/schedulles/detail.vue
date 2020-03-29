@@ -41,20 +41,20 @@
 </template>
 
 <script>
-import { global, catchError } from '~/mixins'
-import Dialog from '~/components/Dialog'
-import sharedForm from '../sharedForm'
-import { formItem } from './util'
+import { global, catchError } from "~/mixins"
+import Dialog from "~/components/Dialog"
+import sharedForm from "../sharedForm"
+import { formItem } from "./util"
 
 export default {
   components: { Dialog, sharedForm },
   mixins: [global, catchError],
   data() {
     return {
-      link: '/schedulles',
+      link: "/schedulles",
       formItem: formItem,
       showDialog: false,
-      initVal: {},
+      initVal: {}
     }
   },
 
@@ -76,8 +76,8 @@ export default {
         formItem.map(f => {
           this.initVal[f.value] = this.currentEdit[f.value]
         })
-        const date = this.currentEdit.date.split(' ')[0]
-        const time = this.currentEdit.date.split(' ')[1]
+        const date = this.currentEdit.date.split(" ")[0]
+        const time = this.currentEdit.date.split(" ")[1]
         this.initVal.date = date
         this.initVal.time = time
       }
@@ -85,27 +85,27 @@ export default {
 
     async populateTarget() {
       await this.populateComboData(
-        '/combo-data?model=MarketingTarget',
-        'code',
-        'marketing_target_id',
+        "/combo-data?model=MarketingTarget",
+        "code",
+        "marketing_target_id",
         this.currentEdit.marketing_target_id,
-        'marketing-targets'
+        "marketing-targets"
       )
     },
     async populateMarketing() {
       await this.populateComboData(
-        '/combo-data?model=Marketing',
-        'name',
-        'marketing_id',
+        "/combo-data?model=Marketing",
+        "name",
+        "marketing_id",
         this.currentEdit.marketing_id,
-        'marketings'
+        "marketings"
       )
     },
     async populateAction() {
       await this.populateComboData(
-        '/combo-data?model=Action',
-        'name',
-        'marketing_action_id'
+        "/combo-data?model=Action",
+        "name",
+        "marketing_action_id"
       )
     },
 
@@ -114,11 +114,11 @@ export default {
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
-            this.link + '/' + this.currentEdit.id,
+            this.link + "/" + this.currentEdit.id,
             data
           )
-          this.$store.commit('currentEdit', resp.data)
-          this.showNoty(this.$messages.form.UPDATED, 'success')
+          this.$store.commit("currentEdit", resp.data)
+          this.showNoty(this.$messages.form.UPDATED, "success")
           this.deactivateLoader()
         }
       } catch (e) {
@@ -134,10 +134,10 @@ export default {
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$delete(
-            this.link + '/' + this.currentEdit.id
+            this.link + "/" + this.currentEdit.id
           )
           if (resp.meta.status === 200) {
-            this.showNoty(this.$messages.form.DELETED, 'success')
+            this.showNoty(this.$messages.form.DELETED, "success")
             this.$router.push(this.link)
           }
         }
@@ -147,7 +147,7 @@ export default {
         this.showDialog = false
         this.catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

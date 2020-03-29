@@ -23,34 +23,34 @@
   </v-layout>
 </template>
 <script>
-import { global, catchError } from '~/mixins'
-import sharedForm from '../sharedForm'
-import { formItem } from './util'
+import { global, catchError } from "~/mixins"
+import sharedForm from "../sharedForm"
+import { formItem } from "./util"
 export default {
   components: { sharedForm },
   mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
-      required: true,
+      required: true
     },
     link: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       dialog: false,
       formItem: formItem,
-      formTitle: 'Tambah DP',
-      initValue: {},
+      formTitle: "Tambah DP",
+      initValue: {}
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    },
+    }
   },
 
   mounted() {
@@ -60,13 +60,13 @@ export default {
 
   methods: {
     onClose() {
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     async populateMarketingTarget() {
       await this.populateComboData(
-        '/combo-data?model=MarketingTarget',
-        'code',
-        'marketing_target_id'
+        "/combo-data?model=MarketingTarget",
+        "code",
+        "marketing_target_id"
       )
     },
     generateCode() {
@@ -77,18 +77,18 @@ export default {
     async saveData(data) {
       try {
         data.date = `${data.date} ${data.time}`
-        delete data['time']
+        delete data["time"]
         this.activateLoader()
         const resp = await this.$axios.$post(this.link, data)
-        this.showNoty(this.$messages.form.SAVED, 'success')
-        this.$emit('onAdd', resp.data)
+        this.showNoty(this.$messages.form.SAVED, "success")
+        this.$emit("onAdd", resp.data)
         this.deactivateLoader()
       } catch (e) {
         this.dialog = false
         this.deactivateLoader()
         this.catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

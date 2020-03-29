@@ -76,22 +76,22 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from '~/components/users/util'
-import { global, catchError } from '~/mixins'
-import { dform } from '~/components/users'
-import DownloadDialog from '~/components/DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "~/components/users/util"
+import { global, catchError } from "~/mixins"
+import { dform } from "~/components/users"
+import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
   data() {
     return {
-      title: 'User',
-      link: '/users',
+      title: "User",
+      link: "/users",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
@@ -102,8 +102,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -135,14 +135,14 @@ export default {
       this.items.map(i => {
         let data = Object.assign({}, i)
         data.role = data.roles[0].name
-        delete data['roles']
+        delete data["roles"]
         this.dataToExport.push(data)
       })
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

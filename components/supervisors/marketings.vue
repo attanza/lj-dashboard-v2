@@ -102,17 +102,17 @@
 </template>
 
 <script>
-import { global, catchError } from '~/mixins'
+import { global, catchError } from "~/mixins"
 import {
   MARKETING_URL,
   ADD_MARKETING_URL,
   DETACH_MARKETING_URL,
-  COMBO_DATA_URL,
-} from '~/utils/apis'
-import debounce from 'lodash/debounce'
-import union from 'lodash/union'
+  COMBO_DATA_URL
+} from "~/utils/apis"
+import debounce from "lodash/debounce"
+import union from "lodash/union"
 
-import Dialog from '~/components/Dialog'
+import Dialog from "~/components/Dialog"
 
 export default {
   components: { Dialog },
@@ -123,7 +123,7 @@ export default {
       marketings: [],
       addMode: false,
       marketingsToAdd: [],
-      marketingsToDelete: [],
+      marketingsToDelete: []
     }
   },
   watch: {
@@ -131,15 +131,15 @@ export default {
       handler: debounce(function() {
         this.getMarketings()
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.getMarketings()
   },
   methods: {
     toHome() {
-      this.$router.push('/supervisors')
+      this.$router.push("/supervisors")
     },
     async getMarketings() {
       try {
@@ -170,10 +170,10 @@ export default {
           }
           let data = {
             supervisor_id: this.currentEdit.id,
-            marketings: union(exisitingMarketings, this.marketingsToAdd),
+            marketings: union(exisitingMarketings, this.marketingsToAdd)
           }
           await this.$axios.$post(ADD_MARKETING_URL, data)
-          this.showNoty('Marketing ditambahkan.', 'success')
+          this.showNoty("Marketing ditambahkan.", "success")
           this.clear()
           this.repopulateData()
         }
@@ -195,10 +195,10 @@ export default {
         if (this.marketingsToDelete.length > 0 && this.currentEdit) {
           let data = {
             supervisor_id: this.currentEdit.id,
-            marketings: this.marketingsToDelete,
+            marketings: this.marketingsToDelete
           }
           await this.$axios.$put(DETACH_MARKETING_URL, data)
-          this.showNoty('Marketing dilepas.', 'success')
+          this.showNoty("Marketing dilepas.", "success")
           this.clear()
           this.repopulateData()
           this.deactivateLoader()
@@ -214,8 +214,8 @@ export default {
     async repopulateData() {
       try {
         this.getMarketings()
-        const resp = await this.$axios.$get(COMBO_DATA_URL + 'Marketing')
-        this.$store.commit('comboData', resp)
+        const resp = await this.$axios.$get(COMBO_DATA_URL + "Marketing")
+        this.$store.commit("comboData", resp)
       } catch (e) {
         this.catchError(e)
       }
@@ -227,8 +227,8 @@ export default {
       this.loading = false
       this.addMode = false
       this.showDialog = false
-    },
-  },
+    }
+  }
 }
 </script>
 

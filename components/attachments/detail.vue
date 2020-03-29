@@ -91,16 +91,16 @@
 </template>
 
 <script>
-import { global } from '~/mixins'
-import { CONTACT_URL, COMBO_DATA_URL } from '~/utils/apis'
-import axios from 'axios'
-import Dialog from '~/components/Dialog'
-import catchError, { showNoty } from '~/utils/catchError'
-import debounce from 'lodash/debounce'
+import { global } from "~/mixins"
+import { CONTACT_URL, COMBO_DATA_URL } from "~/utils/apis"
+import axios from "axios"
+import Dialog from "~/components/Dialog"
+import catchError, { showNoty } from "~/utils/catchError"
+import debounce from "lodash/debounce"
 
 export default {
   $_veeValidate: {
-    validator: 'new',
+    validator: "new"
   },
   components: { Dialog },
   mixins: [global],
@@ -108,42 +108,42 @@ export default {
     return {
       fillable: [
         {
-          key: 'marketing_target_id',
-          caption: 'Kode Target',
-          value: '',
-          rules: 'required|integer',
+          key: "marketing_target_id",
+          caption: "Kode Target",
+          value: "",
+          rules: "required|integer"
         },
         {
-          key: 'name',
-          caption: 'Nama',
-          value: '',
-          rules: 'required|max:50',
+          key: "name",
+          caption: "Nama",
+          value: "",
+          rules: "required|max:50"
         },
         {
-          key: 'title',
-          caption: 'Jabatan',
-          value: '',
-          rules: 'required|max:50',
+          key: "title",
+          caption: "Jabatan",
+          value: "",
+          rules: "required|max:50"
         },
         {
-          key: 'email',
-          caption: 'Email',
-          value: '',
-          rules: 'required|email',
+          key: "email",
+          caption: "Email",
+          value: "",
+          rules: "required|email"
         },
         {
-          key: 'phone',
-          caption: 'Telepon',
-          value: '',
-          rules: 'required|max:30',
-        },
+          key: "phone",
+          caption: "Telepon",
+          value: "",
+          rules: "required|max:30"
+        }
       ],
       formData: {},
-      formTitle: 'Tambah Kontak',
+      formTitle: "Tambah Kontak",
       targetEntries: [],
       targetComboLoading: false,
       searchTarget: null,
-      showDialog: false,
+      showDialog: false
     }
   },
   computed: {
@@ -153,14 +153,14 @@ export default {
         this.targetEntries.map(target => items.push(target))
       }
       return items
-    },
+    }
   },
   watch: {
     searchTarget() {
       if (this.searchTarget && this.searchTarget.length > 2) {
         this.getTarget()
       }
-    },
+    }
   },
   created() {
     this.setFields()
@@ -170,7 +170,7 @@ export default {
       try {
         this.targetComboLoading = true
         this.targetEntries = await axios
-          .get(COMBO_DATA_URL + 'MarketingTarget&search=' + this.searchTarget)
+          .get(COMBO_DATA_URL + "MarketingTarget&search=" + this.searchTarget)
           .then(res => res.data)
         this.targetComboLoading = false
       } catch (e) {
@@ -190,7 +190,7 @@ export default {
         )
         this.targetEntries.push({
           id: this.currentEdit.target.id,
-          code: this.currentEdit.target.code,
+          code: this.currentEdit.target.code
         })
       }
     },
@@ -207,11 +207,11 @@ export default {
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await axios
-            .put(CONTACT_URL + '/' + this.currentEdit.id, this.formData)
+            .put(CONTACT_URL + "/" + this.currentEdit.id, this.formData)
             .then(res => res.data)
-          this.$store.commit('currentEdit', resp.data)
+          this.$store.commit("currentEdit", resp.data)
           this.setFields()
-          showNoty('Data diperbaharui', 'success')
+          showNoty("Data diperbaharui", "success")
         }
         this.deactivateLoader()
       } catch (e) {
@@ -227,11 +227,11 @@ export default {
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await axios
-            .delete(CONTACT_URL + '/' + this.currentEdit.id)
+            .delete(CONTACT_URL + "/" + this.currentEdit.id)
             .then(res => res.data)
           if (resp.meta.status === 200) {
-            showNoty('Data dihapus', 'success')
-            this.$router.push('/contacts')
+            showNoty("Data dihapus", "success")
+            this.$router.push("/contacts")
           }
         }
         this.deactivateLoader()
@@ -240,7 +240,7 @@ export default {
         this.deactivateLoader()
         catchError(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>

@@ -23,38 +23,38 @@
   </v-layout>
 </template>
 <script>
-import { global, catchError } from '~/mixins'
-import sharedForm from '../sharedForm'
-import { formItem } from './util'
+import { global, catchError } from "~/mixins"
+import sharedForm from "../sharedForm"
+import { formItem } from "./util"
 export default {
   components: { sharedForm },
   mixins: [global, catchError],
   props: {
     show: {
       type: Boolean,
-      required: true,
+      required: true
     },
     link: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       dialog: false,
       formItem: formItem,
-      formTitle: 'Tambah Target',
-      initValue: {},
+      formTitle: "Tambah Target",
+      initValue: {}
     }
   },
   watch: {
     show() {
       this.dialog = this.show
-    },
+    }
   },
   mounted() {
     this.generateCode()
-    this.$bus.$on('university_id', val => {
+    this.$bus.$on("university_id", val => {
       this.populateStudyPrograms(val)
     })
     this.populateUniversity()
@@ -67,8 +67,8 @@ export default {
     },
     async populateUniversity() {
       try {
-        const resp = await this.$axios.$get('/combo-data?model=University')
-        const idx = this.findIndex('university_id')
+        const resp = await this.$axios.$get("/combo-data?model=University")
+        const idx = this.findIndex("university_id")
 
         if (idx !== -1) {
           this.formItem[idx].items = resp
@@ -83,7 +83,7 @@ export default {
         const resp = await this.$axios.$get(
           `/combo-data?model=StudyProgram&university_id=${universityId}`
         )
-        const idx = this.findIndex('study_program_id')
+        const idx = this.findIndex("study_program_id")
 
         if (idx !== -1) {
           this.formItem[idx].items = resp
@@ -94,14 +94,14 @@ export default {
     },
 
     onClose() {
-      this.$emit('onClose')
+      this.$emit("onClose")
     },
     async saveData(data) {
       try {
         this.activateLoader()
         const resp = await this.$axios.$post(this.link, data)
-        this.showNoty(this.$messages.form.SAVED, 'success')
-        this.$emit('onAdd', resp.data)
+        this.showNoty(this.$messages.form.SAVED, "success")
+        this.$emit("onAdd", resp.data)
         this.deactivateLoader()
       } catch (e) {
         this.dialog = false
@@ -111,7 +111,7 @@ export default {
     },
     findIndex(key) {
       return this.formItem.findIndex(f => f.value === key)
-    },
-  },
+    }
+  }
 }
 </script>

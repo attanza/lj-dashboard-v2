@@ -23,26 +23,26 @@
 </template>
 
 <script>
-import { detail } from '~/components/schedulles'
-import { global } from '~/mixins'
-import catchError from '~/utils/catchError'
-import { reportList } from '~/components/marketing-reports'
+import { detail } from "~/components/schedulles"
+import { global } from "~/mixins"
+import catchError from "~/utils/catchError"
+import { reportList } from "~/components/marketing-reports"
 
 export default {
   components: { detail, reportList },
   mixins: [global],
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
-      let resp = await $axios.get('/schedulles/' + params.id)
-      if (resp) store.commit('currentEdit', resp.data.data)
+      let resp = await $axios.get("/schedulles/" + params.id)
+      if (resp) store.commit("currentEdit", resp.data.data)
     } catch (e) {
       if (process.client) {
         catchError(e, $router, $auth)
       } else {
-        redirect('/')
+        redirect("/")
       }
     }
-  },
+  }
 }
 </script>
 
