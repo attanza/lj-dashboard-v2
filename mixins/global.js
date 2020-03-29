@@ -1,8 +1,8 @@
-import { ExportToCsv } from 'export-to-csv'
-import { includes } from 'lodash'
-import { mapState } from 'vuex'
-import Noty from '~/components/Noty'
-import Tbtn from '~/components/Tbtn'
+import { ExportToCsv } from "export-to-csv"
+import { includes } from "lodash"
+import { mapState } from "vuex"
+import Noty from "~/components/Noty"
+import Tbtn from "~/components/Tbtn"
 export default {
   components: { Noty, Tbtn },
   data() {
@@ -10,18 +10,18 @@ export default {
       loading: false,
       items: [],
       total: 1,
-      search: '',
+      search: "",
       options: {
-        search: '',
-        sortDesc: [true],
+        search: "",
+        sortDesc: [true]
       },
       footerProps: {
-        itemsPerPageOptions: [10, 25, 50, 100],
+        itemsPerPageOptions: [10, 25, 50, 100]
       },
       showDownloadDialog: false,
       showConfirm: false,
 
-      showForm: false,
+      showForm: false
     }
   },
   methods: {
@@ -41,23 +41,23 @@ export default {
       return this.$changeCase.snakeCase(txt)
     },
     activateLoader() {
-      this.$bus.$emit('activate_loader')
+      this.$bus.$emit("activate_loader")
     },
     deactivateLoader() {
-      this.$bus.$emit('deactivate_loader')
+      this.$bus.$emit("deactivate_loader")
     },
 
     csvExport(title, data) {
       const options = {
         filename: title,
-        fieldSeparator: ',',
+        fieldSeparator: ",",
         quoteStrings: '"',
-        decimalseparator: '.',
+        decimalseparator: ".",
         showLabels: true,
         showTitle: true,
         title: title,
         useBom: true,
-        useKeysAsHeaders: true,
+        useKeysAsHeaders: true
       }
 
       if (data.length) {
@@ -66,28 +66,28 @@ export default {
       }
     },
     getQueries() {
-      let query = '?'
+      let query = "?"
       const sortBy =
         this.options.sortBy && this.options.sortBy[0]
           ? this.options.sortBy[0]
-          : 'created_at'
-      const sortMode = this.options.sortDesc[0] ? 'desc' : 'asc'
+          : "created_at"
+      const sortMode = this.options.sortDesc[0] ? "desc" : "asc"
       const queryString = {
         page: this.options.page || 1,
         limit: this.options.itemsPerPage,
         sort_by: sortBy,
         sort_mode: sortMode,
-        category: this.options.category || '',
+        category: this.options.category || ""
       }
       const { search } = this.options
-      if (search && search !== '') queryString.search = search
+      if (search && search !== "") queryString.search = search
       Object.keys(queryString).map(q => (query += `${q}=${queryString[q]}&`))
       return query
     },
 
     resetPagination() {
       this.pagination = {
-        sortBy: '',
+        sortBy: "",
         descending: false,
         search: null,
         search_by: null,
@@ -96,11 +96,11 @@ export default {
         start_date: null,
         end_date: null,
         sort_by: null,
-        sort_mode: null,
+        sort_mode: null
       }
     },
     clearStore() {
-      this.$store.commit('currentEdit', null)
+      this.$store.commit("currentEdit", null)
     },
     checkPermission(permission) {
       return includes(this.userPermissions, permission)
@@ -112,7 +112,7 @@ export default {
      */
     normalizeObject(data, children) {
       let lookup = Object.assign({}, data)
-      const child = children.split('.')
+      const child = children.split(".")
       child.map(c => {
         lookup = lookup[c]
         if (!lookup) {
@@ -153,7 +153,7 @@ export default {
               if (resp2 && resp2.data) {
                 comboData.push({
                   id: resp2.data.id,
-                  name: resp2.data[strValue],
+                  name: resp2.data[strValue]
                 })
               }
             }
@@ -166,17 +166,17 @@ export default {
       } catch (e) {
         this.catchError(e)
       }
-    },
+    }
   },
   computed: {
     ...mapState([
-      'token',
-      'currentEdit',
-      'comboData',
-      'permissions',
-      'user',
-      'dashboardData',
-      'chartData',
+      "token",
+      "currentEdit",
+      "comboData",
+      "permissions",
+      "user",
+      "dashboardData",
+      "chartData"
     ]),
     userPermissions() {
       const permissions =
@@ -188,6 +188,6 @@ export default {
       let permissionArray = []
       permissions.map(p => permissionArray.push(p.slug))
       return permissionArray
-    },
-  },
+    }
+  }
 }

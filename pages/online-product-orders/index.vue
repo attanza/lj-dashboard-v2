@@ -63,29 +63,30 @@
       :data-to-export="dataToExport"
       :fillable="fillable"
       :type-dates="typeDates"
-      model="Produk"
+      :custome-active="true"
+      model="OnlineProductOrder"
       @onClose="showDownloadDialog = false"
     />
   </v-card>
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { headers, downloadData } from '~/components/onlineProductOrders/util'
-import { global, catchError } from '~/mixins'
-import { dform } from '~/components/onlineProductOrders'
-import DownloadDialog from '~/components/DownloadDialog'
+import debounce from "lodash/debounce"
+import { headers, downloadData } from "~/components/onlineProductOrders/util"
+import { global, catchError } from "~/mixins"
+import { dform } from "~/components/onlineProductOrders"
+import DownloadDialog from "~/components/DownloadDialog"
 export default {
   components: { DownloadDialog, dform },
   mixins: [global, catchError],
   data() {
     return {
-      title: 'Produk Order',
-      link: '/online-product-orders',
+      title: "Produk Order",
+      link: "/online-product-orders",
       headers: headers,
       fillable: downloadData,
-      typeDates: ['created_at'],
-      dataToExport: [],
+      typeDates: ["paid_at"],
+      dataToExport: []
     }
   },
 
@@ -96,8 +97,8 @@ export default {
           this.populateTable()
         }
       }, 500),
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {
     this.populateTable()
@@ -114,7 +115,7 @@ export default {
       } catch (e) {
         this.deactivateLoader()
         this.showForm = false
-        this.catchError(e, null, this.$router)
+        this.catchError(e, this.$auth, this.$router)
       }
     },
     toDetail(data) {
@@ -128,10 +129,10 @@ export default {
       this.dataToExport = []
       this.dataToExport = this.items
       if (this.dataToExport.length) {
-        this.showDownloadDialog = true
+        this.showDownloadDialog = !this.showDownloadDialog
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

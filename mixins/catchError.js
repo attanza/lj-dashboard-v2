@@ -1,7 +1,7 @@
 import Noty from 'noty'
 export default {
   methods: {
-    catchError(e) {
+    catchError(e, $auth, $router) {
       if (e.response) {
         const status = e.response.status
         let message = ''
@@ -21,8 +21,8 @@ export default {
             break
           case 401:
             {
-              this.$auth.logout()
-              this.$router.push('/login')
+              $auth.logout()
+              $router.push('/login')
             }
             break
 

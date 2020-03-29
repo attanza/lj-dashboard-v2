@@ -53,7 +53,7 @@ export const headers = [
   { text: 'Tanggal', align: 'left', value: 'created_at' },
 ]
 
-export const downloadData = []
+export const downloadData = ['id', 'paid_at']
 
 export const formItem = [
   {
