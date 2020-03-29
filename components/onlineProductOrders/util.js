@@ -50,12 +50,21 @@ export const headers = [
   { text: 'Nama', align: 'left', value: 'name' },
   { text: 'Harga', align: 'left', value: 'price' },
   { text: 'Status', align: 'left', value: 'status' },
-  { text: 'Tanggal', align: 'left', value: 'date' },
+  { text: 'Tanggal', align: 'left', value: 'created_at' },
 ]
 
 export const downloadData = []
 
 export const formItem = [
+  {
+    text: 'Order #',
+    value: 'order_no',
+    el: 'text',
+    type: 'text',
+    disabled: true,
+    rules: '',
+    inForm: true,
+  },
   {
     text: 'Nama',
     value: 'name',
@@ -100,6 +109,7 @@ export const formItem = [
     text: 'Referral',
     value: 'referral',
     el: 'text',
+    disabled: true,
     rules: '',
     inForm: true,
   },
@@ -129,6 +139,29 @@ export const formItem = [
     text: 'Harga',
     value: 'price',
     el: 'text',
+    rules: '',
+    inForm: true,
+  },
+  {
+    text: 'Kode Aktifasi',
+    value: 'activation_code',
+    el: 'text',
+    disabled: true,
+    rules: '',
+    inForm: true,
+  },
+  {
+    text: 'Aktif',
+    value: 'is_disabled',
+    el: 'switch',
+    rules: '',
+    inForm: true,
+  },
+  {
+    text: 'Tanggal Bayar',
+    value: 'paid_at',
+    el: 'text',
+    disabled: true,
     rules: '',
     inForm: true,
   },
