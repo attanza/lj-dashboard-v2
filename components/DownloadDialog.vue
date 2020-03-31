@@ -2,9 +2,9 @@
   <v-dialog v-model="dialog" max-width="600px" persistent>
     <v-card>
       <v-card-title>
-        <span class="primary--text headline">{{
-          $messages.downloadDialog.TITLE
-        }}</span>
+        <span class="primary--text headline">
+          {{ $messages.downloadDialog.TITLE }}
+        </span>
       </v-card-title>
       <v-divider />
       <v-card-text>

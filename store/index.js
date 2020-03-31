@@ -1,6 +1,5 @@
 export const state = () => ({
   sidebar: false,
-  user: {},
   token: null,
   currentEdit: null,
   permissions: null,
@@ -13,7 +12,7 @@ export const mutations = {
     state.sidebar = !state.sidebar
   },
   user(state, p) {
-    state.user = p
+    state.auth.user = p
   },
   token(state, p) {
     state.token = p

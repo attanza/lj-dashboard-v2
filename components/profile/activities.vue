@@ -1,155 +1,113 @@
 <template>
-  <div>
-    <v-card class="pt-3">
-      <v-toolbar card color="transparent">
-        <Tbtn
-          :bottom="true"
-          :tooltip-text="'Download ' + title + ' data'"
-          icon-mode
-          color="primary"
-          icon="cloud_download"
-          @onClick="downloadData"
-        />
-        <v-spacer />
-        <v-text-field
-          v-model="search"
-          append-icon="search"
-          label="Search"
-          single-line
-          hide-details
-        />
-      </v-toolbar>
+  <v-card flat>
+    <v-toolbar flat color="transparent">
+      <Tbtn
+        :bottom="true"
+        :tooltip-text="'Download data ' + title"
+        icon-mode
+        icon="cloud_download"
+        color="primary"
+        @onClick="downloadData"
+      />
+
+      <v-spacer />
+      <v-text-field
+        v-model="options.search"
+        append-icon="search"
+        label="Cari"
+        single-line
+        hide-details
+      />
+    </v-toolbar>
+    <v-card-text class="mt-4">
       <v-data-table
         :headers="headers"
         :items="items"
+        :search="options.search"
         :loading="loading"
-        :pagination.sync="pagination"
-        :total-items="totalItems"
-        :rows-per-page-items="rowsPerPage"
-        class="elevation-1"
+        :options.sync="options"
+        :footer-props="footerProps"
+        :server-items-length="total"
       >
-        <template slot="items" slot-scope="props">
-          <td>{{ props.item.ip }}</td>
-          <td>{{ props.item.browser }}</td>
-          <td>{{ props.item.activity }}</td>
-          <td>{{ props.item.created_at }}</td>
-          <!-- <td class="justify-center layout px-0">
-            <v-btn icon class="mx-0" @click="toDetail(props.item)">
-              <Tbtn :tooltip-text="'Show '+title" icon-mode flat color="white" icon="remove_red_eye" @onClick="toDetail(props.item)"/>
-            </v-btn>
-          </td>-->
-        </template>
+        <template v-slot:item.createdAt="{ item }">{{
+          $moment(item.createdAt).format("DD MMMM YYYY HH:mm:ss")
+        }}</template>
       </v-data-table>
-    </v-card>
+    </v-card-text>
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
       :fillable="fillable"
       :type-dates="typeDates"
-      :query="`user_id=${user.id}`"
-      model="Activity"
+      model="Activities"
       @onClose="showDownloadDialog = false"
     />
-  </div>
+  </v-card>
 </template>
+
 <script>
 import debounce from "lodash/debounce"
-import { ACTIVITIES_URL } from "~/utils/apis"
-import { global } from "~/mixins"
-import axios from "axios"
-import catchError from "~/utils/catchError"
+import { activitiesHeaders, downloadData } from "~/components/profile/util"
+import { global, catchError } from "~/mixins"
 import DownloadDialog from "~/components/DownloadDialog"
-
 export default {
-  middleware: "auth",
   components: { DownloadDialog },
-  mixins: [global],
-  data: () => ({
-    title: "Activity",
-    headers: [
-      { text: "IP Address", align: "left", value: "ip" },
-      { text: "Browser", align: "left", value: "browser" },
-      { text: "Activity", align: "left", value: "activity" },
-      { text: "Created", align: "left", value: "created_at" }
-      // { text: "Actions", value: "name", sortable: false }
-    ],
-    items: [],
-    dataToExport: [],
-    fillable: ["id", "ip", "browser", "activity", "created_at"],
-    typeDates: ["created_at"]
-  }),
-
-  watch: {
-    pagination: {
-      handler() {
-        this.pupulateTable()
-      },
-      deep: true
-    },
-    search() {
-      if (this.search == "" || this.search.length > 2) {
-        this.searchQuery()
-      }
+  mixins: [global, catchError],
+  data() {
+    return {
+      title: "Activities",
+      link: "/activities",
+      headers: activitiesHeaders,
+      fillable: downloadData,
+      typeDates: ["created_at"],
+      dataToExport: []
     }
   },
 
-  mounted() {
-    this.pupulateTable()
+  watch: {
+    options: {
+      handler: debounce(function() {
+        if (!this.loading) {
+          this.populateTable()
+        }
+      }, 500),
+      deep: true
+    }
   },
-
+  mounted() {
+    this.populateTable()
+  },
   methods: {
-    searchQuery: debounce(function() {
-      this.pupulateTable()
-    }, 500),
-    async pupulateTable() {
+    async populateTable() {
       try {
         this.activateLoader()
-        this.loading = true
-        const { page, rowsPerPage, descending, sortBy } = this.pagination
-        const endPoint = `${ACTIVITIES_URL}?page=${page}&limit=${rowsPerPage}&search=${this.search}&user_id=${this.user.id}`
-        const res = await axios.get(endPoint).then(res => res.data)
-        this.items = res.data
-        this.totalItems = res.meta.total
-        if (this.pagination.sortBy) {
-          this.items = this.items.sort((a, b) => {
-            const sortA = a[sortBy]
-            const sortB = b[sortBy]
-
-            if (descending) {
-              if (sortA < sortB) return 1
-              if (sortA > sortB) return -1
-              return 0
-            } else {
-              if (sortA < sortB) return -1
-              if (sortA > sortB) return 1
-              return 0
-            }
-          })
-        }
-        this.loading = false
+        const queries = this.getQueries()
+        const resp = await this.$axios.$get(
+          `${this.link + queries}search_by=user.id&search_query=${
+            this.auth.user.id
+          }`
+        )
+        this.total = resp.meta.totalDocs
+        this.items = resp.data
         this.deactivateLoader()
       } catch (e) {
-        this.loading = false
-        this.showForm = false
         this.deactivateLoader()
-        catchError(e)
+        this.showForm = false
+        this.catchError(e, null, this.$router)
       }
-    },
-    toDetail(data) {
-      this.$router.push(`/users/${data.id}`)
     },
     downloadData() {
       this.dataToExport = []
-      let localItems = this.items
-      localItems.map(i => {
-        let user = ""
-        let data = Object.assign({}, i)
-        delete data.user
-        delete data.user_id
-        if (i.user) user = i.user.name
-        data.user = user
-        this.dataToExport.push(data)
+      const data = [...this.items]
+      data.map(d => {
+        d.user = d.user ? d.user.email : ""
+        delete d.__v
+        delete d._id
+        d.createdAt = this.$moment(d.createdAt).format("YYYY-MM-DD HH:mm:ss")
+        d.updatedAt = this.$moment(d.updatedAt).format("YYYY-MM-DD HH:mm:ss")
+        this.dataToExport.push(d)
       })
+      console.log(this.dataToExport)
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }
@@ -157,3 +115,5 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped></style>
