@@ -107,7 +107,6 @@ export default {
         d.updatedAt = this.$moment(d.updatedAt).format("YYYY-MM-DD HH:mm:ss")
         this.dataToExport.push(d)
       })
-      console.log(this.dataToExport)
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }

@@ -23,7 +23,6 @@
     "chart.js": "^2.9.3",
     "export-to-csv": "^0.2.1",
     "noty": "^3.2.0-beta",
-    "npm-check-updates": "^4.0.4",
     "nuxt": "^2.11.0",
     "vee-validate": "^3.2.5",
     "vue-chartjs": "^3.5.0",

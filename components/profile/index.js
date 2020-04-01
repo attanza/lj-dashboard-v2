@@ -1,6 +1,7 @@
+import activities from "./activities"
+import avatar from "./avatar"
+import changePassword from "./changePassword"
 import detail from "./detail"
 import dform from "./dform"
-import avatar from "./avatar"
-import activities from "./activities"
 
-export { detail, dform, avatar, activities }
+export { detail, dform, avatar, activities, changePassword }

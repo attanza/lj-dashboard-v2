@@ -7,6 +7,8 @@
       <v-tabs-slider color="white" />
       <v-tab href="#detail">Detail</v-tab>
       <v-tab href="#activities">Aktifitas</v-tab>
+      <v-tab href="#avatar">Avatar</v-tab>
+      <v-tab href="#changePassword">Ganti Password</v-tab>
       <v-tab-item :id="'detail'">
         <detail />
       </v-tab-item>
@@ -14,16 +16,27 @@
       <v-tab-item id="activities">
         <activities />
       </v-tab-item>
+      <v-tab-item id="avatar">
+        <avatar />
+      </v-tab-item>
+      <v-tab-item id="changePassword">
+        <change-password />
+      </v-tab-item>
     </v-tabs>
   </div>
 </template>
 
 <script>
-import { detail, activities } from "~/components/profile"
+import {
+  detail,
+  activities,
+  avatar,
+  changePassword
+} from "~/components/profile"
 import { global } from "~/mixins"
 
 export default {
-  components: { detail, activities },
+  components: { detail, activities, avatar, changePassword },
   mixins: [global]
 }
 </script>

@@ -31,14 +31,10 @@
 </template>
 
 <script>
-import { global } from "~/mixins"
-import axios from "axios"
-import { PROFILE_URL } from "~/utils/apis"
-import catchError, { showNoty } from "~/utils/catchError"
-import Cookie from "js-cookie"
+import { global, catchError } from "~/mixins"
 
 export default {
-  mixins: [global],
+  mixins: [global, catchError],
   data() {
     return {
       imageName: "",
@@ -48,8 +44,8 @@ export default {
   },
   computed: {
     avatar() {
-      if (this.user && this.user.photo != "") {
-        return this.user.photo
+      if (this.auth.user.photo != "") {
+        return this.auth.user.photo
       }
       return "/images/user.png"
     }
@@ -80,28 +76,24 @@ export default {
     async submitFile() {
       try {
         this.activateLoader()
-        if (this.user && this.imageFile != "") {
+        if (this.imageFile != "") {
           let formData = new FormData()
           formData.append("photo", this.imageFile)
-          const resp = await axios
-            .post(PROFILE_URL + "/upload/" + this.user.id, formData, {
+          const resp = await this.$axios
+            .$post("/profile/upload/" + this.auth.user.id, formData, {
               headers: {
                 "Content-Type": "multipart/form-data"
               }
             })
             .then(res => res.data)
-          let cookieData = await Cookie.get("lj_token")
-          cookieData = JSON.parse(cookieData)
-          cookieData.user = resp.data
-          await Cookie.set("lj_token", JSON.stringify(cookieData))
-          this.$store.commit("user", resp.data)
-          showNoty("Profile Picture Updated", "success")
+          this.$store.commit("user", resp)
+          this.showNoty("Profile Picture Updated", "success")
           this.clearData()
           this.deactivateLoader()
         }
       } catch (e) {
         this.deactivateLoader()
-        catchError(e)
+        this.catchError(e)
       }
     },
     clearData() {
@@ -112,5 +104,3 @@ export default {
   }
 }
 </script>
-
-<style scoped></style>
