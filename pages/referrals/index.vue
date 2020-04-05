@@ -1,8 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">
-      {{ title }}
-    </v-card-title>
+    <v-card-title class="primary--text">{{ title }}</v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
         v-if="checkPermission('create-referral')"
@@ -43,9 +41,9 @@
         :server-items-length="total"
       >
         <template v-slot:item.code="{ item }">
-          <v-btn text color="primary" nuxt :to="`${link}/${item._id}`">
-            {{ item.code }}
-          </v-btn>
+          <v-btn text color="primary" nuxt :to="`${link}/${item._id}`">{{
+            item.code
+          }}</v-btn>
         </template>
         <template v-slot:item.creator="{ item }">
           <v-btn
@@ -53,9 +51,8 @@
             color="primary"
             nuxt
             :to="`/marketings/${item.creator.id}`"
+            >{{ item.creator.email || "" }}</v-btn
           >
-            {{ item.creator.email || "" }}
-          </v-btn>
         </template>
 
         <template v-slot:item.isExpired="{ item }">
@@ -66,6 +63,9 @@
             <v-chip>Expired</v-chip>
           </span>
         </template>
+        <template v-slot:item.createdAt="{ item }">{{
+          $moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss")
+        }}</template>
       </v-data-table>
     </v-card-text>
     <dform
@@ -116,6 +116,7 @@ export default {
     }
   },
   mounted() {
+    this.options.sortBy[0] = "createdAt"
     this.populateTable()
   },
   methods: {

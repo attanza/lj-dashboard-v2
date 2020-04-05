@@ -15,7 +15,7 @@ export const headers = [
   { text: "Kode", align: "left", value: "code" },
   { text: "Creator", align: "left", value: "creator" },
   { text: "Status", align: "left", value: "isExpired" },
-  { text: "Deskripsi", align: "left", value: "description" }
+  { text: "Tanggal", align: "left", value: "createdAt" }
 ]
 
 export const downloadData = []
@@ -26,7 +26,7 @@ export const formItem = [
     value: "code",
     el: "text",
     type: "text",
-    rules: "required|max:20",
+    rules: "min:3",
     inForm: true
   },
   {

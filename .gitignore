@@ -160,3 +160,4 @@ Temporary Items
 .history
 
 # End of https://www.gitignore.io/api/osx,node,nuxtjs,visualstudiocode
+cypress
