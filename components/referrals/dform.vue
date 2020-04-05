@@ -3,9 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="500px">
       <v-card>
         <v-card-title>
-          <span class="primary--text headline">
-            {{ formTitle }}
-          </span>
+          <span class="primary--text headline">{{ formTitle }}</span>
         </v-card-title>
         <v-divider />
         <v-card-text>
@@ -60,8 +58,11 @@ export default {
     async saveData(data) {
       try {
         this.activateLoader()
-
-        const resp = await this.$axios.$post(this.link, data)
+        const postData = {
+          ...data,
+          validUntil: this.$moment(data.validUntil).toISOString()
+        }
+        const resp = await this.$axios.$post(this.link, postData)
         this.showNoty(this.$messages.form.SAVED, "success")
         this.$emit("onAdd", resp.data)
         this.deactivateLoader()

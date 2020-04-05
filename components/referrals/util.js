@@ -30,6 +30,20 @@ export const formItem = [
     inForm: true
   },
   {
+    text: "Berlaku sampai",
+    value: "validUntil",
+    el: "date",
+    rules: "",
+    inForm: true
+  },
+  {
+    text: "Expired",
+    value: "isExpired",
+    el: "switch",
+    rules: "",
+    inForm: true
+  },
+  {
     text: "Deskripsi",
     value: "description",
     el: "textarea",

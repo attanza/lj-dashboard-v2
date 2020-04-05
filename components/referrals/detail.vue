@@ -25,7 +25,7 @@
           <sharedForm
             :items="formItem"
             :show-button="checkPermission('update-referral')"
-            :init-value="currentEdit"
+            :init-value="initValue"
             @onSubmit="editData"
           />
         </v-card-text>
@@ -53,24 +53,44 @@ export default {
     return {
       link: "/referrals",
       formItem: formItem,
-      showDialog: false
+      showDialog: false,
+      initValue: null
     }
   },
 
+  mounted() {
+    this.setInitValue()
+  },
+
   methods: {
+    setInitValue() {
+      if (this.currentEdit) {
+        this.initValue = {
+          ...this.currentEdit,
+          validUntil: this.$moment(this.currentEdit.validUntil).format(
+            "YYYY-MM-DD"
+          )
+        }
+      }
+    },
     toHome() {
       this.$router.go(-1)
     },
 
     async editData(data) {
       try {
+        const postData = {
+          ...data,
+          validUntil: this.$moment(data.validUntil).toISOString()
+        }
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$put(
             this.link + "/" + this.currentEdit._id,
-            data
+            postData
           )
           this.$store.commit("currentEdit", resp.data)
+          this.setInitValue()
           this.showNoty(this.$messages.form.UPDATED, "success")
           this.deactivateLoader()
         }

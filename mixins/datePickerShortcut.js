@@ -28,6 +28,7 @@ export default {
             this.date1 = this.generateData(d)
             this.date1[0] = this.date1[0].toDate()
             this.date1[1] = this.date1[1].toDate()
+            this.$refs.datepicker.closePopup()
           }
         })
       })
