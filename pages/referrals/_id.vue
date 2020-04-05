@@ -5,24 +5,26 @@
     </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
-      <v-tab href="#detail">
-        Detail
-      </v-tab>
-      <v-tab-item :id="'detail'">
+      <v-tab href="#detail">Detail</v-tab>
+      <v-tab href="#consumers">Consumers</v-tab>
+      <v-tab-item id="detail">
         <detail />
+      </v-tab-item>
+      <v-tab-item id="consumers">
+        <consumers />
       </v-tab-item>
     </v-tabs>
   </div>
 </template>
 
 <script>
-import { detail } from "~/components/referrals"
+import { detail, consumers } from "~/components/referrals"
 import { global } from "~/mixins"
 
 import catchError from "~/utils/catchError"
 
 export default {
-  components: { detail },
+  components: { detail, consumers },
   mixins: [global],
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {

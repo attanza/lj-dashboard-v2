@@ -8,8 +8,20 @@
       <v-tab href="#detail">
         Detail
       </v-tab>
-      <v-tab-item :id="'detail'">
+      <v-tab href="#referrals">
+        Referrals
+      </v-tab>
+      <v-tab href="#consumers">
+        Consumers
+      </v-tab>
+      <v-tab-item id="detail">
         <detail />
+      </v-tab-item>
+      <v-tab-item id="referrals">
+        <referrals />
+      </v-tab-item>
+      <v-tab-item id="consumers">
+        <consumers />
       </v-tab-item>
     </v-tabs>
   </div>
@@ -17,16 +29,16 @@
 
 <script>
 import { MARKETING_URL } from "~/utils/apis"
-import { detail } from "~/components/marketings"
+import { detail, referrals, consumers } from "~/components/marketings"
 import catchError from "~/utils/catchError"
 import { global } from "~/mixins"
 
 export default {
-  components: { detail },
+  components: { detail, referrals, consumers },
   mixins: [global],
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {
-      let resp = await $axios.$get(MARKETING_URL + "/" + params.id)
+      const resp = await $axios.$get(MARKETING_URL + "/" + params.id)
       if (resp) store.commit("currentEdit", resp.data)
     } catch (e) {
       if (process.client) catchError(e, $router, $auth)

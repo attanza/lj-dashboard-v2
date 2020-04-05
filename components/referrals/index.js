@@ -1,4 +1,5 @@
-import dform from "./dform"
+import consumers from "./consumers"
 import detail from "./detail"
+import dform from "./dform"
 
-export { dform, detail }
+export { dform, detail, consumers }

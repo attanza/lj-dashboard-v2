@@ -71,19 +71,12 @@ export default {
     "@nuxtjs/moment"
   ],
   moment: {
-    /* module options */
     locales: ["id"]
   },
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    // Doc: https://axios.nuxtjs.org/usage
-    "@nuxtjs/axios",
-    // Doc: https://github.com/nuxt-community/dotenv-module
-    "@nuxtjs/dotenv",
-    "@nuxtjs/auth"
-  ],
+  modules: ["@nuxtjs/axios", "@nuxtjs/dotenv", "@nuxtjs/auth"],
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

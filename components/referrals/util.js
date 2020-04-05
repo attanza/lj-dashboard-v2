@@ -13,8 +13,8 @@ code: string;
 
 export const headers = [
   { text: "Kode", align: "left", value: "code" },
-  { text: "Kreator", align: "left", value: "creator.email" },
-  { text: "Expired", align: "left", value: "isExpired" },
+  { text: "Creator", align: "left", value: "creator" },
+  { text: "Status", align: "left", value: "isExpired" },
   { text: "Deskripsi", align: "left", value: "description" }
 ]
 

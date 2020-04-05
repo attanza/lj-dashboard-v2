@@ -79,6 +79,15 @@ export default {
         sort_mode: sortMode,
         category: this.options.category || ""
       }
+      if (this.options.between_date) {
+        queryString.between_date = this.options.between_date
+      }
+      if (this.options.start_date) {
+        queryString.start_date = this.options.start_date
+      }
+      if (this.options.end_date) {
+        queryString.end_date = this.options.end_date
+      }
       const { search } = this.options
       if (search && search !== "") queryString.search = search
       Object.keys(queryString).map(q => (query += `${q}=${queryString[q]}&`))

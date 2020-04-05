@@ -1,8 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="primary--text">
-      {{ title }}
-    </v-card-title>
+    <v-card-title class="primary--text">{{ title }}</v-card-title>
     <v-toolbar flat color="transparent">
       <Tbtn
         v-if="checkPermission('create-online-product-order')"
@@ -32,7 +30,7 @@
     </v-toolbar>
     <v-toolbar flat color="transparent" class="mt-2">
       <v-combobox
-        v-model="rangeBy"
+        v-model="betweenDate"
         :items="typeDates"
         label="Range"
         color="primary"
@@ -62,13 +60,13 @@
       >
         >
         <template v-slot:item.order_no="{ item }">
-          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
-            {{ item.order_no }}
-          </v-btn>
+          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">{{
+            item.order_no
+          }}</v-btn>
         </template>
-        <template v-slot:item.price="{ item }">
-          {{ item.price.toLocaleString() }}
-        </template>
+        <template v-slot:item.price="{ item }">{{
+          item.price.toLocaleString()
+        }}</template>
       </v-data-table>
     </v-card-text>
     <dform
@@ -106,7 +104,7 @@ export default {
       fillable: downloadData,
       typeDates: ["paid_at", "created_at"],
       dataToExport: [],
-      rangeBy: ""
+      betweenDate: ""
     }
   },
 
@@ -120,16 +118,19 @@ export default {
       deep: true
     },
     date1() {
-      this.options.range_start = this.date1[0]
-      this.options.range_end = this.date1[1]
+      this.options.between_date = this.betweenDate
+      this.options.start_date = this.$moment(this.date1[0]).format(
+        "YYYY-MM-DD HH:mm:ss"
+      )
+      this.options.end_date = this.$moment(this.date1[1]).format(
+        "YYYY-MM-DD HH:mm:ss"
+      )
       this.populateTable()
     },
-    rangeBy() {
-      if (this.rangeBy !== "") {
-        this.options.range_by = this.rangeBy
+    betweenDate() {
+      if (this.betweenDate !== "") {
         this.pickerDisabled = false
       } else {
-        this.options.range_by = ""
         this.pickerDisabled = true
       }
     }
@@ -142,7 +143,6 @@ export default {
       try {
         this.activateLoader()
         const queries = this.getQueries()
-        console.log("queries", queries)
         const resp = await this.$axios.$get(`${this.link + queries}`)
         this.total = resp.meta.total
         this.items = resp.data

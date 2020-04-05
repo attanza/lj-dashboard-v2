@@ -5,7 +5,8 @@ export const state = () => ({
   permissions: null,
   dashboardData: null,
   comboData: null,
-  chartData: null
+  chartData: null,
+  referrals: []
 })
 export const mutations = {
   toggleSidebar(state) {
@@ -32,6 +33,9 @@ export const mutations = {
   },
   chartData(state, p) {
     state.chartData = p
+  },
+  referrals(state, p) {
+    state.referrals = p
   }
 }
 export const actions = {}

@@ -50,7 +50,7 @@ export const headers = [
   { text: "Nama", align: "left", value: "name" },
   { text: "Harga", align: "left", value: "price" },
   { text: "Status", align: "left", value: "status" },
-  { text: "Tanggal", align: "left", value: "created_at" }
+  { text: "Tanggal Bayar", align: "left", value: "paid_at" }
 ]
 
 export const downloadData = ["id", "paid_at"]

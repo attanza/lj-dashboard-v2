@@ -5,6 +5,18 @@ export let headers = [
   { text: "Status", align: "left", value: "is_active" }
 ]
 
+export const referralHeaders = [
+  { text: "Kode", align: "left", value: "code" },
+  { text: "Expired", align: "left", value: "isExpired" },
+  { text: "Tanggal", align: "left", value: "createdAt" },
+  { text: "Deskripsi", align: "left", value: "description" }
+]
+
+export const consumerHeaders = [
+  { text: "Email", align: "left", value: "email" },
+  { text: "Tanggal", align: "left", value: "date" }
+]
+
 export const downloadData = [
   "id",
   "uid",

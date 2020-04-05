@@ -5,9 +5,9 @@
         <v-card light class="elevation-2 mb-2" max-height="200px">
           <v-row class="px-3">
             <v-col cols="4">
-              <v-icon color="primary" style="font-size: 3rem;">
-                supervised_user_circle
-              </v-icon>
+              <v-icon color="primary" style="font-size: 3rem;"
+                >supervised_user_circle</v-icon
+              >
             </v-col>
             <v-col cols="8">
               <div>Active Marketings</div>
@@ -22,14 +22,29 @@
         <v-card>
           <v-row class="px-3">
             <v-col cols="4" align-self="center">
-              <v-icon color="primary" style="font-size: 3rem;">
-                account_balance
-              </v-icon>
+              <v-icon color="primary" style="font-size: 3rem;"
+                >account_balance</v-icon
+              >
             </v-col>
             <v-col cols="8">
               <div>Registered Universities</div>
               <div class="title primary--text">
                 {{ dashboardData.total_universities }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col cols="12" sm="6">
+        <v-card>
+          <v-row class="px-3">
+            <v-col cols="4" align-self="center">
+              <v-icon color="primary" style="font-size: 3rem;">devices</v-icon>
+            </v-col>
+            <v-col cols="8">
+              <div>Registered Products</div>
+              <div class="title primary--text">
+                {{ dashboardData.total_products }}
               </div>
             </v-col>
           </v-row>
