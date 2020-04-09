@@ -93,10 +93,8 @@ export default {
             })
           })
         })
-        console.log(this.items)
         this.deactivateLoader()
       } catch (e) {
-        console.log("e", e)
         this.deactivateLoader()
         this.showForm = false
         this.catchError(e, null, this.$router)
