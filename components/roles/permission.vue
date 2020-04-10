@@ -9,6 +9,7 @@
             label="Cari"
             single-line
             hide-details
+            clearable
           />
           <v-spacer />
           <Tbtn
@@ -90,7 +91,13 @@ export default {
   },
   watch: {
     search() {
-      if (this.search !== "") this.searchPermissions()
+      console.log(this.search)
+      if (this.search == null || this.search === "") {
+        this.items = this.$store.getters.getPermissions("")
+        this.setPermissionArray()
+      } else {
+        this.searchPermissions()
+      }
     }
   },
   mounted() {
