@@ -91,7 +91,6 @@ export default {
   },
   watch: {
     search() {
-      console.log(this.search)
       if (this.search == null || this.search === "") {
         this.items = this.$store.getters.getPermissions("")
         this.setPermissionArray()
