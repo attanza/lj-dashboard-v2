@@ -1,22 +1,19 @@
-# lj_dashbord_v2
+**Conventional Deployment**
 
-> Langsung Jalan Dashboard Version 2
+1. run `git clone https://github.com/attanza/lj-dashboard-v2.git`
+2. cd into repo
+3. run `touch .env`
+4. run `sudo vi .env`
+5. paste the .env content
+6. run `npm i`
+7. run `npm run build`
+8. run `pm2 start npm ecosystem.config.js --name dashboard -- start`
 
-## Build Setup
+**Docker Deployment**
 
-``` bash
-# install dependencies
-$ yarn install
-
-# serve with hot reload at localhost:3000
-$ yarn dev
-
-# build for production and launch server
-$ yarn build
-$ yarn start
-
-# generate static project
-$ yarn generate
-```
-
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+1. run `git clone https://github.com/attanza/lj-dashboard-v2.git`
+2. cd into repo
+3. run `touch .env`
+4. run `sudo vi .env`
+5. paste the .env content
+6. run `docker-compose up -d --build`
