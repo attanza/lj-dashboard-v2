@@ -97,7 +97,6 @@ export default {
           showNoty("Map Saved", "success")
         }
       } catch (e) {
-        console.log(e)
         catchError(e)
       }
     },

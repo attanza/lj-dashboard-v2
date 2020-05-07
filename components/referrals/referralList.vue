@@ -1,6 +1,15 @@
 <template>
-  <v-card flat>
+  <div>
     <v-toolbar flat color="transparent">
+      <Tbtn
+        v-if="checkPermission('create-referral')"
+        :bottom="true"
+        :tooltip-text="'Tambahkan ' + title"
+        icon-mode
+        icon="add"
+        color="primary"
+        @onClick="showForm = !showForm"
+      />
       <Tbtn
         :bottom="true"
         :tooltip-text="'Download data ' + title"
@@ -17,6 +26,7 @@
         label="Cari"
         single-line
         hide-details
+        clearable
       />
     </v-toolbar>
     <v-card-text class="mt-4">
@@ -30,10 +40,20 @@
         :server-items-length="total"
       >
         <template v-slot:item.code="{ item }">
-          <v-btn text color="primary" nuxt :to="`${link}/${item._id}`">{{
-            item.code
-          }}</v-btn>
+          <v-btn text color="primary" nuxt :to="`${link}/${item._id}`">
+            {{ item.code }}
+          </v-btn>
         </template>
+        <template v-slot:item.creator="{ item }">
+          <v-btn
+            text
+            color="primary"
+            nuxt
+            :to="`/marketings/${item.creator.id}`"
+            >{{ item.creator.email || "" }}</v-btn
+          >
+        </template>
+
         <template v-slot:item.isExpired="{ item }">
           <span v-if="!item.isExpired">
             <v-chip color="green" text-color="white">Useable</v-chip>
@@ -42,12 +62,17 @@
             <v-chip>Expired</v-chip>
           </span>
         </template>
-        <template v-slot:item.createdAt="{ item }">{{
-          $moment(item.createdAt).format("YYYY-MM-DD hh:mm:ss")
-        }}</template>
+        <template v-slot:item.createdAt="{ item }">
+          {{ $moment(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
+        </template>
       </v-data-table>
     </v-card-text>
-
+    <dform
+      :show="showForm"
+      :link="link"
+      @onClose="showForm = false"
+      @onAdd="addData"
+    />
     <DownloadDialog
       :show-dialog="showDownloadDialog"
       :data-to-export="dataToExport"
@@ -56,23 +81,31 @@
       model="Referral"
       @onClose="showDownloadDialog = false"
     />
-  </v-card>
+  </div>
 </template>
 
 <script>
 import debounce from "lodash/debounce"
-import { referralHeaders, downloadData } from "./util"
+import { headers, downloadData } from "~/components/referrals/util"
 import { global, catchError } from "~/mixins"
-
+import { dform } from "~/components/referrals"
 import DownloadDialog from "~/components/DownloadDialog"
 export default {
-  components: { DownloadDialog },
+  components: { DownloadDialog, dform },
   mixins: [global, catchError],
+
+  props: {
+    creatorId: {
+      type: Number,
+      required: false,
+      default: null
+    }
+  },
   data() {
     return {
       title: "Referral",
       link: "/referrals",
-      headers: referralHeaders,
+      headers: headers,
       fillable: downloadData,
       typeDates: ["created_at"],
       dataToExport: []
@@ -90,16 +123,17 @@ export default {
     }
   },
   mounted() {
+    this.options.sortBy[0] = "createdAt"
     this.populateTable()
   },
   methods: {
     async populateTable() {
       try {
         this.activateLoader()
-        const queries =
-          this.getQueries() +
-          `search_by=creator.id&search_query=${this.currentEdit.id}`
-
+        let queries = this.getQueries()
+        if (this.creatorId) {
+          queries += `search_by=creator.id&search_query=${this.creatorId}`
+        }
         const resp = await this.$axios.$get(`${this.link + queries}`)
         this.total = resp.meta.totalDocs
         this.items = resp.data
@@ -113,23 +147,13 @@ export default {
     toDetail(data) {
       this.$router.push(`${this.link}/${data.id}`)
     },
+    addData(data) {
+      this.items.unshift(data)
+      this.showForm = false
+    },
     downloadData() {
       this.dataToExport = []
-      const data = [...this.items]
-      data.map(d => {
-        d.creator = d.creator.email
-        delete d.maxConsumer
-        delete d._id
-        delete d.validUntil
-        delete d.products
-        delete d.updatedAt
-        delete d.__v
-        const consumer = d.consumer.map(c => c.email)
-        d.consumer = consumer.join(",")
-        d.date = this.$moment(d.createdAt).format("YYYY-MM-DD HH:mm:ss")
-        delete d.createdAt
-        this.dataToExport.push(d)
-      })
+      this.dataToExport = this.items
       if (this.dataToExport.length) {
         this.showDownloadDialog = true
       }

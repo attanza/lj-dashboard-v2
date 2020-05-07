@@ -48,12 +48,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" @click.native="onClose">
-            Tutup
-          </v-btn>
-          <v-btn color="primary" @click.native="submit">
-            Simpan
-          </v-btn>
+          <v-btn color="primary" @click.native="onClose">Tutup</v-btn>
+          <v-btn color="primary" @click.native="submit">Simpan</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -296,7 +292,6 @@ export default {
         }
         this.deactivateLoader()
       } catch (e) {
-        console.log(e)
         this.deactivateLoader()
         catchError(e)
       }

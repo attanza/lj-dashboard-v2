@@ -1,8 +1,6 @@
 <template>
   <div class="mt-4">
-    <h3 class="subheading ml-3">
-      Angkatan
-    </h3>
+    <h3 class="subheading ml-3">Angkatan</h3>
     <v-toolbar flat color="transparent">
       <Tbtn
         :bottom="true"
@@ -209,8 +207,6 @@ export default {
         this.loading = false
         this.deactivateLoader()
       } catch (e) {
-        console.log(e)
-
         this.loading = false
         this.showForm = false
         this.deactivateLoader()

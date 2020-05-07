@@ -29,9 +29,7 @@
         class="elevation-1"
       >
         <template slot="items" slot-scope="props">
-          <td v-if="props.item.action">
-            {{ props.item.action.name }}
-          </td>
+          <td v-if="props.item.action">{{ props.item.action.name }}</td>
           <td v-if="props.item.study.studyName">
             {{ props.item.study.studyName.name }} ~
             {{ props.item.study.university.name }}
@@ -41,9 +39,7 @@
           <!-- <td>{{ props.item.description }}</td> -->
           <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="toDetail(props.item)">
-              <v-icon color="primary">
-                remove_red_eye
-              </v-icon>
+              <v-icon color="primary">remove_red_eye</v-icon>
             </v-btn>
           </td>
         </template>
@@ -84,7 +80,6 @@ export default {
       let actions = await axios.get(COMBO_DATA_URL + "Action")
       if (actions) store.commit("comboData3", actions.data)
     } catch (e) {
-      console.log(e)
       catchError(e)
     }
   },

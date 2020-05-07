@@ -1,7 +1,6 @@
 import Noty from "noty"
 
 export default (e, $router, $auth) => {
-  console.log("e", e)
   if (e.response) {
     const status = e.response.status
     let message = ""
@@ -21,7 +20,7 @@ export default (e, $router, $auth) => {
         break
       case 401:
         {
-          console.log("401"); //eslint-disable-line
+          console.log("401") //eslint-disable-line
           $auth.logout()
           $router.push("/login")
         }
@@ -36,11 +35,11 @@ export default (e, $router, $auth) => {
           "Internal Server Error, please contact our Administrator",
           "error"
         )
-        console.log("Unknown Status"); //eslint-disable-line
+        console.log("Unknown Status") //eslint-disable-line
         break
     }
   } else {
-    console.log("default error"); //eslint-disable-line
+    console.log("default error") //eslint-disable-line
     showNoty("Internal Server Error, please contact our Administrator", "error")
   }
 }

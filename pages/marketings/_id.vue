@@ -5,18 +5,10 @@
     </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
-      <v-tab href="#detail">
-        Detail
-      </v-tab>
-      <v-tab href="#referrals">
-        Referrals
-      </v-tab>
-      <v-tab href="#consumers">
-        Consumers
-      </v-tab>
-      <v-tab href="#orderList">
-        Order List
-      </v-tab>
+      <v-tab href="#detail">Detail</v-tab>
+      <v-tab href="#referrals">Referrals</v-tab>
+      <v-tab href="#consumers">Consumers</v-tab>
+      <v-tab href="#orderList">Order List</v-tab>
       <v-tab-item id="detail">
         <detail />
       </v-tab-item>
@@ -35,7 +27,7 @@
 
 <script>
 import { MARKETING_URL } from "~/utils/apis"
-import { detail, referrals, consumers } from "~/components/marketings"
+import { detail, consumers, referrals } from "~/components/marketings"
 import list from "~/components/onlineProductOrders/list"
 import catchError from "~/utils/catchError"
 import { global } from "~/mixins"
