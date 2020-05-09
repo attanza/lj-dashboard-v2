@@ -5,12 +5,9 @@
     </h2>
     <v-tabs align-with-title class="white elevation-1">
       <v-tabs-slider color="white" />
-      <v-tab href="#detail">
-        Detail
-      </v-tab>
-      <v-tab href="#activities">
-        Aktifitas
-      </v-tab>
+      <v-tab href="#detail">Detail</v-tab>
+      <v-tab href="#activities">Aktifitas</v-tab>
+      <v-tab href="#resetPassword">Reset Password</v-tab>
       <v-tab-item :id="'detail'">
         <detail />
       </v-tab-item>
@@ -18,18 +15,21 @@
       <v-tab-item :id="'activities'">
         <activities />
       </v-tab-item>
+      <v-tab-item :id="'resetPassword'">
+        <resetPasswordForm />
+      </v-tab-item>
     </v-tabs>
   </div>
 </template>
 
 <script>
 import { USER_URL, COMBO_DATA_URL } from "~/utils/apis"
-import { detail, activities } from "~/components/users"
+import { detail, activities, resetPasswordForm } from "~/components/users"
 import catchError from "~/utils/catchError"
 import { global } from "~/mixins"
 
 export default {
-  components: { detail, activities },
+  components: { detail, activities, resetPasswordForm },
   mixins: [global],
   async fetch({ store, params, redirect, $axios, $router, $auth }) {
     try {

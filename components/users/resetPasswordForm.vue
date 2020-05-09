@@ -1,131 +1,95 @@
 <template>
-  <v-layout row justify-center>
-    <v-dialog v-model="dialog" persistent max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline primary--text">
-            {{ formTitle }}
-          </span>
-        </v-card-title>
+  <ValidationObserver ref="observer">
+    <form>
+      <v-card flat>
         <v-card-text>
-          <v-container grid-list-md>
-            <form>
-              <v-layout row wrap>
-                <v-flex v-for="(f, index) in fillable" :key="index" xs12>
-                  <label>{{ f.caption }}</label>
-                  <v-text-field
-                    :ref="f.key"
-                    v-model="formData[f.key]"
-                    v-validate="f.rules"
-                    :error-messages="errors.collect(f.key)"
-                    :name="f.key"
-                    :data-vv-name="f.key"
-                    :data-vv-as="f.caption"
-                    type="password"
-                  />
-                </v-flex>
-              </v-layout>
-            </form>
-          </v-container>
+          <v-row>
+            <v-col cols="12">
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="password"
+                rules="required|min:6"
+              >
+                <v-text-field
+                  ref="password"
+                  v-model="password"
+                  :error-messages="errors"
+                  label="Password Baru"
+                  :type="show2 ? 'text' : 'password'"
+                  :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="show2 = !show2"
+                />
+              </ValidationProvider>
+            </v-col>
+            <v-col cols="12">
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="passwordConfirmation"
+                rules="required|confirmed:password"
+              >
+                <v-text-field
+                  v-model="passwordConfirmation"
+                  :error-messages="errors"
+                  label="Konfirmasi Password"
+                  :type="show3 ? 'text' : 'password'"
+                  :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="show3 = !show3"
+                />
+              </ValidationProvider>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" @click.native="onClose">
-            Batal
-          </v-btn>
-          <v-btn color="primary" @click.native="submit">
-            Simpan
-          </v-btn>
+          <v-btn color="primary" @click="submit">{{
+            messages.form.SAVE
+          }}</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
-  </v-layout>
+    </form>
+  </ValidationObserver>
 </template>
+
 <script>
-import { global } from "~/mixins"
-import { USER_URL } from "~/utils/apis"
-import axios from "axios"
-import catchError, { showNoty } from "~/utils/catchError"
+import messages from "@/utils/messages"
+import { global, catchError } from "~/mixins"
+
 export default {
-  $_veeValidate: {
-    validator: "new"
-  },
-  mixins: [global],
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    }
-  },
+  mixins: [global, catchError],
   data() {
     return {
-      dialog: false,
-      fillable: [
-        {
-          key: "password",
-          caption: "Password",
-          value: "",
-          rules: "required|min:6"
-        },
-        {
-          key: "password_confirmation",
-          caption: "Konfirmasi password",
-          value: "",
-          rules: "required|confirmed:password"
-        }
-      ],
-      formData: {},
-      formTitle: "Reset Password"
+      messages: messages,
+      show2: false,
+      show3: false,
+      password: "",
+      passwordConfirmation: ""
     }
-  },
-  watch: {
-    show() {
-      this.dialog = this.show
-    }
-  },
-  created() {
-    this.setFields()
   },
   methods: {
-    onClose() {
-      this.dialog = false
-      this.$emit("onClose")
+    async submit() {
+      if (await this.$refs.observer.validate()) {
+        this.changePassword()
+      }
+      return
     },
-    setFields() {
-      this.errors.clear()
-      this.fillable.forEach(data => (this.formData[data.key] = data.value))
-    },
-    submit() {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.saveData()
-          return
-        }
-      })
-    },
-    async saveData() {
+    async changePassword() {
       try {
         this.activateLoader()
-        this.dialog = true
-        const postData = Object.assign({}, this.currentEdit)
-        postData.password = this.formData.password
-        delete postData["marketings"]
-        delete postData["roles"]
-        delete postData["supervisors"]
-        const resp = await axios
-          .put(`${USER_URL}/${this.currentEdit.id}`, postData)
-          .then(res => res.data)
-
-        if (resp.meta.status === 200) {
-          showNoty("Password diperbaharui", "success")
-          this.onClose()
-        }
+        await this.$axios.$put(`/users/${this.currentEdit.id}/resetPassword`, {
+          password: this.password
+        })
+        this.$refs.observer.reset()
+        this.showNoty("Password Updated", "success")
+        this.clearData()
         this.deactivateLoader()
       } catch (e) {
-        this.onClose()
         this.deactivateLoader()
-        catchError(e)
+        this.catchError(e)
       }
+    },
+    clearData() {
+      this.password = ""
+      this.passwordConfirmation = ""
     }
   }
 }
