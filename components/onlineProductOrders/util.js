@@ -151,7 +151,7 @@ export const formItem = [
     inForm: true
   },
   {
-    text: "Aktif",
+    text: "Disabled",
     value: "is_disabled",
     el: "switch",
     rules: "",
