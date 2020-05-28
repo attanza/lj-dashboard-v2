@@ -106,7 +106,11 @@ export default {
     async editData(data) {
       if (data.marketing_id === "") {
         data.marketing_id = undefined
+      } else {
+        data.marketing_id = data.marketing.id
+        delete data.marketing
       }
+      console.log("data", data)
       try {
         this.activateLoader()
         if (this.currentEdit) {

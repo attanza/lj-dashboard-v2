@@ -83,6 +83,7 @@ export default {
           ...data,
           validUntil: this.$moment(data.validUntil).toISOString()
         }
+        console.log("postData", postData)
         this.activateLoader()
         if (this.currentEdit) {
           const resp = await this.$axios.$put(

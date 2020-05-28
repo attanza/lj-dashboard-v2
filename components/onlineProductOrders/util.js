@@ -102,7 +102,7 @@ export const formItem = [
     text: "Device Id",
     value: "device_id",
     el: "text",
-    rules: "required|max:20",
+    rules: "required|max:250",
     inForm: true
   },
   {
