@@ -55,11 +55,11 @@
         </template>
 
         <template v-slot:item.isExpired="{ item }">
-          <span v-if="!item.isExpired">
-            <v-chip color="green" text-color="white">Useable</v-chip>
+          <span v-if="item.isExpired">
+            <v-chip>Expired</v-chip>
           </span>
           <span v-else>
-            <v-chip>Expired</v-chip>
+            <v-chip color="green" text-color="white">Useable</v-chip>
           </span>
         </template>
         <template v-slot:item.createdAt="{ item }">
