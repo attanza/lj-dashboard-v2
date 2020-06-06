@@ -53,7 +53,7 @@ export const headers = [
   { text: "Tanggal Bayar", align: "left", value: "paid_at" }
 ]
 
-export const downloadData = ["id", "paid_at"]
+export const downloadData = ["id", "order_no", "paid_at"]
 
 export const formItem = [
   {

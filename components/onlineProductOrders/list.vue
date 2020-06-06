@@ -68,13 +68,13 @@
       >
         >
         <template v-slot:item.order_no="{ item }">
-          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">{{
-            item.order_no
-          }}</v-btn>
+          <v-btn text color="primary" nuxt :to="`${link}/${item.id}`">
+            {{ item.order_no }}
+          </v-btn>
         </template>
-        <template v-slot:item.price="{ item }">{{
-          item.price.toLocaleString()
-        }}</template>
+        <template v-slot:item.price="{ item }">
+          {{ item.price.toLocaleString() }}
+        </template>
       </v-data-table>
     </v-card-text>
     <dform
@@ -181,7 +181,29 @@ export default {
     },
     downloadData() {
       this.dataToExport = []
-      this.dataToExport = this.items
+      this.items.map(i => {
+        const data = Object.assign({}, i)
+        // Product
+        data.product_code = ""
+        data.product_name = ""
+        if (data.product && typeof data.product === "object") {
+          data.product_code = data.product.code
+          data.product_name = data.product.name
+        }
+        delete data.product_id
+        delete data.product
+        // Marketing
+        data.marketing_name = ""
+        data.marketing_email = ""
+        if (data.marketing && typeof data.marketing === "object") {
+          data.marketing_name = data.marketing.name
+          data.marketing_email = data.marketing.email
+        }
+        delete data.marketing_id
+        delete data.marketing
+
+        this.dataToExport.push(data)
+      })
       if (this.dataToExport.length) {
         this.showDownloadDialog = !this.showDownloadDialog
       }
