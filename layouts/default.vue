@@ -2,12 +2,12 @@
   <v-app>
     <client-only>
       <sidebar />
-      <v-content>
+      <v-main>
         <v-container fluid grid-list-lg>
           <nuxt />
         </v-container>
         <Loader />
-      </v-content>
+      </v-main>
       <v-footer fixed app>
         <span>&copy; 2020</span>
       </v-footer>

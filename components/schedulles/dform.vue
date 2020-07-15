@@ -1,11 +1,9 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="dialog" persistent max-width="500px">
+    <v-dialog v-model="dialog" fullscreen>
       <v-card>
         <v-card-title>
-          <span class="primary--text headline">
-            {{ formTitle }}
-          </span>
+          <span class="primary--text headline">{{ formTitle }}</span>
         </v-card-title>
         <v-divider />
         <v-card-text>
@@ -37,6 +35,11 @@ export default {
     link: {
       type: String,
       required: true
+    },
+    targetId: {
+      type: String,
+      required: false,
+      default: null
     }
   },
   data() {
@@ -70,11 +73,17 @@ export default {
       this.initValue.code = code
     },
     async populateTarget() {
-      await this.populateComboData(
-        "/combo-data?model=MarketingTarget",
-        "code",
-        "marketing_target_id"
-      )
+      if (this.targetId != null) {
+        this.formItem[0].inForm = false
+        this.initValue.marketing_target_id = Number(this.targetId)
+      } else {
+        this.formItem[0].inForm = true
+        await this.populateComboData(
+          "/combo-data?model=MarketingTarget",
+          "code",
+          "marketing_target_id"
+        )
+      }
     },
     async populateMarketing() {
       await this.populateComboData(

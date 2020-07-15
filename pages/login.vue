@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-content>
+    <v-main>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
           <v-col cols="12" sm="6" md="6">
@@ -53,15 +53,14 @@
                   :disabled="loading"
                   color="primary"
                   @click="submit"
+                  >Login</v-btn
                 >
-                  Login
-                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
         </v-row>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 

@@ -138,7 +138,7 @@ export default {
           )
           if (resp.meta.status === 200) {
             this.showNoty(this.$messages.form.DELETED, "success")
-            this.$router.push(this.link)
+            this.$router.go(-1)
           }
         }
         this.deactivateLoader()

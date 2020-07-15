@@ -3,9 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="500px">
       <v-card>
         <v-card-title>
-          <span class="primary--text headline">
-            {{ formTitle }}
-          </span>
+          <span class="primary--text headline">{{ formTitle }}</span>
         </v-card-title>
         <v-divider />
         <v-card-text>
@@ -49,11 +47,11 @@ export default {
   },
   watch: {
     show() {
+      this.generateCode()
       this.dialog = this.show
     }
   },
   mounted() {
-    this.generateCode()
     this.$bus.$on("university_id", val => {
       this.populateStudyPrograms(val)
     })

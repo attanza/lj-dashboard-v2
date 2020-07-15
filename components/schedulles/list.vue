@@ -58,6 +58,7 @@
     <dform
       :show="showForm"
       :link="link"
+      :target-id="targetId"
       @onClose="showForm = false"
       @onAdd="addData"
     />

@@ -58,6 +58,7 @@
     <dform
       :show="showForm"
       :link="link"
+      :schedulle-id="schedulleId"
       @onClose="showForm = false"
       @onAdd="addData"
     />

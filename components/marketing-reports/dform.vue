@@ -37,6 +37,11 @@ export default {
     link: {
       type: String,
       required: true
+    },
+    schedulleId: {
+      type: String,
+      required: false,
+      default: null
     }
   },
   data() {
@@ -69,11 +74,17 @@ export default {
     },
     async populateSchedulle() {
       try {
-        const resp = await this.$axios.$get("/combo-data?model=Schedulle")
-        const targetData = resp.map(r => ({ id: r.id, name: r.code }))
-        const idx = this.formItem.findIndex(f => f.value === "schedulle_id")
-        if (idx !== -1) {
-          this.formItem[idx].items = targetData
+        if (this.schedulleId != null) {
+          this.formItem[1].inForm = false
+          this.initValue.schedulle_id = Number(this.schedulleId)
+        } else {
+          this.formItem[1].inForm = true
+          const resp = await this.$axios.$get("/combo-data?model=Schedulle")
+          const targetData = resp.map(r => ({ id: r.id, name: r.code }))
+          const idx = this.formItem.findIndex(f => f.value === "schedulle_id")
+          if (idx !== -1) {
+            this.formItem[idx].items = targetData
+          }
         }
       } catch (e) {
         this.catchError(e)

@@ -17,7 +17,7 @@
                 :name="f.value"
                 :label="f.text"
                 :disabled="f.disabled"
-              />
+              ></v-text-field>
             </ValidationProvider>
 
             <ValidationProvider
@@ -93,28 +93,34 @@
               :rules="f.rules"
             >
               <v-menu
+                ref="menu"
                 v-model="timeMenu"
                 :close-on-content-click="false"
                 :nudge-right="40"
+                :return-value.sync="time"
                 transition="scale-transition"
                 offset-y
+                max-width="290px"
                 min-width="290px"
               >
-                <template v-slot:activator="{ on }">
+                <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="formData[f.value]"
                     :type="f.type"
                     :error-messages="errors"
                     :name="f.value"
                     :label="f.text"
+                    v-bind="attrs"
                     readonly
                     v-on="on"
                   />
                 </template>
                 <v-time-picker
+                  v-if="timeMenu"
                   v-model="formData[f.value]"
-                  @input="timeMenu = false"
-                />
+                  full-width
+                  @click:minute="saveTime(time)"
+                ></v-time-picker>
               </v-menu>
             </ValidationProvider>
 
@@ -150,13 +156,13 @@
       </v-container>
       <v-divider class="mb-3" />
       <v-card-actions>
-        <v-btn v-if="showCancel" @click="close">
-          {{ messages.form.CANCEL }}
-        </v-btn>
+        <v-btn v-if="showCancel" @click="close">{{
+          messages.form.CANCEL
+        }}</v-btn>
         <v-spacer />
-        <v-btn v-if="showButton" color="primary" @click="submit">
-          {{ messages.form.SAVE }}
-        </v-btn>
+        <v-btn v-if="showButton" color="primary" @click="submit">{{
+          messages.form.SAVE
+        }}</v-btn>
       </v-card-actions>
     </form>
   </ValidationObserver>
@@ -196,28 +202,26 @@ export default {
       formData: {},
       messages: messages,
       dateMenu: false,
-      timeMenu: false
+      timeMenu: false,
+      time: null
     }
   },
 
   watch: {
     initValue() {
-      if (this.initValue) {
-        this.assignInitValue()
-      }
+      this.assignInitValue()
     }
   },
 
   mounted() {
-    if (this.initValue) {
-      this.assignInitValue()
-    }
+    this.assignInitValue()
   },
 
   methods: {
     async submit() {
       if (await this.$refs.observer.validate()) {
         this.$emit("onSubmit", this.formData)
+        this.formData = {}
       }
       return
     },
@@ -231,6 +235,9 @@ export default {
     },
     comboChange(key, value) {
       this.$bus.$emit(key, value)
+    },
+    saveTime(time) {
+      this.$refs.menu[0].save(time)
     }
   }
 }
