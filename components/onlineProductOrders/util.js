@@ -50,10 +50,11 @@ export const headers = [
   { text: "Nama", align: "left", value: "name" },
   { text: "Harga", align: "left", value: "price" },
   { text: "Status", align: "left", value: "status" },
-  { text: "Tanggal Bayar", align: "left", value: "paid_at" }
+  { text: "Tanggal Bayar", align: "left", value: "paid_at" },
+  { text: "Metode Pembayaran", align: "left", value: "payment_with" }
 ]
 
-export const downloadData = ["id", "order_no", "paid_at"]
+export const downloadData = ["id", "order_no", "paid_at", "payment_with"]
 
 export const formItem = [
   {
@@ -160,6 +161,14 @@ export const formItem = [
   {
     text: "Tanggal Bayar",
     value: "paid_at",
+    el: "text",
+    disabled: true,
+    rules: "",
+    inForm: true
+  },
+  {
+    text: "Metode Pembayaran",
+    value: "payment_with",
     el: "text",
     disabled: true,
     rules: "",

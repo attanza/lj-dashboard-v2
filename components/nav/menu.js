@@ -112,6 +112,11 @@ export const adminItems = [
     title: "Kontak",
     icon: "contact_phone",
     to: "/contacts"
+  },
+  {
+    title: "Payment Methods",
+    icon: "account_balance_wallet",
+    to: "/payment-methods"
   }
 ]
 
